@@ -7,12 +7,8 @@ using UnityEngine;
 /// <summary>
 /// 地图基类
 /// </summary>
-public class MapBase : MonoBehaviour
+public class MapBase
 {
-    /// <summary>
-    /// 单例
-    /// </summary>
-    public static MapBase Single { get; private set; }
 
     // ------------------------------公共属性----------------------------------
 
@@ -32,7 +28,6 @@ public class MapBase : MonoBehaviour
     /// </summary>
     public bool IsShow;
 
-
     /// <summary>
     /// 地图高度
     /// </summary>
@@ -46,7 +41,7 @@ public class MapBase : MonoBehaviour
     /// <summary>
     /// 地图单位宽度
     /// </summary>
-    public int CellWidth { get; set; }
+    public int UnitWidth { get; set; }
 
     /// <summary>
     /// 地图线绘制颜色
@@ -88,20 +83,24 @@ public class MapBase : MonoBehaviour
     private MapCellBase[,] mapCellArray;
 
 
-    // -------------------------------系统方法--------------------------------
 
-    void Start()
+    // ------------------------------公共方法-----------------------------------
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <param name="mapData">地图数据</param>
+    /// <param name="unitWidth">单位宽度</param>
+    public MapBase(int[][] mapData, int unitWidth)
     {
-        Single = this;
-        ResetMapPos();
-        LineColor = Color.red;
+        //Init(mapData, unitWidth);
     }
 
 
     /// <summary>
-    /// update
+    /// 绘制格子
     /// </summary>
-    void Update()
+    public void DrawLine()
     {
         if (mapCellArray != null)
         {
@@ -129,7 +128,35 @@ public class MapBase : MonoBehaviour
         }
     }
 
-    // ------------------------------公共方法-----------------------------------
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <param name="mapData">地图数据</param>
+    /// <param name="unitWidth">地图单位宽度</param>
+    public void Init(MapCell[,] mapCellArray, int unitWidth)
+    {
+        if (mapCellArray == null)
+        {
+            Debug.LogError("地图数据为空");
+            return;
+        }
+        // 将数据数据转化为二维数组
+        UnitWidth = unitWidth;
+        var height = mapCellArray.GetLength(0);
+        var width = mapCellArray.GetLength(1);
+        ReBuildMap(width, height);
+        
+        // 遍历内容
+        for (var i = 0; i < height; i++)
+        {
+            for (var j = 0; j < width; j++)
+            {
+                //PushMapCell(new MapCell(123,mapData[i][j]), j, i);
+            }
+        }
+    }
+
 
     /// <summary>
     /// 重建地图数据
@@ -253,7 +280,12 @@ public abstract class MapCellBase
     /// <summary>
     /// 地图单位类型
     /// </summary>
-    public int MapCellType { get; set; }
+    public UnitType MapCellType { get; set; }
+
+    /// <summary>
+    /// 地图Obj单位
+    /// </summary>
+    public GameObject GameObj { get; set; }
 
     /// <summary>
     /// 自增唯一ID
@@ -264,10 +296,12 @@ public abstract class MapCellBase
     /// <summary>
     /// 基础初始化
     /// </summary>
-    protected MapCellBase()
+    protected MapCellBase(GameObject obj)
     {
         // 当前新类的ID并自增
         MapCellId = addtionId++;
+        // 初始化模型
+        this.GameObj = obj;
     }
 }
 
@@ -277,8 +311,69 @@ public abstract class MapCellBase
 /// </summary>
 public class MapCell : MapCellBase
 {
-    public MapCell(int cellType) : base()
+    /// <summary>
+    /// 初始化地图单元
+    /// </summary>
+    /// <param name="obj">游戏物体</param>
+    /// <param name="cellType">地图单元类型</param>
+    public MapCell(GameObject obj)
+        : base(obj)
     {
-        MapCellType = cellType;
+        MapCellType = UnitType.MapCell;
+    }
+}
+
+
+
+
+/// <summary>
+/// 障碍物
+/// </summary>
+public class Obstacle : MapCellBase
+{
+    /// <summary>
+    /// 初始化障碍物
+    /// </summary>
+    /// <param name="obj">游戏物体</param>
+    public Obstacle(GameObject obj)
+        : base(obj)
+    {
+        MapCellType = UnitType.Obstacle;
+    }
+}
+
+
+
+/// <summary>
+/// FightUnit
+/// </summary>
+public class FightUnit : MapCellBase
+{
+    /// <summary>
+    /// 初始化战斗单位
+    /// </summary>
+    /// <param name="obj">游戏物体</param>
+    public FightUnit(GameObject obj)
+        : base(obj)
+    {
+        MapCellType = UnitType.FightUnit;
+    }
+}
+
+
+
+/// <summary>
+/// NPC
+/// </summary>
+public class NPC : MapCellBase
+{
+    /// <summary>
+    /// 初始化NPC
+    /// </summary>
+    /// <param name="obj">游戏物体</param>
+    public NPC(GameObject obj)
+        : base(obj)
+    {
+        MapCellType = UnitType.NPC;
     }
 }

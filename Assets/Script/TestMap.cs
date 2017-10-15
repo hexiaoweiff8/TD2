@@ -44,13 +44,13 @@ public class TestMap : MonoBehaviour
     {
         // 初始化
         // 创建地图
-        for (var i = 0; i < MapHeight; i++)
-        {
-            for (var j = 0; j < MapWidth; j++)
-            {
-                MapBase.Single.PushMapCell(new MapCell(1), j, i);
-            }
-        }
+        //for (var i = 0; i < MapHeight; i++)
+        //{
+        //    for (var j = 0; j < MapWidth; j++)
+        //    {
+        //        MapBase.Single.PushMapCell(new MapCell(1), j, i);
+        //    }
+        //}
     }
 
     ///// <summary>
@@ -87,7 +87,7 @@ public class TestMap : MonoBehaviour
         if (Input.GetMouseButtonUp(1))
         {
             // 创建地图
-            MapBase.Single.ReBuildMap(100,100);
+            //MapBase.Single.ReBuildMap(100,100);
         }
 
         if (Input.GetKey(KeyCode.PageUp))

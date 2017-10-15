@@ -68,9 +68,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Script\Data\DataPacker.cs" />
     <Compile Include="Assets\Script\Map\MapBase.cs" />
     <Compile Include="Assets\Script\Map\MapDrawer.cs" />
+    <Compile Include="Assets\Script\Map\MapManager.cs" />
     <Compile Include="Assets\Script\TestMap.cs" />
+    <Compile Include="Assets\Script\Unit\UnitFictory.cs" />
+    <Compile Include="Assets\Script\Utils\Looper.cs" />
+    <Compile Include="Assets\Script\Utils\PoolLoader.cs" />
+    <Compile Include="Assets\Script\Utils\ResourceLoader.cs" />
+    <Compile Include="Assets\Script\Utils\Single.cs" />
+    <Compile Include="Assets\Script\Utils\Timer.cs" />
     <Compile Include="Assets\Script\Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
