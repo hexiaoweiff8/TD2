@@ -12,8 +12,6 @@ public class MapManager : SingleItem<MapManager>
 {
 
 
-
-
     /// <summary>
     /// 地图文件地址
     /// </summary>
@@ -32,14 +30,79 @@ public class MapManager : SingleItem<MapManager>
 
     // -----------------文件加载管理--------------------
 
+
+    public void BeginMap(int mapId, int level, Vector3 mapCenter, int unitWidth)
+    {
+        if (MapDrawer.Single == null)
+        {
+            throw new Exception("地图绘制器为空.");
+        }
+        // 验证数据
+        if (mapId < 0)
+        {
+            throw new Exception("地图Id错误:" + mapId);
+        }
+        if (level < 0)
+        {
+            throw new Exception("地图level错误:" + level);
+        }
+        if (unitWidth < 0)
+        {
+            throw new Exception("地图unitWidth错误:" + unitWidth);
+        }
+
+        var mapBase = GetMapInfo(mapId, level, mapCenter, unitWidth);
+
+        if (mapBase == null)
+        {
+            throw new Exception("地图数据为空");
+        }
+
+        // 启动绘制
+        MapDrawer.Single.Clear();
+        MapDrawer.Single.Init(mapBase);
+        MapDrawer.Single.Begin();
+    }
+
+
+    /// <summary>
+    /// 转换地图数据为地图单位
+    /// </summary>
+    /// <param name="mapData">地图数据</param>
+    /// <returns></returns>
+    public MapCellBase[,] GetCells(int[][] mapData)
+    {
+        var height = mapData.Length;
+        var width = mapData[0].Length;
+
+        var mapCellDataArray = new MapCellBase[height, width];
+        // 遍历内容
+        for (var i = 0; i < height; i++)
+        {
+            for (var j = 0; j < width; j++)
+            {
+                // 加载模型
+                var mapCell = UnitFictory.Single.GetUnit(UnitType.MapCell, mapData[i][j]);
+                // 根据数据加载
+                mapCellDataArray[i, j] = mapCell; 
+            }
+        }
+
+        return mapCellDataArray;
+    }
+
+
+    // ----------------------------私有方法---------------------------------
+
     /// <summary>
     /// 按照ID加载文件, 并且将加载文件缓存
     /// </summary>
     /// <param name="mapId">被加载地图DI</param>
     /// <param name="level">被加载层级</param>
-    /// <param name="cellWidth">单位宽度</param>
+    /// <param name="mapCenter">地图中心点</param>
+    /// <param name="unitWidth">单位宽度</param>
     /// <returns>被加载地图内容, 如果不存在返回null</returns>
-    public MapBase GetMapInfo(int mapId, int level, int cellWidth)
+    private MapBase GetMapInfo(int mapId, int level, Vector3 mapCenter, int unitWidth)
     {
         MapBase result = null;
 
@@ -47,7 +110,7 @@ public class MapManager : SingleItem<MapManager>
         {
             // 加载文件
             mapDataDic = Utils.DepartFileData(Utils.LoadFileRotate(MapDataFilePath));
-            
+
 
             if (mapDataDic == null)
             {
@@ -64,8 +127,9 @@ public class MapManager : SingleItem<MapManager>
             var key = Utils.GetMapFileNameById(mapId, level);
             if (mapDataDic != null && mapDataDic.ContainsKey(key))
             {
-                //result = new MapBase(DeCodeInfo(mapDataDic[key]), cellWidth);
                 var mapData = DeCodeInfo(mapDataDic[key]);
+                // 转换数据
+                result = new MapBase(GetCells(mapData), mapCenter, unitWidth);
             }
             else
             {
@@ -75,30 +139,6 @@ public class MapManager : SingleItem<MapManager>
 
         return result;
     }
-
-    /// <summary>
-    /// 转换地图数据为地图单位
-    /// </summary>
-    /// <param name="mapData"></param>
-    /// <returns></returns>
-    private MapCell[,] GetCells(int[][] mapData)
-    {
-        var height = mapData.Length;
-        var width = mapData[0].Length;
-
-        var mapCellDataArray = new MapCell[height, width];
-        // 遍历内容
-        for (var i = 0; i < height; i++)
-        {
-            for (var j = 0; j < width; j++)
-            {
-                //mapCellDataArray[i, j] = new MapCell( ,mapData[i][j]); 
-            }
-        }
-
-        return mapCellDataArray;
-    }
-
 
     /// <summary>
     /// 解码地图数据

@@ -11,13 +11,27 @@ using UnityEngine;
 /// </summary>
 public class UnitFictory : SingleItem<UnitFictory>
 {
+    /// <summary>
+    /// 资源地址
+    /// </summary>
+    public const string ResourceName = "Resource";
+
+    /// <summary>
+    /// 地图单元数据key名称
+    /// </summary>
+    public const string MapCellTableName = "MapCellData";
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private Dictionary<long, MapCellBase> mapCellBases = new Dictionary<long, MapCellBase>();
 
 
     /// <summary>
     /// 创建单位
     /// </summary>
     /// <param name="unitType">单位类型</param>
-    /// <param name="id">资源id</param>
     /// <param name="resourceId">资源ID</param>
     /// <returns>地图单元类</returns>
     public MapCellBase GetUnit(UnitType unitType, int resourceId)
@@ -26,7 +40,9 @@ public class UnitFictory : SingleItem<UnitFictory>
         switch (unitType)
         {
             case UnitType.MapCell:  // 地图单元
-                result = new MapCell(GetGameObject(resourceId));
+                var go = GetGameObject(MapCellTableName, resourceId, MapDrawer.Single.ItemParent);
+                result = new MapCell(go);
+                go.name = result.MapCellId.ToString();
                 break;
             case UnitType.Obstacle: // 障碍物
 
@@ -45,16 +61,20 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// <summary>
     /// 获取游戏物体
     /// </summary>
+    /// <param name="tableName">表名称</param>
     /// <param name="id">资源ID</param>
-    /// <returns></returns>
-    public GameObject GetGameObject(int id)
+    /// <param name="parent">单位父级</param>
+    /// <returns>游戏实体</returns>
+    public GameObject GetGameObject(string tableName, int id, Transform parent = null)
     {
         GameObject result = null;
 
         // 读表
-        // 获得资源数据
+        var dataItem = DataPacker.Single[tableName][id.ToString()];
         // 加载资源
+        var path = dataItem.GetString(ResourceName);
         // 返回资源
+        result = PoolLoader.Single.Load(path, parent: parent);
 
         return result;
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 /// <summary>
@@ -13,49 +14,27 @@ public class MapBase
     // ------------------------------公共属性----------------------------------
 
     /// <summary>
-    /// 地图位置标志物
-    /// 该物体位于地图中心
+    /// 地图宽度
     /// </summary>
-    public GameObject MapCenter;
-
-    /// <summary>
-    /// 地图单位宽度
-    /// </summary>
-    public int MapCellWidth = 1;
-
-    /// <summary>
-    /// 是否显示格子
-    /// </summary>
-    public bool IsShow;
+    public int MapWidth { get { return mapWidth; } }
 
     /// <summary>
     /// 地图高度
     /// </summary>
-    public int MapHeight;
-
-    /// <summary>
-    /// 地图宽度
-    /// </summary>
-    public int MapWidth;
+    public int MapHeight { get { return mapHeight; } }
 
     /// <summary>
     /// 地图单位宽度
     /// </summary>
-    public int UnitWidth { get; set; }
+    public int UnitWidth { get { return unitWidth; } }
 
     /// <summary>
-    /// 地图线绘制颜色
+    /// 地图中心位置
     /// </summary>
-    public Color LineColor;
-
+    public Vector3 MapCenter { get; private set; }
 
 
     // ------------------------------私有属性----------------------------------
-
-    /// <summary>
-    /// 地图中心点位置
-    /// </summary>
-    private Vector2 centerPos;
 
     /// <summary>
     /// 地图左上点
@@ -83,6 +62,27 @@ public class MapBase
     private MapCellBase[,] mapCellArray;
 
 
+    /// <summary>
+    /// 地图高度
+    /// </summary> 
+    private int mapHeight;
+
+    /// <summary>
+    /// 地图宽度
+    /// </summary>
+    private int mapWidth;
+
+    /// <summary>
+    /// 地图单位宽度
+    /// </summary>
+    private int unitWidth;
+
+    /// <summary>
+    /// 地图线绘制颜色
+    /// </summary>
+    private Color lineColor;
+
+
 
     // ------------------------------公共方法-----------------------------------
 
@@ -91,11 +91,15 @@ public class MapBase
     /// </summary>
     /// <param name="mapData">地图数据</param>
     /// <param name="unitWidth">单位宽度</param>
-    public MapBase(int[][] mapData, int unitWidth)
+    /// <param name="newCenter">地图中心</param>
+    public MapBase([NotNull]MapCellBase[,] mapData, Vector3 newCenter, int unitWidth)
     {
-        //Init(mapData, unitWidth);
+        mapCellArray = mapData;
+        var newMapWidth = mapCellArray.GetLength(1);
+        var newMapHeight = mapCellArray.GetLength(0);
+        ResetMapPos(newCenter, newMapWidth, newMapHeight, unitWidth);
+        lineColor = Color.red;
     }
-
 
     /// <summary>
     /// 绘制格子
@@ -104,57 +108,45 @@ public class MapBase
     {
         if (mapCellArray != null)
         {
-            // 不显示逻辑地图则返回
-            if (!IsShow)
-            {
-                return;
-            }
             // 在底板上画出格子
             // 画四边
-            Debug.DrawLine(leftup, rightup, LineColor);
-            Debug.DrawLine(leftup, leftdown, LineColor);
-            Debug.DrawLine(rightdown, rightup, LineColor);
-            Debug.DrawLine(rightdown, leftdown, LineColor);
+            Debug.DrawLine(leftup, rightup, lineColor);
+            Debug.DrawLine(leftup, leftdown, lineColor);
+            Debug.DrawLine(rightdown, rightup, lineColor);
+            Debug.DrawLine(rightdown, leftdown, lineColor);
 
             // 绘制格子
-            for (var i = 1; i <= MapWidth; i++)
+            for (var i = 1; i <= mapWidth; i++)
             {
-                Debug.DrawLine(Utils.V2ToV3(leftup) + new Vector3(i * MapCellWidth, 0), Utils.V2ToV3(leftdown) + new Vector3(i * MapCellWidth, 0), LineColor);
+                Debug.DrawLine(leftup + new Vector2(i * unitWidth, 0), leftdown + new Vector2(i * unitWidth, 0), lineColor);
             }
-            for (var i = 1; i <= MapHeight; i++)
+            for (var i = 1; i <= mapHeight; i++)
             {
-                Debug.DrawLine(Utils.V2ToV3(leftdown) + new Vector3(0, i * MapCellWidth), Utils.V2ToV3(rightdown) + new Vector3(0, i * MapCellWidth), LineColor);
+                Debug.DrawLine(leftdown + new Vector2(0, i * unitWidth), rightdown + new Vector2(0, i * unitWidth), lineColor);
             }
         }
     }
 
 
     /// <summary>
-    /// 初始化
+    /// 绘制地图
     /// </summary>
-    /// <param name="mapData">地图数据</param>
-    /// <param name="unitWidth">地图单位宽度</param>
-    public void Init(MapCell[,] mapCellArray, int unitWidth)
+    public void DrawMap()
     {
-        if (mapCellArray == null)
+        MapCellBase item = null;
+        var halfCellWidth = unitWidth * 0.5f;
+        // 遍历地图
+        for (var i = 0; i < mapHeight; i++)
         {
-            Debug.LogError("地图数据为空");
-            return;
-        }
-        // 将数据数据转化为二维数组
-        UnitWidth = unitWidth;
-        var height = mapCellArray.GetLength(0);
-        var width = mapCellArray.GetLength(1);
-        ReBuildMap(width, height);
-        
-        // 遍历内容
-        for (var i = 0; i < height; i++)
-        {
-            for (var j = 0; j < width; j++)
+            for (var j = 0; j < mapWidth; j++)
             {
-                //PushMapCell(new MapCell(123,mapData[i][j]), j, i);
+                item = mapCellArray[i, j];
+                item.GameObj.transform.position = new Vector3(leftdown.x + j * unitWidth + halfCellWidth, leftdown.y + i * unitWidth + halfCellWidth);
             }
         }
+        // 判断变更
+        // 绘制变更
+        // 否则跳过
     }
 
 
@@ -169,8 +161,8 @@ public class MapBase
         {
             throw new Exception("地图大小不合法:" + height + "," + width);
         }
-        MapWidth = width;
-        MapHeight = height;
+        mapWidth = width;
+        mapHeight = height;
         mapCellArray = new MapCellBase[height, width];
     }
 
@@ -189,12 +181,12 @@ public class MapBase
             return;
         }
         // 验证x与y是否越界
-        if (posX + 1 > MapWidth || posX < 0)
+        if (posX + 1 > mapWidth || posX < 0)
         {
             Debug.LogError("地图X越界:" + posX);
             return;
         }
-        if (posY + 1 > MapWidth || posY < 0)
+        if (posY + 1 > mapWidth || posY < 0)
         {
             Debug.LogError("地图Y越界:" + posY);
             return;
@@ -203,10 +195,13 @@ public class MapBase
         // 重建地图
         if (mapCellArray == null)
         {
-            ReBuildMap(MapWidth, MapHeight);
+            ReBuildMap(mapWidth, mapHeight);
         }
 
-        mapCellArray[posY, posX] = mapCell;
+        if (mapCellArray != null)
+        {
+            mapCellArray[posY, posX] = mapCell;
+        }
 
     }
 
@@ -229,7 +224,7 @@ public class MapBase
     /// <returns></returns>
     public Rect GetItemRect(int posX, int posY)
     {
-        return new Rect(posX, posY, MapCellWidth, MapCellWidth);
+        return new Rect(posX, posY, unitWidth, unitWidth);
     }
 
     // ------------------------------私有方法-----------------------------------
@@ -237,28 +232,35 @@ public class MapBase
     /// <summary>
     /// 重置地图位置点
     /// </summary>
-    private void ResetMapPos()
+    public void ResetMapPos(Vector3 newCenter, int newMapWidth, int newMapHeight, int unitWidth)
     {
 
-        // 绘制格子
-        // 重置地图位置点
-        if (MapCenter != null)
+        // 验证x与y是否越界
+        if (newMapWidth < 0)
         {
-            centerPos = MapCenter.transform.position;
+            Debug.LogError("地图宽度非法:" + newMapWidth);
+            return;
         }
-        else
+        if (newMapHeight < 0)
         {
-            // 默认位置0,0,0
-            centerPos = Vector2.zero;
+            Debug.LogError("地图高度非法:" + newMapHeight);
+            return;
         }
 
-        var halfWidht = MapWidth*0.5f;
-        var halfHeight = MapHeight*0.5f;
+        // 重置中心位置与宽高
+        MapCenter = newCenter;
+        mapWidth = newMapWidth;
+        mapHeight = newMapHeight;
+
+        this.unitWidth = unitWidth;
+        // 地图半宽高
+        var halfWidht = mapWidth * unitWidth * 0.5f;
+        var halfHeight = mapHeight * unitWidth * 0.5f;
         // 取矩形四角点
-        leftup = new Vector2(centerPos.x - halfWidht, centerPos.y + halfHeight);
-        rightup = new Vector2(centerPos.x + halfWidht, centerPos.y + halfHeight);
-        leftdown = new Vector2(centerPos.x - halfWidht, centerPos.y - halfHeight);
-        rightdown = new Vector2(centerPos.x + halfWidht, centerPos.y - halfHeight);
+        leftup = new Vector2(MapCenter.x - halfWidht, MapCenter.y + halfHeight);
+        rightup = new Vector2(MapCenter.x + halfWidht, MapCenter.y + halfHeight);
+        leftdown = new Vector2(MapCenter.x - halfWidht, MapCenter.y - halfHeight);
+        rightdown = new Vector2(MapCenter.x + halfWidht, MapCenter.y - halfHeight);
     }
 
 
@@ -288,6 +290,28 @@ public abstract class MapCellBase
     public GameObject GameObj { get; set; }
 
     /// <summary>
+    /// 位置X
+    /// </summary>
+    public int X { get; set; }
+
+    /// <summary>
+    /// 位置Y
+    /// </summary>
+    public int Y { get; set; }
+
+    /// <summary>
+    /// 历史Rect
+    /// </summary>
+    private Rect historyRect;
+
+
+    public Rect GetRect()
+    {
+        
+    }
+
+
+    /// <summary>
     /// 自增唯一ID
     /// </summary>
     private static long addtionId = 1024;
@@ -311,6 +335,7 @@ public abstract class MapCellBase
 /// </summary>
 public class MapCell : MapCellBase
 {
+
     /// <summary>
     /// 初始化地图单元
     /// </summary>

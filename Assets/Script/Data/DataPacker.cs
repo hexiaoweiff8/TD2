@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using Debug = UnityEngine.Debug;
 
 
@@ -14,17 +15,84 @@ public class DataPacker : SingleItem<DataPacker>
     /// <summary>
     /// 数据字典
     /// </summary>
-    private Dictionary<string, DataItem> dataDic = new Dictionary<string, DataItem>();
+    private Dictionary<string, DataTable> dataDic = new Dictionary<string, DataTable>();
 
 
     /// <summary>
-    /// 
+    /// 添加数据表
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="dataItem"></param>
-    public void SetDataItem(string name, DataItem dataItem)
+    /// <param name="name">数据Id</param>
+    /// <param name="dataTable">数据类</param>
+    public void SetDataItem([NotNull]string name, [NotNull]DataTable dataTable)
     {
-        
+        if (dataDic.ContainsKey(name))
+        {
+            throw new Exception("数据Id已存在:" + name);
+        }
+        dataDic.Add(name, dataTable);
+    }
+
+    /// <summary>
+    /// 获取数据表
+    /// </summary>
+    /// <param name="name">数据表name</param>
+    public DataTable GetDataItem([NotNull] string name)
+    {
+        return this[name];
+    }
+
+    /// <summary>
+    /// 删除数据表
+    /// </summary>
+    /// <param name="name">数据Id</param>
+    public void DelDataItem([NotNull] string name)
+    {
+        dataDic.Remove(name);
+    }
+
+    /// <summary>
+    /// 清空数据表
+    /// </summary>
+    public void Clear()
+    {
+        dataDic.Clear();
+    }
+
+    /// <summary>
+    /// 解析加载数据
+    /// </summary>
+    public void Load()
+    {
+        // 从指定路径获取数据
+        // TODO 加载测试数据
+        var mapTypeDataTable = new DataTable();
+
+        // 填充测试数据
+        var dataRow = new DataItem();
+        // 地图数据
+        dataRow.SetString("Resource", "Prefab/mapCell0001");
+        mapTypeDataTable.AddDataItem("0", dataRow);
+        dataRow.SetString("Resource", "Prefab/mapCell0001");
+        mapTypeDataTable.AddDataItem("1", dataRow);
+
+        SetDataItem(UnitFictory.MapCellTableName, mapTypeDataTable);
+
+    }
+
+    /// <summary>
+    /// 获取数据表
+    /// </summary>
+    /// <param name="tableName">数据表名称</param>
+    public DataTable this[string tableName]
+    {
+        get
+        {
+            if (!dataDic.ContainsKey(tableName))
+            {
+                throw new Exception("数据Id不存在:" + tableName);
+            }
+            return dataDic[tableName];
+        }
     }
 }
 
@@ -32,7 +100,7 @@ public class DataPacker : SingleItem<DataPacker>
 /// <summary>
 /// 数据类
 /// </summary>
-public class DataItem
+public class DataTable
 {
     /// <summary>
     /// 数据名称
@@ -42,27 +110,28 @@ public class DataItem
     /// <summary>
     /// 数据行字典
     /// </summary>
-    private Dictionary<int, DataRow> dataRowDic = new Dictionary<int, DataRow>();
+    private Dictionary<string, DataItem> dataRowDic = new Dictionary<string, DataItem>();
 
 
-    public DataRow GetRowById(int id)
+    /// <summary>
+    /// 根据ID获取数据
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public DataItem GetRowById(string id)
     {
-        if (!dataRowDic.ContainsKey(id))
-        {
-            throw new Exception("不存在数据ID:" + id);
-        }
-        return dataRowDic[id];
+        return this[id];
     }
 
     /// <summary>
     /// 添加数据行
     /// </summary>
     /// <param name="id">数据ID</param>
-    /// <param name="row">数据内容</param>
-    public void AddDataRow(int id, DataRow row)
+    /// <param name="item">数据内容</param>
+    public void AddDataItem(string id, DataItem item)
     {
         // 验证数据
-        if (row == null)
+        if (item == null)
         {
             Debug.LogError("数据内容为空.");
             return;
@@ -75,7 +144,24 @@ public class DataItem
             return;
         }
         // 添加数据
-        dataRowDic.Add(id, row);
+        dataRowDic.Add(id, item);
+    }
+
+    /// <summary>
+    /// 根据ID获取数据
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public DataItem this[string id]
+    {
+        get
+        {
+            if (!dataRowDic.ContainsKey(id))
+            {
+                throw new Exception("不存在数据ID:" + id);
+            }
+            return dataRowDic[id];
+        }
     }
 }
 
@@ -83,7 +169,7 @@ public class DataItem
 /// <summary>
 /// 数据行
 /// </summary>
-public class DataRow
+public class DataItem
 {
 
     /// <summary>

@@ -13,24 +13,19 @@ public class TestMap : MonoBehaviour
     public Camera MainCamera;
 
     /// <summary>
-    /// 地图宽度
+    /// 地图单位宽度
     /// </summary>
-    public int MapWidth = 100;
-
-    /// <summary>
-    /// 地图高度
-    /// </summary>
-    public int MapHeight = 100;
+    public int UnitWidht = 1;
 
 
-	void Start () {
+	void Start ()
+	{
+        // 初始化
+	    Init();
 	}
 	
 
 	void Update () {
-
-        // 绘制地图
-
 	    
         // 控制
 	    Control();
@@ -42,15 +37,11 @@ public class TestMap : MonoBehaviour
     /// </summary>
     private void Init()
     {
-        // 初始化
-        // 创建地图
-        //for (var i = 0; i < MapHeight; i++)
-        //{
-        //    for (var j = 0; j < MapWidth; j++)
-        //    {
-        //        MapBase.Single.PushMapCell(new MapCell(1), j, i);
-        //    }
-        //}
+        DataPacker.Single.Clear();
+        // 加载数据
+        DataPacker.Single.Load();
+        // 加载地图绘制
+        MapManager.Single.BeginMap(1, 1, new Vector3(), UnitWidht);
     }
 
     ///// <summary>
@@ -92,12 +83,28 @@ public class TestMap : MonoBehaviour
 
         if (Input.GetKey(KeyCode.PageUp))
         {
-            MainCamera.orthographicSize += 0.1f;
+            MainCamera.fieldOfView += 0.1f;
         }
 
         if (Input.GetKey(KeyCode.PageDown))
         {
-            MainCamera.orthographicSize -= 0.1f;
+            MainCamera.fieldOfView -= 0.1f;
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            MainCamera.fieldOfView -= 0.1f;
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            MainCamera.fieldOfView -= 0.1f;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            MainCamera.transform.position = new Vector3(MainCamera.transform.position.x, MainCamera.transform.position.y, MainCamera.transform.position.z);
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            MainCamera.fieldOfView -= 0.1f;
         }
 
         if (Input.GetKey(KeyCode.R))

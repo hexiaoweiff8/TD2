@@ -19,22 +19,34 @@ public class PoolLoader : SingleItem<PoolLoader>
     /// 加载对象-Res方式
     /// </summary>
     /// <param name="path">被加载路径</param>
+    /// <param name="name">单位名称</param>
+    /// <param name="parent">单位父级</param>
     /// <returns>对象单位</returns>
-    public GameObject Load(string path)
+    public GameObject Load(string path, string name = null, Transform parent = null)
     {
         GameObject result = null;
         if (pool.ContainsKey(path))
         {
+            // 实例化新对象
             result = GameObject.Instantiate(pool[path]);
-            result.SetActive(true);
-            return result;
         }
         else
         {
             var obj = ResourcesLoader.Single.Load(path);
             pool.Add(path, obj);
+            // 实例化新对象
             result = GameObject.Instantiate(obj);
-            obj.SetActive(false);
+            // 移出屏幕
+            obj.transform.position = new Vector3(9999999, 9999999);
+        }
+        // 设置父级
+        if (parent != null)
+        {
+            result.transform.SetParent(parent);
+        }
+        if (name != null)
+        {
+            result.name = name;
         }
         return result;
     }
