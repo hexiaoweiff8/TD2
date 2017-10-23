@@ -304,10 +304,30 @@ public abstract class MapCellBase
     /// </summary>
     private Rect historyRect;
 
+    /// <summary>
+    /// 历史位置X
+    /// </summary>
+    private int historyX;
 
+    /// <summary>
+    /// 历史位置Y
+    /// </summary>
+    private int historyY;
+
+    /// <summary>
+    /// 获取该位置的Rect
+    /// </summary>
+    /// <returns>该位置的Rect</returns>
     public Rect GetRect()
     {
-        
+        // 如果位置有变更则更新Rect
+        if (X != historyX || Y != historyY)
+        {
+            historyX = X;
+            historyY = Y;
+            historyRect = new Rect(X, Y, MapDrawer.Single.UnitWidth,  MapDrawer.Single.UnitWidth);
+        }
+        return historyRect;
     }
 
 
