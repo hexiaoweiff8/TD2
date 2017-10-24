@@ -24,9 +24,24 @@ public class MapDrawer : MapDrawerBase
     // -----------------------------公有属性-----------------------------
 
     /// <summary>
+    /// 地图宽度
+    /// </summary>
+    public int MapWidth { get { return mapData.MapWidth; } }
+
+    /// <summary>
+    /// 地图高度
+    /// </summary>
+    public int MapHeight { get { return mapData.MapHeight; } }
+
+    /// <summary>
+    /// 是否已启动
+    /// </summary>
+    public bool IsStarted { get { return isStarted; } }
+
+    /// <summary>
     /// 单位宽度
     /// </summary>
-    public int UnitWidth = 1;
+    public int UnitWidth { get; private set; }
 
     /// <summary>
     /// 全绘制
@@ -78,6 +93,12 @@ public class MapDrawer : MapDrawerBase
     /// </summary>
     private Rect drawRect;
 
+    /// <summary>
+    /// 历史Rect
+    /// 判断Rect变更使用
+    /// </summary>
+    private Rect historyRect;
+
 
     void Awake()
     {
@@ -99,14 +120,7 @@ public class MapDrawer : MapDrawerBase
             mapData.DrawLine();
         }
         // 更新地图单元相对位置
-        if (drawType == DrawAllDrawType)
-        {
-            Draw();
-        }
-        else if (drawType == DrawRectDrawType)
-        {
-            Draw(drawRect);
-        }
+        Draw();
     }
 
 
@@ -121,6 +135,16 @@ public class MapDrawer : MapDrawerBase
         mapData = mapbase;
         drawRect = rect;
         drawType = type;
+        UnitWidth = mapbase.UnitWidth;
+    }
+
+    /// <summary>
+    /// 修改绘制范围
+    /// </summary>
+    /// <param name="rect">绘制范围类</param>
+    public void ChangeDrawRect(Rect rect)
+    {
+        drawRect = rect;
     }
 
 
@@ -129,74 +153,82 @@ public class MapDrawer : MapDrawerBase
     /// </summary>
     public override void Draw()
     {
-        mapData.DrawMap();
-    }
-
-
-    /// <summary>
-    /// 按照范围绘制
-    /// 绘制物体超过1400会卡
-    /// </summary>
-    /// <param name="rect">被绘制范围</param>
-    public override void Draw(Rect rect)
-    {
+        // 范围内绘制
         if (mapData == null)
         {
             Debug.LogError("地图数据为空");
             return;
         }
-
-        // 获得数据
-        var data = mapData.GetMapCellArray();
-        // 数据宽度
-        var width = mapData.MapWidth;
-        // 数据长度
-        var height = mapData.MapHeight;
-
-        var i = 0;
-        var j = 0;
-        // 遍历所有单位
-        for (i = 0; i < height; i++)
+        if (drawType == DrawRectDrawType)
         {
-            for (j = 0; j < width; j++)
+
+            // 获得数据
+            var data = mapData.GetMapCellArray();
+            // 数据宽度
+            var width = mapData.MapWidth;
+            // 数据长度
+            var height = mapData.MapHeight;
+
+            // 当前范围是否移动, 如果移动则更新列表, 如果未移动则使用旧列表数据
+            if (drawRect != historyRect)
             {
-                var key = Utils.GetKey(j, i);
-                if (rect.Overlaps(mapData.GetItemRect(j, i)))
+
+                // TODO 判断是否有单元被移动, 被移动的需要被检测
+
+
+                var i = 0;
+                var j = 0;
+                // 遍历所有单位
+                for (i = 0; i < height; i++)
                 {
-                    // 刷新范围内单位
-                    // 如果物体已存在, 则不重复绘制
-                    if (!objDic.ContainsKey(key))
+                    for (j = 0; j < width; j++)
                     {
-                        objDic.Add(key, data[i, j]);
-                    }
-                    if (hideObjDic.ContainsKey(key))
-                    {
-                        hideObjDic.Remove(key);
+                        var key = Utils.GetKey(j, i);
+                        var item = data[i, j];
+                        if (drawRect.Overlaps(item.GetRect()))
+                        {
+                            // 刷新范围内单位
+                            // 如果物体已存在, 则不重复绘制
+                            if (!objDic.ContainsKey(key))
+                            {
+                                objDic.Add(key, item);
+                            }
+                            if (hideObjDic.ContainsKey(key))
+                            {
+                                hideObjDic.Remove(key);
+                            }
+                            item.Show();
+                        }
+                        else
+                        {
+                            // 将范围外单位回收
+                            if (objDic.ContainsKey(key))
+                            {
+                                objDic.Remove(key);
+                            }
+                            if (!hideObjDic.ContainsKey(key))
+                            {
+                                hideObjDic.Add(key, item);
+                            }
+                            item.Hide();
+                        }
                     }
                 }
-                else
-                {
-                    // 将范围外单位回收
-                    if (objDic.ContainsKey(key))
-                    {
-                        objDic.Remove(key);
-                    }
-                    if (!hideObjDic.ContainsKey(key))
-                    {
-                        hideObjDic.Add(key, data[i, j]);
-                    }
-                }
+
+                // 将范围内单位,实例化(从对象池中获取)为UI单位
+
+
+                // 将范围外单位回收
+                CycleBack();
+
+                // 记录绘制范围
+                historyRect = drawRect;
             }
         }
 
-        // 将范围内单位,实例化(从对象池中获取)为UI单位
-
-
-        // 将范围外单位回收
-        CycleBack();
+        // 全绘制
+        mapData.DrawMap();
     }
-
-
 
 
     /// <summary>
@@ -253,12 +285,6 @@ public abstract class MapDrawerBase : MonoBehaviour
     /// 绘制全局
     /// </summary>
     public abstract void Draw();
-
-    /// <summary> 
-    /// 按照范围绘制
-    /// </summary>
-    /// <param name="rect">被绘制范围</param>
-    public abstract void Draw(Rect rect);
 
     /// <summary>
     /// 开始运行

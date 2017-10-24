@@ -12,6 +12,18 @@ using UnityEngine;
 public class Utils
 {
 
+
+
+    /// <summary>
+    /// 角度转π
+    /// </summary>
+    public const float AngleToPi = 0.0174532925199433f;
+
+    /// <summary>
+    /// π转角度
+    /// </summary>
+    public const float PiToAngle = 57.2957795130823f;
+
     /// <summary>
     /// 地图文件名称Head
     /// </summary>
@@ -84,10 +96,10 @@ public class Utils
         var result = new Dictionary<string, string>();
 
         // 解析数据
-        var filesDataArray = data.Split(new[] { "%\r\n%" }, StringSplitOptions.RemoveEmptyEntries);
+        var filesDataArray = data.Split(new[] { "%---%" }, StringSplitOptions.RemoveEmptyEntries);
         foreach (var fileData in filesDataArray)
         {
-            var dataDepart = fileData.Split(new[] { "%\n%" }, StringSplitOptions.RemoveEmptyEntries);
+            var dataDepart = fileData.Split(new[] { "%--%" }, StringSplitOptions.RemoveEmptyEntries);
             if (dataDepart.Length == 2)
             {
                 var fileName = dataDepart[0];
@@ -149,5 +161,61 @@ public class Utils
         }
 
         return result;
+    }
+
+
+    // ---------------------------图形-------------------------------
+
+    /// <summary>
+    /// 获取矩形水平检测线
+    /// </summary>
+    /// <param name="rotation">旋转角度-360-360°</param>
+    /// <returns>水平检测线标量</returns>
+    public static Vector2 GetHorizonalTestLine(float rotation)
+    {
+        var angle = rotation * AngleToPi;
+        return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+    }
+
+    /// <summary>
+    /// 获取矩形垂直检测线
+    /// </summary>
+    /// <param name="rotation">旋转角度-360-360°</param>
+    /// <param name="radius">检测线长度</param>
+    /// <returns>垂直检测线标量</returns>
+    public static Vector2 GetVerticalTestLine(float rotation, float radius = 1f)
+    {
+        var angle = rotation * AngleToPi;
+        return new Vector2(-(float)Math.Sin(angle) * radius, (float)Math.Cos(angle) * radius);
+    }
+
+    /// <summary>
+    /// 绘制矩形
+    /// </summary>
+    /// <param name="position">举行中心位置</param>
+    /// <param name="width">举行宽度</param>
+    /// <param name="height">举行高度</param>
+    /// <param name="rotation">基于矩形中心旋转角度</param>
+    /// <param name="color">绘制颜色</param>
+    public static void DrawRect(Vector3 position, float width, float height, float rotation, Color color)
+    {
+        var angle = rotation * AngleToPi;
+        var halfWidth = width * 0.5f;
+        var halfHeight = height * 0.5f;
+
+        var sin = (float)(Math.Sin(angle));
+        var cos = (float)(Math.Cos(angle));
+        var left = (-halfWidth);
+        var right = (halfWidth);
+        var top = (halfHeight);
+        var bottom = (-halfHeight);
+        var point1 = new Vector3(left * cos - bottom * sin, left * sin + bottom * cos) + position;
+        var point2 = new Vector3(left * cos - top * sin, left * sin + top * cos) + position;
+        var point3 = new Vector3(right * cos - top * sin, right * sin + top * cos) + position;
+        var point4 = new Vector3(right * cos - bottom * sin, right * sin + bottom * cos) + position;
+        Debug.DrawLine(point1, point2, color);
+        Debug.DrawLine(point2, point3, color);
+        Debug.DrawLine(point3, point4, color);
+        Debug.DrawLine(point4, point1, color);
     }
 }

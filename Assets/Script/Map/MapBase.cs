@@ -134,14 +134,12 @@ public class MapBase
     public void DrawMap()
     {
         MapCellBase item = null;
-        var halfCellWidth = unitWidth * 0.5f;
         // 遍历地图
         for (var i = 0; i < mapHeight; i++)
         {
             for (var j = 0; j < mapWidth; j++)
             {
-                item = mapCellArray[i, j];
-                item.GameObj.transform.position = new Vector3(leftdown.x + j * unitWidth + halfCellWidth, leftdown.y + i * unitWidth + halfCellWidth);
+                mapCellArray[i, j].Draw(leftdown, unitWidth);
             }
         }
         // 判断变更
@@ -307,12 +305,56 @@ public abstract class MapCellBase
     /// <summary>
     /// 历史位置X
     /// </summary>
-    private int historyX;
+    private int historyX = -1;
 
     /// <summary>
     /// 历史位置Y
     /// </summary>
-    private int historyY;
+    private int historyY = -1;
+
+    /// <summary>
+    /// 历史位置X
+    /// </summary>
+    private int historyXForDraw = -1;
+
+    /// <summary>
+    /// 历史位置Y
+    /// </summary>
+    private int historyYForDraw = -1;
+
+
+
+    /// <summary>
+    /// 绘制方法
+    /// </summary>
+    public void Draw(Vector3 leftdown, int unitWidth)
+    {
+        // 判断是否有变动
+
+        if (X != historyXForDraw || Y != historyYForDraw)
+        {
+            GameObj.transform.position = new Vector3(leftdown.x + X*unitWidth + unitWidth*0.5f,
+                leftdown.y + Y * unitWidth + unitWidth * 0.5f);
+            historyXForDraw = X;
+            historyYForDraw = Y;
+        }
+    }
+
+    /// <summary>
+    /// 显示物体
+    /// </summary>
+    public void Show()
+    {
+        GameObj.SetActive(true);
+    }
+
+    /// <summary>
+    /// 隐藏物体
+    /// </summary>
+    public void Hide()
+    {
+        GameObj.SetActive(false);
+    }
 
     /// <summary>
     /// 获取该位置的Rect
@@ -323,9 +365,10 @@ public abstract class MapCellBase
         // 如果位置有变更则更新Rect
         if (X != historyX || Y != historyY)
         {
+            var unitWidth = MapDrawer.Single.UnitWidth;
             historyX = X;
             historyY = Y;
-            historyRect = new Rect(X, Y, MapDrawer.Single.UnitWidth,  MapDrawer.Single.UnitWidth);
+            historyRect = new Rect(X * unitWidth, Y * unitWidth, unitWidth, unitWidth);
         }
         return historyRect;
     }

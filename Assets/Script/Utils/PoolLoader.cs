@@ -38,6 +38,12 @@ public class PoolLoader : SingleItem<PoolLoader>
             result = GameObject.Instantiate(obj);
             // 移出屏幕
             obj.transform.position = new Vector3(9999999, 9999999);
+
+            // 设置父级
+            if (parent != null)
+            {
+                obj.transform.SetParent(parent);
+            }
         }
         // 设置父级
         if (parent != null)

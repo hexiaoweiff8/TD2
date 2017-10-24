@@ -30,8 +30,15 @@ public class MapManager : SingleItem<MapManager>
 
     // -----------------文件加载管理--------------------
 
-
-    public void BeginMap(int mapId, int level, Vector3 mapCenter, int unitWidth)
+    /// <summary>
+    /// 启动地图
+    /// </summary>
+    /// <param name="mapId">地图ID</param>
+    /// <param name="level">地图层</param>
+    /// <param name="mapCenter">地图中心</param>
+    /// <param name="unitWidth">地图单位宽度</param>
+    /// <param name="drawType">绘制类型</param>
+    public void BeginMap(int mapId, int level, Vector3 mapCenter, int unitWidth, int drawType = 0)
     {
         if (MapDrawer.Single == null)
         {
@@ -60,7 +67,7 @@ public class MapManager : SingleItem<MapManager>
 
         // 启动绘制
         MapDrawer.Single.Clear();
-        MapDrawer.Single.Init(mapBase);
+        MapDrawer.Single.Init(mapBase, type: drawType);
         MapDrawer.Single.Begin();
     }
 
@@ -83,6 +90,8 @@ public class MapManager : SingleItem<MapManager>
             {
                 // 加载模型
                 var mapCell = UnitFictory.Single.GetUnit(UnitType.MapCell, mapData[i][j]);
+                mapCell.X = j;
+                mapCell.Y = i;
                 // 根据数据加载
                 mapCellDataArray[i, j] = mapCell; 
             }
