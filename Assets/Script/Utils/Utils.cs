@@ -35,6 +35,63 @@ public class Utils
     private const string MapNameLevel = "_Level";
 
 
+    //-------------------------静态方法--------------------------
+
+    /// <summary>
+    /// 位置转行列
+    /// </summary>
+    /// <param name="planePosOffset">地图底板位置偏移</param>
+    /// <param name="position">当前在plane上的位置(区间, 比如0-1 为同一个位置)</param>
+    /// <param name="unitWidth">单位宽度</param>
+    /// <param name="mapWidth">地图宽度</param>
+    /// <param name="mapHight">地图高度</param>
+    /// <returns>map中的行列位置 0位x 1位y</returns>
+    public static int[] PositionToNum(Vector3 planePosOffset, Vector3 position, float unitWidth, float mapWidth, float mapHight)
+    {
+        var x = (int)((position.x - planePosOffset.x + mapWidth * unitWidth * 0.5f) / unitWidth);
+        var y = (int)((position.z - planePosOffset.z + mapHight * unitWidth * 0.5f) / unitWidth);
+        if (x < 0)
+        {
+            x = 0;
+        }
+        if (x >= mapWidth)
+        {
+            x = (int)mapWidth - 1;
+        }
+        if (y < 0)
+        {
+            y = 0;
+        }
+        if (y >= mapHight)
+        {
+            y = (int)mapHight - 1;
+        }
+        return new[] { x, y };
+    }
+
+
+    /// <summary>
+    /// 行列转位置
+    /// </summary>
+    /// <param name="planePosOffset">地图底板位置偏移</param>
+    /// <param name="num">map中的行列位置</param>
+    /// <param name="unitWidth">单位宽度</param>
+    /// <param name="mapWidth">地图宽度</param>
+    /// <param name="mapHight">地图高度</param>
+    /// <returns>当前plane对应位置, 固定位置的中心点</returns>
+    public static Vector3 NumToPosition(Vector3 planePosOffset, Vector2 num, float unitWidth, float mapWidth, float mapHight)
+    {
+        var result = new Vector3(
+            planePosOffset.x - mapWidth * unitWidth * 0.5f
+            //+ unitWidth * 0.5f 
+            + num.x * unitWidth,
+            planePosOffset.y,
+            planePosOffset.z - mapHight * unitWidth * 0.5f
+            //+ unitWidth * 0.5f
+            + num.y * unitWidth);
+
+        return result;
+    }
 
 
     /// <summary>
@@ -57,6 +114,23 @@ public class Utils
     {
         var result = (x << 32) + y;
         return result;
+    }
+
+    // ---------------------------文件操作----------------------------
+
+    /// <summary>
+    /// 创建文件
+    /// </summary>
+    /// <param name="path">文件路径</param>
+    /// <param name="fileName">文件名</param>
+    /// <param name="info">文件内容</param>
+    public static void CreateOrOpenFile(string path, string fileName, string info)
+    {
+        StreamWriter sw;
+        FileInfo fi = new FileInfo(path + Path.AltDirectorySeparatorChar + fileName);
+        sw = fi.CreateText();
+        sw.Write(info);
+        sw.Close();
     }
 
     /// <summary>
@@ -144,6 +218,25 @@ public class Utils
     /// <summary>
     /// 读取文件
     /// </summary>
+    /// <param name="path">文件路径</param>
+    /// <returns>文件内容, 如果文件不存在则返回null</returns>
+    public static string LoadFileInfo(string path)
+    {
+        string result = null;
+
+        if (path != null)
+        {
+            var fi = new FileInfo(path);
+            result = LoadFileInfo(fi);
+        }
+
+        return result;
+    }
+
+
+    /// <summary>
+    /// 读取文件
+    /// </summary>
     /// <param name="fi">文件信息类</param>
     /// <returns>文件内容, 如果文件不存在则返回null</returns>
     public static string LoadFileInfo(FileInfo fi)
@@ -217,5 +310,23 @@ public class Utils
         Debug.DrawLine(point2, point3, color);
         Debug.DrawLine(point3, point4, color);
         Debug.DrawLine(point4, point1, color);
+    }
+
+    /// <summary>
+    /// 获取显示位置
+    /// </summary>
+    /// <param name="camearPos"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <param name="scopeWidth"></param>
+    /// <param name="scopeHeight"></param>
+    /// <param name="unitWidth"></param>
+    /// <returns></returns>
+    public static Rect GetShowRect(Vector3 camearPos, float width, float height, float scopeWidth, float scopeHeight, int unitWidth)
+    {
+        var cameraPosX = camearPos.x + width * unitWidth * 0.5f - scopeWidth * 0.5f;
+        var cameraPosY = camearPos.y + height * unitWidth * 0.5f - scopeHeight * 0.5f;
+        Rect result = new Rect(cameraPosX, cameraPosY, scopeWidth, scopeHeight);
+        return result;
     }
 }

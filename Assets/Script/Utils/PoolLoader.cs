@@ -32,17 +32,25 @@ public class PoolLoader : SingleItem<PoolLoader>
         }
         else
         {
-            var obj = ResourcesLoader.Single.Load(path);
-            pool.Add(path, obj);
-            // 实例化新对象
-            result = GameObject.Instantiate(obj);
-            // 移出屏幕
-            obj.transform.position = new Vector3(9999999, 9999999);
-
-            // 设置父级
-            if (parent != null)
+            try
             {
-                obj.transform.SetParent(parent);
+                var obj = ResourcesLoader.Single.Load(path);
+                pool.Add(path, obj);
+                // 实例化新对象
+                result = GameObject.Instantiate(obj);
+                // 移出屏幕
+                obj.transform.position = new Vector3(9999999, 9999999);
+
+                // 设置父级
+                if (parent != null)
+                {
+                    obj.transform.SetParent(parent);
+                }
+            }
+            catch
+            {
+                Debug.LogError("对象不存在:" + path);
+                throw;
             }
         }
         // 设置父级

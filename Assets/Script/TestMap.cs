@@ -53,11 +53,10 @@ public class TestMap : MonoBehaviour
         DataPacker.Single.Clear();
         // 加载数据
         DataPacker.Single.Load();
+        MapManager.Single.Clear();
         // 加载地图绘制
-        MapManager.Single.BeginMap(1, 1, new Vector3(), UnitWidht, DrawType);
-        var cameraPosX = MainCamera.transform.position.x + MapDrawer.Single.MapWidth * MapDrawer.Single.UnitWidth * 0.5f - Screen.width * 0.5f;
-        var cameraPosY = MainCamera.transform.position.y + MapDrawer.Single.MapHeight * MapDrawer.Single.UnitWidth * 0.5f - Screen.height * 0.5f;
-        MapDrawer.Single.ChangeDrawRect(new Rect(cameraPosX, cameraPosY, Screen.width, Screen.height));
+        MapManager.Single.BeginMap(1, new Vector3(), UnitWidht, DrawType);
+        MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
     }
 
     ///// <summary>
@@ -113,16 +112,11 @@ public class TestMap : MonoBehaviour
         // 地图绘制
         if (MapDrawer.Single.IsStarted)
         {
-            var cameraPosX = MainCamera.transform.position.x + MapDrawer.Single.MapWidth * MapDrawer.Single.UnitWidth * 0.5f - Screen.width * 0.5f;
-            var cameraPosY = MainCamera.transform.position.y + MapDrawer.Single.MapHeight * MapDrawer.Single.UnitWidth * 0.5f - Screen.height * 0.5f;
-            var width = Screen.width + MapDrawer.Single.UnitWidth * 2;
-            var height = Screen.height + MapDrawer.Single.UnitWidth * 2;
-
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 MainCamera.transform.position = new Vector3(MainCamera.transform.position.x,
                     MainCamera.transform.position.y + CameraMoveSpeed, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(new Rect(cameraPosX, cameraPosY, width, height));
+                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
                 drawPos = MainCamera.transform.position;
             }
@@ -130,7 +124,7 @@ public class TestMap : MonoBehaviour
             {
                 MainCamera.transform.position = new Vector3(MainCamera.transform.position.x,
                     MainCamera.transform.position.y - CameraMoveSpeed, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(new Rect(cameraPosX, cameraPosY, width, height));
+                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
                 drawPos = MainCamera.transform.position;
             }
@@ -138,7 +132,7 @@ public class TestMap : MonoBehaviour
             {
                 MainCamera.transform.position = new Vector3(MainCamera.transform.position.x - CameraMoveSpeed,
                     MainCamera.transform.position.y, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(new Rect(cameraPosX, cameraPosY, width, height));
+                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
                 drawPos = MainCamera.transform.position;
             }
@@ -146,7 +140,7 @@ public class TestMap : MonoBehaviour
             {
                 MainCamera.transform.position = new Vector3(MainCamera.transform.position.x + CameraMoveSpeed,
                     MainCamera.transform.position.y, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(new Rect(cameraPosX, cameraPosY, width, height));
+                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
                 drawPos = MainCamera.transform.position;
             }

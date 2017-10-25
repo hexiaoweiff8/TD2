@@ -68,6 +68,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\MapEditor\script\EditMapNameWindow.cs" />
+    <Compile Include="Assets\MapEditor\script\MapEditor.cs" />
+    <Compile Include="Assets\MapEditor\script\UIControl.cs" />
     <Compile Include="Assets\Script\Data\DataPacker.cs" />
     <Compile Include="Assets\Script\Map\MapBase.cs" />
     <Compile Include="Assets\Script\Map\MapDrawer.cs" />

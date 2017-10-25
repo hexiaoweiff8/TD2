@@ -13,6 +13,41 @@ public class MapManager : SingleItem<MapManager>
 
 
     /// <summary>
+    /// 地图背景层
+    /// </summary>
+    public const int MapBackLayer = 0;
+
+    /// <summary>
+    /// 地图基层
+    /// </summary>
+    public const int MapBaseLayer = 1;
+
+    /// <summary>
+    /// 障碍物层
+    /// </summary>
+    public const int MapObstacleLayer = 2;
+
+    /// <summary>
+    /// npc层
+    /// </summary>
+    public const int MapNpcLayer = 3;
+
+    /// <summary>
+    /// 主角层
+    /// </summary>
+    public const int MapPlayerLayer = 4;
+
+    /// <summary>
+    /// 近景环境层
+    /// </summary>
+    public const int MapCloseEnvironmentLayer = 5;
+
+    /// <summary>
+    /// 加载地图层级数量
+    /// </summary>
+    public const int LoadMapLevelCount = 2;
+
+    /// <summary>
     /// 地图文件地址
     /// </summary>
     public const string MapDataFilePath = @"MapData\mapdata";
@@ -34,11 +69,10 @@ public class MapManager : SingleItem<MapManager>
     /// 启动地图
     /// </summary>
     /// <param name="mapId">地图ID</param>
-    /// <param name="level">地图层</param>
     /// <param name="mapCenter">地图中心</param>
     /// <param name="unitWidth">地图单位宽度</param>
     /// <param name="drawType">绘制类型</param>
-    public void BeginMap(int mapId, int level, Vector3 mapCenter, int unitWidth, int drawType = 0)
+    public void BeginMap(int mapId, Vector3 mapCenter, int unitWidth, int drawType = 0)
     {
         if (MapDrawer.Single == null)
         {
@@ -49,16 +83,12 @@ public class MapManager : SingleItem<MapManager>
         {
             throw new Exception("地图Id错误:" + mapId);
         }
-        if (level < 0)
-        {
-            throw new Exception("地图level错误:" + level);
-        }
         if (unitWidth < 0)
         {
             throw new Exception("地图unitWidth错误:" + unitWidth);
         }
 
-        var mapBase = GetMapInfo(mapId, level, mapCenter, unitWidth);
+        var mapBase = GetMapInfo(mapId, mapCenter, unitWidth);
 
         if (mapBase == null)
         {
@@ -72,32 +102,14 @@ public class MapManager : SingleItem<MapManager>
     }
 
 
+
     /// <summary>
-    /// 转换地图数据为地图单位
+    /// 清空现有所有单位与层级
     /// </summary>
-    /// <param name="mapData">地图数据</param>
-    /// <returns></returns>
-    public MapCellBase[,] GetCells(int[][] mapData)
+    public void Clear()
     {
-        var height = mapData.Length;
-        var width = mapData[0].Length;
-
-        var mapCellDataArray = new MapCellBase[height, width];
-        // 遍历内容
-        for (var i = 0; i < height; i++)
-        {
-            for (var j = 0; j < width; j++)
-            {
-                // 加载模型
-                var mapCell = UnitFictory.Single.GetUnit(UnitType.MapCell, mapData[i][j]);
-                mapCell.X = j;
-                mapCell.Y = i;
-                // 根据数据加载
-                mapCellDataArray[i, j] = mapCell; 
-            }
-        }
-
-        return mapCellDataArray;
+        // 构建销毁方法
+        MapDrawer.Single.Clear();
     }
 
 
@@ -107,11 +119,10 @@ public class MapManager : SingleItem<MapManager>
     /// 按照ID加载文件, 并且将加载文件缓存
     /// </summary>
     /// <param name="mapId">被加载地图DI</param>
-    /// <param name="level">被加载层级</param>
     /// <param name="mapCenter">地图中心点</param>
     /// <param name="unitWidth">单位宽度</param>
     /// <returns>被加载地图内容, 如果不存在返回null</returns>
-    private MapBase GetMapInfo(int mapId, int level, Vector3 mapCenter, int unitWidth)
+    private MapBase GetMapInfo(int mapId, Vector3 mapCenter, int unitWidth)
     {
         MapBase result = null;
 
@@ -132,21 +143,58 @@ public class MapManager : SingleItem<MapManager>
         }
         if (mapId > 0)
         {
-            // 从缓存中查找, 如果缓存中不存在, 则从文件中加载
-            var key = Utils.GetMapFileNameById(mapId, level);
-            if (mapDataDic != null && mapDataDic.ContainsKey(key))
+            // 转换数据
+            result = new MapBase(280, 13, mapCenter, unitWidth);
+            for (var level = 1; level <= LoadMapLevelCount; level++)
             {
-                var mapData = DeCodeInfo(mapDataDic[key]);
-                // 转换数据
-                result = new MapBase(GetCells(mapData), mapCenter, unitWidth);
-            }
-            else
-            {
-                Debug.LogError("地图不存在 ID:" + mapId);
+                // 从缓存中查找, 如果缓存中不存在, 则从文件中加载
+                var key = Utils.GetMapFileNameById(mapId, level);
+                if (mapDataDic != null && mapDataDic.ContainsKey(key))
+                {
+                    var mapData = DeCodeInfo(mapDataDic[key]);
+
+                    // 添加地图单元数组
+                    var mapCellArray = GetCells(mapData, level);
+                    result.AddMapCellArray(mapCellArray, level);
+                }
+                else
+                {
+                    Debug.LogError("地图不存在 ID:" + mapId);
+                }
             }
         }
 
         return result;
+    }
+
+
+    /// <summary>
+    /// 转换地图数据为地图单位
+    /// </summary>
+    /// <param name="mapData">地图数据</param>
+    /// <param name="layer">绘制层级</param>
+    /// <returns></returns>
+    private static MapCellBase[,] GetCells(int[][] mapData, int layer)
+    {
+        var height = mapData.Length;
+        var width = mapData[0].Length;
+
+        var mapCellDataArray = new MapCellBase[height, width];
+        // 遍历内容
+        for (var i = 0; i < height; i++)
+        {
+            for (var j = 0; j < width; j++)
+            {
+                // 加载模型
+                var mapCell = UnitFictory.Single.GetUnit(UnitType.MapCell, mapData[i][j], layer);
+                mapCell.X = j;
+                mapCell.Y = i;
+                // 根据数据加载
+                mapCellDataArray[i, j] = mapCell;
+            }
+        }
+
+        return mapCellDataArray;
     }
 
     /// <summary>

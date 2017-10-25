@@ -73,8 +73,14 @@ public class DataPacker : SingleItem<DataPacker>
         dataRow.SetString("Resource", "Prefab/mapCell0001");
         mapTypeDataTable.AddDataItem("0", dataRow);
         dataRow = new DataItem();
+        dataRow.SetString("Resource", "Prefab/empty");
+        mapTypeDataTable.AddDataItem("-1", dataRow);
+        dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/obstacle0001");
         mapTypeDataTable.AddDataItem("1", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString("Resource", "Prefab/obstacle0002");
+        mapTypeDataTable.AddDataItem("2", dataRow);
 
         SetDataItem(UnitFictory.MapCellTableName, mapTypeDataTable);
 

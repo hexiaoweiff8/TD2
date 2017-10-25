@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,11 +57,15 @@ public class MapBase
     /// </summary>
     private Vector2 rightdown;
 
-    /// <summary>
-    /// 地图底板
-    /// </summary>
-    private MapCellBase[,] mapCellArray;
+    ///// <summary>
+    ///// 地图底板层
+    ///// </summary>
+    //private MapCellBase[,] mapCellArray;
 
+    /// <summary>
+    /// 地图层字典
+    /// </summary>
+    private Dictionary<int, MapCellBase[,]> mapCellArrayDic = new Dictionary<int, MapCellBase[,]>();
 
     /// <summary>
     /// 地图高度
@@ -86,19 +91,32 @@ public class MapBase
 
     // ------------------------------公共方法-----------------------------------
 
+    
     /// <summary>
     /// 初始化
     /// </summary>
-    /// <param name="mapData">地图数据</param>
+    /// <param name="mapWidth">地图宽度</param>
+    /// <param name="mapHeight">地图高度</param>
     /// <param name="unitWidth">单位宽度</param>
     /// <param name="newCenter">地图中心</param>
-    public MapBase([NotNull]MapCellBase[,] mapData, Vector3 newCenter, int unitWidth)
+    public MapBase(int mapWidth, int mapHeight, Vector3 newCenter, int unitWidth)
     {
-        mapCellArray = mapData;
-        var newMapWidth = mapCellArray.GetLength(1);
-        var newMapHeight = mapCellArray.GetLength(0);
-        ResetMapPos(newCenter, newMapWidth, newMapHeight, unitWidth);
+        ResetMapPos(newCenter, mapWidth, mapHeight, unitWidth);
         lineColor = Color.red;
+    }
+    
+    /// <summary>
+    /// 添加层数据
+    /// </summary>
+    /// <param name="mapCellArray">地图层数据</param>
+    /// <param name="layer">数据所在层</param>
+    public void AddMapCellArray([NotNull]MapCellBase[,] mapCellArray, int layer)
+    {
+        if (mapCellArrayDic.ContainsKey(layer))
+        {
+            throw new Exception("该层已存在:" + layer);
+        }
+        mapCellArrayDic.Add(layer, mapCellArray);
     }
 
     /// <summary>
@@ -106,25 +124,23 @@ public class MapBase
     /// </summary>
     public void DrawLine()
     {
-        if (mapCellArray != null)
-        {
-            // 在底板上画出格子
-            // 画四边
-            Debug.DrawLine(leftup, rightup, lineColor);
-            Debug.DrawLine(leftup, leftdown, lineColor);
-            Debug.DrawLine(rightdown, rightup, lineColor);
-            Debug.DrawLine(rightdown, leftdown, lineColor);
+        // 在底板上画出格子
+        // 画四边
+        Debug.DrawLine(leftup, rightup, lineColor);
+        Debug.DrawLine(leftup, leftdown, lineColor);
+        Debug.DrawLine(rightdown, rightup, lineColor);
+        Debug.DrawLine(rightdown, leftdown, lineColor);
 
-            // 绘制格子
-            for (var i = 1; i <= mapWidth; i++)
-            {
-                Debug.DrawLine(leftup + new Vector2(i * unitWidth, 0), leftdown + new Vector2(i * unitWidth, 0), lineColor);
-            }
-            for (var i = 1; i <= mapHeight; i++)
-            {
-                Debug.DrawLine(leftdown + new Vector2(0, i * unitWidth), rightdown + new Vector2(0, i * unitWidth), lineColor);
-            }
+        // 绘制格子
+        for (var i = 1; i <= mapWidth; i++)
+        {
+            Debug.DrawLine(leftup + new Vector2(i*unitWidth, 0), leftdown + new Vector2(i*unitWidth, 0), lineColor);
         }
+        for (var i = 1; i <= mapHeight; i++)
+        {
+            Debug.DrawLine(leftdown + new Vector2(0, i*unitWidth), rightdown + new Vector2(0, i*unitWidth), lineColor);
+        }
+
     }
 
 
@@ -134,12 +150,17 @@ public class MapBase
     public void DrawMap()
     {
         MapCellBase item = null;
+        MapCellBase[,] itemArray = null;
         // 遍历地图
-        for (var i = 0; i < mapHeight; i++)
+        foreach (var kv in mapCellArrayDic)
         {
-            for (var j = 0; j < mapWidth; j++)
+            itemArray = kv.Value;
+            for (var i = 0; i < mapHeight; i++)
             {
-                mapCellArray[i, j].Draw(leftdown, unitWidth);
+                for (var j = 0; j < mapWidth; j++)
+                {
+                    itemArray[i, j].Draw(leftdown, unitWidth);
+                }
             }
         }
         // 判断变更
@@ -161,69 +182,89 @@ public class MapBase
         }
         mapWidth = width;
         mapHeight = height;
-        mapCellArray = new MapCellBase[height, width];
+        mapCellArrayDic.Clear();
     }
 
 
-    /// <summary>
-    /// 推入地图单元
-    /// </summary>
-    /// <param name="mapCell">地图单元类</param>
-    /// <param name="posX">所在位置X</param>
-    /// <param name="posY">所在位置Y</param>
-    public void PushMapCell(MapCellBase mapCell, int posX, int posY)
-    {
-        if (mapCell == null)
-        {
-            Debug.LogError("地图单元为空");
-            return;
-        }
-        // 验证x与y是否越界
-        if (posX + 1 > mapWidth || posX < 0)
-        {
-            Debug.LogError("地图X越界:" + posX);
-            return;
-        }
-        if (posY + 1 > mapWidth || posY < 0)
-        {
-            Debug.LogError("地图Y越界:" + posY);
-            return;
-        }
+    ///// <summary>
+    ///// 推入地图单元
+    ///// </summary>
+    ///// <param name="mapCell">地图单元类</param>
+    ///// <param name="posX">所在位置X</param>
+    ///// <param name="posY">所在位置Y</param>
+    //public void PushMapCell(MapCellBase mapCell, int posX, int posY)
+    //{
+    //    if (mapCell == null)
+    //    {
+    //        Debug.LogError("地图单元为空");
+    //        return;
+    //    }
+    //    // 验证x与y是否越界
+    //    if (posX + 1 > mapWidth || posX < 0)
+    //    {
+    //        Debug.LogError("地图X越界:" + posX);
+    //        return;
+    //    }
+    //    if (posY + 1 > mapWidth || posY < 0)
+    //    {
+    //        Debug.LogError("地图Y越界:" + posY);
+    //        return;
+    //    }
 
-        // 重建地图
-        if (mapCellArray == null)
-        {
-            ReBuildMap(mapWidth, mapHeight);
-        }
+    //    if (mapCellArray != null)
+    //    {
+    //        mapCellArray[posY, posX] = mapCell;
+    //    }
 
-        if (mapCellArray != null)
-        {
-            mapCellArray[posY, posX] = mapCell;
-        }
-
-    }
+    //}
 
 
     /// <summary>
     /// 获取地图Array
     /// </summary>
     /// <returns>地图数据</returns>
-    public MapCellBase[,] GetMapCellArray()
+    public MapCellBase[,] GetMapCellArray(int layer)
     {
-        return mapCellArray;
+        if (!mapCellArrayDic.ContainsKey(layer))
+        {
+            throw new Exception("不存在地图层:" + layer);
+        }
+        return mapCellArrayDic[layer];
     }
-
 
     /// <summary>
-    /// 获取对应位置的Rect
+    /// 清理数据
     /// </summary>
-    /// <param name="posX">位置X</param>
-    /// <param name="posY">位置Y</param>
-    /// <returns></returns>
-    public Rect GetItemRect(int posX, int posY)
+    public void Clear()
     {
-        return new Rect(posX, posY, unitWidth, unitWidth);
+        foreach (var kv in mapCellArrayDic)
+        {
+            var itemArray = kv.Value;
+            var height = itemArray.GetLength(0);
+            var width = itemArray.GetLength(1);
+            for (var i = 0; i < height; i++)
+            {
+                for (var j = 0; j < width; j++)
+                {
+                    UnitFictory.Single.DestoryMapCell(itemArray[i, j]);
+                }
+            }
+        }
+
+        mapCellArrayDic.Clear();
     }
+
+
+    ///// <summary>
+    ///// 获取对应位置的Rect
+    ///// </summary>
+    ///// <param name="posX">位置X</param>
+    ///// <param name="posY">位置Y</param>
+    ///// <returns></returns>
+    //public Rect GetItemRect(int posX, int posY)
+    //{
+    //    return new Rect(posX, posY, unitWidth, unitWidth);
+    //}
 
     // ------------------------------私有方法-----------------------------------
 
@@ -261,8 +302,16 @@ public class MapBase
         rightdown = new Vector2(MapCenter.x + halfWidht, MapCenter.y - halfHeight);
     }
 
-
-
+    /// <summary>
+    /// 遍历每个地图
+    /// </summary>
+    public void Foreach(Action<int, MapCellBase[,]>  action)
+    {
+        foreach (var kv in mapCellArrayDic)
+        {
+            action(kv.Key, kv.Value);
+        }
+    }
 }
 
 
@@ -297,6 +346,17 @@ public abstract class MapCellBase
     /// </summary>
     public int Y { get; set; }
 
+
+    /// <summary>
+    /// 自增唯一ID
+    /// </summary>
+    private static long addtionId = 1024;
+
+    /// <summary>
+    /// 绘制层级
+    /// </summary>
+    private int drawLayer = -1;
+
     /// <summary>
     /// 历史Rect
     /// </summary>
@@ -324,6 +384,19 @@ public abstract class MapCellBase
 
 
 
+
+    /// <summary>
+    /// 基础初始化
+    /// </summary>
+    protected MapCellBase(GameObject obj, int drawLayer)
+    {
+        // 当前新类的ID并自增
+        MapCellId = addtionId++;
+        // 初始化模型
+        this.GameObj = obj;
+        this.drawLayer = drawLayer;
+    }
+
     /// <summary>
     /// 绘制方法
     /// </summary>
@@ -346,6 +419,8 @@ public abstract class MapCellBase
     public void Show()
     {
         GameObj.SetActive(true);
+        // 设置显示层级
+
     }
 
     /// <summary>
@@ -372,24 +447,6 @@ public abstract class MapCellBase
         }
         return historyRect;
     }
-
-
-    /// <summary>
-    /// 自增唯一ID
-    /// </summary>
-    private static long addtionId = 1024;
-
-
-    /// <summary>
-    /// 基础初始化
-    /// </summary>
-    protected MapCellBase(GameObject obj)
-    {
-        // 当前新类的ID并自增
-        MapCellId = addtionId++;
-        // 初始化模型
-        this.GameObj = obj;
-    }
 }
 
 
@@ -398,14 +455,13 @@ public abstract class MapCellBase
 /// </summary>
 public class MapCell : MapCellBase
 {
-
     /// <summary>
     /// 初始化地图单元
     /// </summary>
     /// <param name="obj">游戏物体</param>
-    /// <param name="cellType">地图单元类型</param>
-    public MapCell(GameObject obj)
-        : base(obj)
+    /// <param name="drawLayer">绘制层级</param>
+    public MapCell(GameObject obj, int drawLayer)
+        : base(obj, drawLayer)
     {
         MapCellType = UnitType.MapCell;
     }
@@ -423,8 +479,9 @@ public class Obstacle : MapCellBase
     /// 初始化障碍物
     /// </summary>
     /// <param name="obj">游戏物体</param>
-    public Obstacle(GameObject obj)
-        : base(obj)
+    /// <param name="drawLayer">绘制层级</param>
+    public Obstacle(GameObject obj, int drawLayer)
+        : base(obj, drawLayer)
     {
         MapCellType = UnitType.Obstacle;
     }
@@ -441,8 +498,9 @@ public class FightUnit : MapCellBase
     /// 初始化战斗单位
     /// </summary>
     /// <param name="obj">游戏物体</param>
-    public FightUnit(GameObject obj)
-        : base(obj)
+    /// <param name="drawLayer">绘制层级</param>
+    public FightUnit(GameObject obj, int drawLayer)
+        : base(obj, drawLayer)
     {
         MapCellType = UnitType.FightUnit;
     }
@@ -459,8 +517,9 @@ public class NPC : MapCellBase
     /// 初始化NPC
     /// </summary>
     /// <param name="obj">游戏物体</param>
-    public NPC(GameObject obj)
-        : base(obj)
+    /// <param name="drawLayer">绘制层级</param>
+    public NPC(GameObject obj, int drawLayer)
+        : base(obj, drawLayer)
     {
         MapCellType = UnitType.NPC;
     }
