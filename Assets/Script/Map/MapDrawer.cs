@@ -26,12 +26,12 @@ public class MapDrawer : MapDrawerBase
     /// <summary>
     /// 地图宽度
     /// </summary>
-    public int MapWidth { get { return mapData.MapWidth; } }
+    public int MapWidth { get { return mapData != null ? mapData.MapWidth : 0; } }
 
     /// <summary>
     /// 地图高度
     /// </summary>
-    public int MapHeight { get { return mapData.MapHeight; } }
+    public int MapHeight { get { return mapData != null ? mapData.MapHeight : 0; } }
 
     /// <summary>
     /// 是否已启动
@@ -189,15 +189,24 @@ public class MapDrawer : MapDrawerBase
     /// <summary>
     /// 初始化
     /// </summary>
-    /// <param name="mapbase">绘制数据</param>
-    /// <param name="rect">绘制范文</param>
+    /// <param name="mapBase">绘制数据</param>
+    /// <param name="mapCenter">地图中心</param>
+    /// <param name="rect">绘制范围</param>
     /// <param name="type">绘制类型</param>
-    public void Init([NotNull]MapBase mapbase, Rect rect = new Rect(), int type = 0)
+    public void Init([NotNull] MapBase mapBase, Vector3 mapCenter, Rect rect = new Rect(), int type = 0)
     {
-        mapData = mapbase;
+        Clear();
+        mapData = mapBase;
         drawRect = rect;
         drawType = type;
-        UnitWidth = mapbase.UnitWidth;
+        UnitWidth = mapBase.UnitWidth;
+
+        ChangeDrawRect(Utils.GetShowRect(mapCenter,
+            MapWidth,
+            MapHeight,
+            rect.width + UnitWidth * 2,
+            rect.height + UnitWidth * 2,
+            UnitWidth));
     }
 
     /// <summary>

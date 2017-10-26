@@ -59,6 +59,11 @@ public class MapManager : SingleItem<MapManager>
     private Dictionary<string, string> mapDataDic = null;
 
     /// <summary>
+    /// 地图数据类字典
+    /// </summary>
+    private Dictionary<int, MapBase> mapBaseDic = new Dictionary<int, MapBase>();
+
+    /// <summary>
     /// 地图文件是否已加载
     /// </summary>
     private bool isLoaded = false;
@@ -72,7 +77,7 @@ public class MapManager : SingleItem<MapManager>
     /// <param name="mapCenter">地图中心</param>
     /// <param name="unitWidth">地图单位宽度</param>
     /// <param name="drawType">绘制类型</param>
-    public void BeginMap(int mapId, Vector3 mapCenter, int unitWidth, int drawType = 0)
+    public MapBase GetMapBase(int mapId, Vector3 mapCenter, int unitWidth, int drawType = 0)
     {
         if (MapDrawer.Single == null)
         {
@@ -88,17 +93,37 @@ public class MapManager : SingleItem<MapManager>
             throw new Exception("地图unitWidth错误:" + unitWidth);
         }
 
-        var mapBase = GetMapInfo(mapId, mapCenter, unitWidth);
+        MapBase mapBase = null;
+        // 获取地图数据
+        if (mapBaseDic.ContainsKey(mapId))
+        {
+            mapBase = mapBaseDic[mapId];
+        }
+        else
+        {
+            mapBase = GetMapInfo(mapId, mapCenter, unitWidth);
+        }
 
         if (mapBase == null)
         {
             throw new Exception("地图数据为空");
         }
 
-        // 启动绘制
-        MapDrawer.Single.Clear();
-        MapDrawer.Single.Init(mapBase, type: drawType);
-        MapDrawer.Single.Begin();
+        // 缓存地图数据
+        mapBaseDic.Add(mapId, mapBase);
+
+        //// 启动绘制
+        //MapDrawer.Single.Clear();
+        //MapDrawer.Single.Init(mapBase, type: drawType);
+        //MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(mapCenter,
+        //    MapDrawer.Single.MapWidth,
+        //    MapDrawer.Single.MapHeight,
+        //    Screen.width + MapDrawer.Single.UnitWidth * 2,
+        //    Screen.height + MapDrawer.Single.UnitWidth * 2,
+        //    MapDrawer.Single.UnitWidth));
+        //MapDrawer.Single.Begin();
+
+        return mapBase;
     }
 
 

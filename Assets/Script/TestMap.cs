@@ -29,14 +29,6 @@ public class TestMap : MonoBehaviour
 
 
 
-    /// <summary>
-    /// 绘制位置
-    /// </summary>
-    private Vector3 drawPos;
-
-
-	
-
 	void Update () {
 	    
         // 控制
@@ -50,39 +42,12 @@ public class TestMap : MonoBehaviour
     /// </summary>
     private void Init()
     {
-        DataPacker.Single.Clear();
-        // 加载数据
-        DataPacker.Single.Load();
-        MapManager.Single.Clear();
-        // 加载地图绘制
-        MapManager.Single.BeginMap(1, new Vector3(), UnitWidht, DrawType);
-        MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
+        var centerPos = new Vector3();
+        // 开启章节
+        FightManager.Single.StartChapter(1, centerPos, new Rect(0,0,Screen.width, Screen.height),  UnitWidht, DrawType);
+
+        // 创建player单位
     }
-
-    ///// <summary>
-    ///// 绘制地图
-    ///// 如果该位置没有变更
-    ///// </summary>
-    //private void Draw()
-    //{
-    //    var mapArray = MapBase.Single.GetMapCellArray();
-    //    for (var i = 0; i < MapHeight; i++)
-    //    {
-    //        for (var j = 0; j < MapWidth; j++)
-    //        {
-    //            var item = mapArray[i, j];
-    //            if (item != null)
-    //            {
-    //                switch (item.MapCellType)
-    //                {
-    //                    case 1:
-
-    //                        break;
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// 控制方法
@@ -101,12 +66,12 @@ public class TestMap : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.PageUp))
         {
-            MainCamera.fieldOfView += 0.1f;
+            MainCamera.orthographicSize += CameraMoveSpeed;
         }
 
         if (Input.GetKey(KeyCode.PageDown))
         {
-            MainCamera.fieldOfView -= 0.1f;
+            MainCamera.orthographicSize -= CameraMoveSpeed;
         }
 
         // 地图绘制
@@ -118,7 +83,6 @@ public class TestMap : MonoBehaviour
                     MainCamera.transform.position.y + CameraMoveSpeed, MainCamera.transform.position.z);
                 MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
-                drawPos = MainCamera.transform.position;
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
@@ -126,7 +90,6 @@ public class TestMap : MonoBehaviour
                     MainCamera.transform.position.y - CameraMoveSpeed, MainCamera.transform.position.z);
                 MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
-                drawPos = MainCamera.transform.position;
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
@@ -134,7 +97,6 @@ public class TestMap : MonoBehaviour
                     MainCamera.transform.position.y, MainCamera.transform.position.z);
                 MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
-                drawPos = MainCamera.transform.position;
             }
             if (Input.GetKey(KeyCode.RightArrow))
             {
@@ -142,7 +104,6 @@ public class TestMap : MonoBehaviour
                     MainCamera.transform.position.y, MainCamera.transform.position.z);
                 MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
 
-                drawPos = MainCamera.transform.position;
             }
         }
     }

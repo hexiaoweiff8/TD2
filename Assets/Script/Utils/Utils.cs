@@ -13,6 +13,15 @@ public class Utils
 {
 
 
+    /// <summary>
+    /// 敌方阵营
+    /// </summary>
+    public const int EnemyCamp = 2;
+
+    /// <summary>
+    /// 我方阵营
+    /// </summary>
+    public const int MyCamp = 1;
 
     /// <summary>
     /// 角度转π
@@ -23,6 +32,19 @@ public class Utils
     /// π转角度
     /// </summary>
     public const float PiToAngle = 57.2957795130823f;
+    /// <summary>
+    /// 趋近0值
+    /// </summary>
+    public static readonly float ApproachZero = 0.00001f;
+
+    /// <summary>
+    /// 负趋近0值
+    /// </summary>
+    public static readonly float ApproachKZero = -0.00001f;
+
+
+
+
 
     /// <summary>
     /// 地图文件名称Head
@@ -257,7 +279,30 @@ public class Utils
     }
 
 
+
+
     // ---------------------------图形-------------------------------
+
+
+    /// <summary>
+    /// 排除Y轴
+    /// </summary>
+    /// <param name="vec3">被排除向量</param>
+    /// <returns>被排除后的数据</returns>
+    public static Vector3 WithOutY(Vector3 vec3)
+    {
+        return new Vector3(vec3.x, 0, vec3.z);
+    }
+
+    /// <summary>
+    /// 3转2排除Y
+    /// </summary>
+    /// <param name="vec3"></param>
+    /// <returns></returns>
+    public static Vector2 V3ToV2WithouY(Vector3 vec3)
+    {
+        return new Vector2(vec3.x, vec3.z);
+    }
 
     /// <summary>
     /// 获取矩形水平检测线
@@ -283,7 +328,66 @@ public class Utils
     }
 
     /// <summary>
-    /// 绘制矩形
+    /// 获取显示位置
+    /// </summary>
+    /// <param name="camearPos"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <param name="scopeWidth"></param>
+    /// <param name="scopeHeight"></param>
+    /// <param name="unitWidth"></param>
+    /// <returns></returns>
+    public static Rect GetShowRect(Vector3 camearPos, float width, float height, float scopeWidth, float scopeHeight, int unitWidth)
+    {
+        var cameraPosX = camearPos.x + width * unitWidth * 0.5f - scopeWidth * 0.5f;
+        var cameraPosY = camearPos.y + height * unitWidth * 0.5f - scopeHeight * 0.5f;
+        Rect result = new Rect(cameraPosX, cameraPosY, scopeWidth, scopeHeight);
+        return result;
+    }
+
+
+    /// <summary>
+    /// 绘制图形
+    /// </summary>
+    /// <param name="graphics">图形对象</param>
+    public static void DrawGraphics(ICollisionGraphics graphics, Color color)
+    {
+        if (!Debug.logger.logEnabled)
+        {
+            return;
+        }
+        if (graphics == null)
+        {
+            return;
+        }
+        switch (graphics.GraphicType)
+        {
+            case GraphicType.Circle:
+                var circle = graphics as CircleGraphics;
+                if (circle != null)
+                {
+                    DrawCircle(new Vector3(circle.Postion.x, circle.Postion.y), circle.Radius, color);
+                }
+                break;
+            case GraphicType.Rect:
+                var rect = graphics as RectGraphics;
+                if (rect != null)
+                {
+                    DrawRect(new Vector3(rect.Postion.x, rect.Postion.y), rect.Width, rect.Height, rect.Rotation, color);
+                }
+                break;
+            case GraphicType.Sector:
+                var sector = graphics as SectorGraphics;
+                if (sector != null)
+                {
+                    DrawSector(new Vector3(sector.Postion.x, sector.Postion.y), sector.Radius, sector.Rotation, sector.OpenAngle, color);
+                }
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 回执矩形
     /// </summary>
     /// <param name="position">举行中心位置</param>
     /// <param name="width">举行宽度</param>
@@ -313,20 +417,63 @@ public class Utils
     }
 
     /// <summary>
-    /// 获取显示位置
+    /// 绘制扇形
     /// </summary>
-    /// <param name="camearPos"></param>
-    /// <param name="width"></param>
-    /// <param name="height"></param>
-    /// <param name="scopeWidth"></param>
-    /// <param name="scopeHeight"></param>
-    /// <param name="unitWidth"></param>
-    /// <returns></returns>
-    public static Rect GetShowRect(Vector3 camearPos, float width, float height, float scopeWidth, float scopeHeight, int unitWidth)
+    /// <param name="position">圆心位置</param>
+    /// <param name="radius">圆半径</param>
+    /// <param name="rotation">扇形旋转角度</param>
+    /// <param name="openAngle">扇形开口角度</param>
+    /// <param name="color">绘制颜色</param>
+    public static void DrawSector(Vector3 position, float radius, float rotation, float openAngle, Color color)
     {
-        var cameraPosX = camearPos.x + width * unitWidth * 0.5f - scopeWidth * 0.5f;
-        var cameraPosY = camearPos.y + height * unitWidth * 0.5f - scopeHeight * 0.5f;
-        Rect result = new Rect(cameraPosX, cameraPosY, scopeWidth, scopeHeight);
-        return result;
+
+    }
+
+    /// <summary>
+    ///  绘制三角形
+    /// </summary>
+    /// <param name="point1">三角形点1</param>
+    /// <param name="point2">三角形点2</param>
+    /// <param name="point3">三角形点3</param>
+    /// <param name="color">绘制颜色</param>
+    public static void DrawTriangle(Vector3 point1, Vector3 point2, Vector3 point3, Color color)
+    {
+        Debug.DrawLine(point1, point2, color);
+        Debug.DrawLine(point2, point3, color);
+        Debug.DrawLine(point3, point1, color);
+    }
+
+
+    /// <summary>
+    /// 绘制圆
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="radius"></param>
+    /// <param name="color">颜色</param>
+    public static void DrawCircle(Vector3 position, float radius, Color color)
+    {
+        // 绘制圆环
+        Vector3 beginPoint = Vector3.zero;
+        Vector3 firstPoint = Vector3.zero;
+        for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
+        {
+            float x = radius * Mathf.Cos(theta);
+            float z = radius * Mathf.Sin(theta);
+            Vector3 endPoint = position + new Vector3(x, z);
+            if (Math.Abs(theta) < Utils.ApproachZero)
+            {
+                firstPoint = endPoint;
+            }
+            else
+            {
+                Debug.DrawLine(beginPoint, endPoint, color);
+            }
+            beginPoint = endPoint;
+        }
+
+        // 绘制最后一条线段
+        Debug.DrawLine(firstPoint, beginPoint, color);
+
+        //Debug.DrawLine(firstPoint, firstPoint + new Vector3(radius, 0, 0), color);
     }
 }
