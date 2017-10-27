@@ -33,29 +33,34 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// </summary>
     /// <param name="unitType">单位类型</param>
     /// <param name="resourceId">资源ID</param>
-    /// <param name="layer">层级</param>
     /// <returns>地图单元类</returns>
-    public MapCellBase GetUnit(UnitType unitType, int resourceId, int layer)
+    public MapCellBase GetUnit(UnitType unitType, int resourceId)
     {
         MapCellBase result = null;
         switch (unitType)
         {
             case UnitType.MapCell: // 地图单元
-
+            {
                 var go = GetGameObject(MapCellTableName,
                     resourceId,
-                    layer,
-                    layer < 0 ? null : MapDrawer.Single.ItemParentList[layer]);
+                    MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
 
-                result = new MapCell(go, layer);
+                result = new MapCell(go, MapManager.MapBaseLayer);
                 go.name = result.MapCellId.ToString();
-
+            }
                 break;
             case UnitType.Obstacle: // 障碍物
 
                 break;
             case UnitType.FightUnit: // 战斗单位
+            {
+                var go = GetGameObject(MapCellTableName,
+                    resourceId,
+                    MapDrawer.Single.ItemParentList[MapManager.MapPlayerLayer]);
 
+                result = new FightUnit(go, MapManager.MapPlayerLayer);
+                go.name = result.MapCellId.ToString();
+            }
                 break;
             case UnitType.NPC: // NPC
 
@@ -71,10 +76,9 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// </summary>
     /// <param name="tableName">表名称</param>
     /// <param name="id">资源ID</param>
-    /// <param name="layer">物体所在层</param>
     /// <param name="parent">单位父级</param>
     /// <returns>游戏实体</returns>
-    public GameObject GetGameObject(string tableName, int id, int layer, Transform parent = null)
+    public GameObject GetGameObject(string tableName, int id, Transform parent = null)
     {
         GameObject result = null;
 

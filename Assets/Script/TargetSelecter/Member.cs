@@ -156,11 +156,11 @@ using UnityEngine;
 public interface IBaseMember : IAllDataHolder
 {
     // ----------------------------------暴露接口--------------------------------------
-    
-    ///// <summary>
-    ///// 扫描范围形状类型
-    ///// </summary>
-    //GraphicType ScanType { get; set; }
+
+    /// <summary>
+    /// 单位数据
+    /// </summary>
+    MapCellBase MemberCell { get; set; }
 
     /// <summary>
     /// 位置X

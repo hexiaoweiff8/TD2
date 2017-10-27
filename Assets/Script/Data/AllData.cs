@@ -12,7 +12,7 @@ public class AllData : ISelectWeightDataHolder
     /// <summary>
     /// 目标筛选数据
     /// </summary>
-    public VOBase MemberData { get; set; }
+    public MemberData MemberData { get; set; }
 
     /// <summary>
     /// 目标选择权重数据

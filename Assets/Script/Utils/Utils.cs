@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 /// <summary>
@@ -146,7 +147,7 @@ public class Utils
     /// <param name="path">文件路径</param>
     /// <param name="fileName">文件名</param>
     /// <param name="info">文件内容</param>
-    public static void CreateOrOpenFile(string path, string fileName, string info)
+    public static void CreateOrOpenFile([NotNull]string path, [NotNull]string fileName, [NotNull]string info)
     {
         StreamWriter sw;
         FileInfo fi = new FileInfo(path + Path.AltDirectorySeparatorChar + fileName);
@@ -172,9 +173,26 @@ public class Utils
     /// <param name="mapId">地图ID</param>
     /// <param name="mapLevel">地图层级</param>
     /// <returns>地图文件名</returns>
-    public static string GetMapFileNameById(string mapId, int mapLevel)
+    public static string GetMapFileNameById([NotNull]string mapId, int mapLevel)
     {
         return MapNameHead + mapId + MapNameLevel + mapLevel;
+    }
+
+    /// <summary>
+    /// 获取数据宽高
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static Dictionary<string, Vector2> GetDateWH([NotNull]Dictionary<string, int[][]> data)
+    {
+        var result = new Dictionary<string, Vector2>();
+
+        foreach (var kv in data)
+        {
+            result.Add(kv.Key, new Vector2(kv.Value[0].Length, kv.Value.Length));
+        }
+
+        return result;
     }
 
 
@@ -183,13 +201,13 @@ public class Utils
     /// </summary>
     /// <param name="data">被分解数据</param>
     /// <returns>分解后的文件对照表(文件名, 文件内容)</returns>
-    public static Dictionary<string, string> DepartFileData(string data)
+    public static Dictionary<string, int[][]> DepartFileData([NotNull]string data)
     {
         if (string.IsNullOrEmpty(data))
         {
             return null;
         }
-        var result = new Dictionary<string, string>();
+        var result = new Dictionary<string, int[][]>();
 
         // 解析数据
         var filesDataArray = data.Split(new[] { "%---%" }, StringSplitOptions.RemoveEmptyEntries);
@@ -200,11 +218,50 @@ public class Utils
             {
                 var fileName = dataDepart[0];
                 var fileInfo = dataDepart[1];
-                result.Add(fileName, fileInfo);
+                result.Add(fileName, DeCodeInfo(fileInfo));
+            }
+        }
+        return result;
+    }
+
+
+    /// <summary>
+    /// 解码地图数据
+    /// </summary>
+    /// <param name="mapInfoJson">地图数据json</param>
+    /// <returns>地图数据数组</returns>
+    public static int[][] DeCodeInfo([NotNull]string mapInfoJson)
+    {
+        if (string.IsNullOrEmpty(mapInfoJson))
+        {
+            return null;
+        }
+
+        // 读出数据
+        var mapLines = mapInfoJson.Split('\n');
+
+        int[][] mapInfo = new int[mapLines.Length][];
+        for (var row = 0; row < mapLines.Length; row++)
+        {
+            var line = mapLines[row];
+            if (string.IsNullOrEmpty(line))
+            {
+                continue;
+            }
+
+            var cells = line.Split(',');
+            mapInfo[row] = new int[cells.Length];
+            for (int col = 0; col < cells.Length; col++)
+            {
+                if (string.IsNullOrEmpty(cells[col].Trim()))
+                {
+                    continue;
+                }
+                mapInfo[row][col] = int.Parse(cells[col]);
             }
         }
 
-        return result;
+        return mapInfo;
     }
 
 
@@ -214,7 +271,7 @@ public class Utils
     /// </summary>
     /// <param name="path">文件路径(在目录中的结构)</param>
     /// <returns>文件内容</returns>
-    public static string LoadFileRotate(string path)
+    public static string LoadFileRotate([NotNull]string path)
     {
         string result = null;
         FileInfo fi = new FileInfo(Path.Combine(Application.persistentDataPath, path));
@@ -242,7 +299,7 @@ public class Utils
     /// </summary>
     /// <param name="path">文件路径</param>
     /// <returns>文件内容, 如果文件不存在则返回null</returns>
-    public static string LoadFileInfo(string path)
+    public static string LoadFileInfo([NotNull]string path)
     {
         string result = null;
 
@@ -261,7 +318,7 @@ public class Utils
     /// </summary>
     /// <param name="fi">文件信息类</param>
     /// <returns>文件内容, 如果文件不存在则返回null</returns>
-    public static string LoadFileInfo(FileInfo fi)
+    public static string LoadFileInfo([NotNull]FileInfo fi)
     {
         string result = null;
         if (fi != null)
@@ -277,6 +334,47 @@ public class Utils
 
         return result;
     }
+    /// <summary>
+    /// 拷贝int二维数组
+    /// </summary>
+    /// <param name="from">数据源</param>
+    /// <param name="to">目标数组</param>
+    /// <param name="rowCount">行数</param>
+    /// <param name="colCount">列数</param>
+    public static void CopyArray([NotNull]int[][] from, out int[][] to, int rowCount, int colCount)
+    {
+        if (from == null || rowCount <= 0 || colCount <= 0)
+        {
+            throw new Exception("拷贝数据错误.");
+        }
+        to = new int[rowCount][];
+        for (var i = 0; i < rowCount; i++)
+        {
+            to[i] = new int[colCount];
+            for (var j = 0; j < colCount; j++)
+            {
+                to[i][j] = from[i][j];
+            }
+        }
+    }
+
+    /// <summary>
+    /// 拷贝int一维数组
+    /// </summary>
+    /// <param name="from">数据源</param>
+    /// <param name="to">目标数组</param>
+    /// <param name="length">拷贝长度</param>
+    public static void CopyArray<T>([NotNull]T[] from, T[] to, int length)
+    {
+        if (from == null || to == null || length <= 0 || from.Length < length || to.Length < length)
+        {
+            return;
+        }
+        for (var i = 0; i < length; i++)
+        {
+            to[i] = from[i];
+        }
+    }
 
 
 
@@ -284,14 +382,24 @@ public class Utils
     // ---------------------------图形-------------------------------
 
 
+    ///// <summary>
+    ///// 排除Y轴
+    ///// </summary>
+    ///// <param name="vec3">被排除向量</param>
+    ///// <returns>被排除后的数据</returns>
+    //public static Vector3 WithOutY(Vector3 vec3)
+    //{
+    //    return new Vector3(vec3.x, 0, vec3.z);
+    //}
+
     /// <summary>
-    /// 排除Y轴
+    /// 排除Z轴
     /// </summary>
     /// <param name="vec3">被排除向量</param>
     /// <returns>被排除后的数据</returns>
-    public static Vector3 WithOutY(Vector3 vec3)
+    public static Vector3 WithOutZ(Vector3 vec3)
     {
-        return new Vector3(vec3.x, 0, vec3.z);
+        return new Vector3(vec3.x, vec3.y);
     }
 
     /// <summary>

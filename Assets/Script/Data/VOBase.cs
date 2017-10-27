@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class VOBase
+public class MemberData
 {
     private float _totalHP;
     private float _currentHP;

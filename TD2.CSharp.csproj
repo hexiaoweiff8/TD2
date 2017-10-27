@@ -110,6 +110,9 @@
     <Compile Include="Assets\MapEditor\script\EditMapNameWindow.cs" />
     <Compile Include="Assets\MapEditor\script\MapEditor.cs" />
     <Compile Include="Assets\MapEditor\script\UIControl.cs" />
+    <Compile Include="Assets\Script\AStar\AStarPathFinding.cs" />
+    <Compile Include="Assets\Script\AStar\LoadMap.cs" />
+    <Compile Include="Assets\Script\AStar\MapInfo.cs" />
     <Compile Include="Assets\Script\Data\AllData.cs" />
     <Compile Include="Assets\Script\Data\DataPacker.cs" />
     <Compile Include="Assets\Script\Data\ObjectID.cs" />

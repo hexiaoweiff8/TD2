@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 
 /// <summary>
@@ -13,7 +14,7 @@ public class ClusterData: PositionObject
     /// <summary>
     /// 外部注入VO
     /// </summary>
-    public void SetDataValue(VOBase data)
+    public void SetDataValue(MemberData data)
     {
         AllData.MemberData = data;
     }
@@ -107,6 +108,16 @@ public class ClusterData: PositionObject
 
 
     // ------------------------------公共方法---------------------------------
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <param name="allData">初始化数据</param>
+    public ClusterData([NotNull]AllData allData)
+        : base(allData)
+    {
+        AllData = allData;
+    }
 
     /// <summary>
     /// 压入新位置, 并将该位置设置为当前目标点

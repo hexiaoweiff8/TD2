@@ -58,6 +58,10 @@ public class PoolLoader : SingleItem<PoolLoader>
         {
             result.transform.SetParent(parent);
         }
+        if (result != null)
+        {
+            result.transform.position = Vector3.zero;
+        }
         if (name != null)
         {
             result.name = name;

@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 /// <summary>
 /// 位置对象
 /// </summary>
-public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHolder//, IGraphical<Rectangle>
+public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphical<Rectangle>
 {
+
+    /// <summary>
+    /// 单位数据
+    /// </summary>
+    public MapCellBase MemberCell { get; set; }
 
     /// <summary>
     /// 所有数据持有
@@ -33,9 +39,13 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
         {
             if (collisionGraphics == null)
             {
-                collisionGraphics = new CircleGraphics(new Vector2(transform.position.x, transform.position.z), allData.MemberData.SpaceSet * 0.5f * ClusterManager.Single.UnitWidth);
+                collisionGraphics =
+                    new CircleGraphics(
+                        new Vector2(MemberCell.GameObj.transform.position.x, MemberCell.GameObj.transform.position.y),
+                        allData.MemberData.SpaceSet*0.5f*ClusterManager.Single.UnitWidth);
             }
-            collisionGraphics.Postion = new Vector2(transform.position.x, transform.position.z);
+            collisionGraphics.Postion = new Vector2(MemberCell.GameObj.transform.position.x,
+                MemberCell.GameObj.transform.position.y);
             return collisionGraphics;
         }
         set { collisionGraphics = value; }
@@ -83,9 +93,9 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// </summary>
     public Vector3 Position
     {
-        get { return transform.position; }
+        get { return MemberCell.GameObj.transform.position; }
         set
-        { transform.position = value; }
+        { MemberCell.GameObj.transform.position = value; }
     }
 
     /// <summary>
@@ -93,9 +103,12 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// </summary>
     public float X
     {
-        get { return transform.position.x; }
+        get { return MemberCell.GameObj.transform.position.x; }
         set
-        { transform.position = new Vector3(value, transform.position.y, transform.position.z); }
+        {
+            MemberCell.GameObj.transform.position = new Vector3(value, MemberCell.GameObj.transform.position.y,
+                MemberCell.GameObj.transform.position.z);
+        }
     }
 
     /// <summary>
@@ -103,19 +116,22 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// </summary>
     public float Y
     {
-        get { return transform.position.z; }
+        get { return MemberCell.GameObj.transform.position.z; }
         set
-        { transform.position = new Vector3(transform.position.x, transform.position.y, value); }
+        {
+            MemberCell.GameObj.transform.position = new Vector3(MemberCell.GameObj.transform.position.x,
+                MemberCell.GameObj.transform.position.y, value);
+        }
     }
 
-    /// <summary>
-    /// 当前高度
-    /// </summary>
-    public float Height
-    {
-        get { return height; }
-        set { height = value; }
-    }
+    ///// <summary>
+    ///// 当前高度
+    ///// </summary>
+    //public float Height
+    //{
+    //    get { return height; }
+    //    set { height = value; }
+    //}
 
 
     /// <summary>
@@ -123,7 +139,7 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// </summary>
     public Vector3 Rotate
     {
-        set { this.transform.Rotate(value); }
+        set { MemberCell.GameObj.transform.Rotate(value); }
     }
 
     /// <summary>
@@ -131,13 +147,13 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// </summary>
     public Vector3 Direction
     {
-        get { return this.transform.forward; }
-        set { this.transform.forward = value; }
+        get { return MemberCell.GameObj.transform.forward; }
+        set { MemberCell.GameObj.transform.forward = value; }
     }
 
     public Vector3 DirectionRight
     {
-        get { return this.transform.right; }
+        get { return MemberCell.GameObj.transform.forward; }
     }
 
     /// <summary>
@@ -145,7 +161,7 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// </summary>
     public GameObject ItemObj
     {
-        get { return this.gameObject; }
+        get { return MemberCell.GameObj.gameObject; }
     }
 
     /// <summary>
@@ -208,7 +224,7 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// <summary>
     /// 所有数据持有
     /// </summary>
-    private AllData allData = new AllData();
+    private AllData allData;
 
     /// <summary>
     /// 图形对象
@@ -283,6 +299,17 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
 
 
 
+    // ---------------------------公共方法------------------------------
+
+
+    public PositionObject([NotNull]AllData allData)
+    {
+        // 设置MemberData
+        this.allData = allData;
+    }
+
+
+
     /// <summary>
     /// 开始运行
     /// </summary>
@@ -313,7 +340,7 @@ public abstract class PositionObject : MonoBehaviour, IBaseMember, IGraphicsHold
     /// <param name="target">目标点</param>
     public void RotateToWithoutYAxis(Vector3 target)
     {
-        transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
+        MemberCell.GameObj.transform.LookAt(new Vector3(target.x, MemberCell.GameObj.transform.position.y, target.z));
     }
 
     /// <summary>

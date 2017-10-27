@@ -56,7 +56,12 @@ public class MapManager : SingleItem<MapManager>
     /// 地图文件数据字典
     /// (地图文件名, 地图数据)
     /// </summary>
-    private Dictionary<string, string> mapDataDic = null;
+    private Dictionary<string, int[][]> mapDataDic = null;
+
+    /// <summary>
+    /// 地图宽高数据
+    /// </summary>
+    private Dictionary<string, Vector2> mapWHDic = null; 
 
     /// <summary>
     /// 地图数据类字典
@@ -102,15 +107,15 @@ public class MapManager : SingleItem<MapManager>
         else
         {
             mapBase = GetMapInfo(mapId, mapCenter, unitWidth);
+
+            // 缓存地图数据
+            mapBaseDic.Add(mapId, mapBase);
         }
 
         if (mapBase == null)
         {
             throw new Exception("地图数据为空");
         }
-
-        // 缓存地图数据
-        mapBaseDic.Add(mapId, mapBase);
 
         //// 启动绘制
         //MapDrawer.Single.Clear();
@@ -156,7 +161,6 @@ public class MapManager : SingleItem<MapManager>
             // 加载文件
             mapDataDic = Utils.DepartFileData(Utils.LoadFileRotate(MapDataFilePath));
 
-
             if (mapDataDic == null)
             {
                 Debug.LogError("加载失败");
@@ -164,22 +168,24 @@ public class MapManager : SingleItem<MapManager>
             else
             {
                 isLoaded = true;
+                mapWHDic = Utils.GetDateWH(mapDataDic);
             }
         }
         if (mapId > 0)
         {
-            // 转换数据
-            result = new MapBase(280, 13, mapCenter, unitWidth);
+            // 加载地图数据
+            var whVector = mapWHDic[Utils.GetMapFileNameById(mapId, 1)];
+            result = new MapBase((int)whVector.x, (int)whVector.y, mapCenter, unitWidth);
             for (var level = 1; level <= LoadMapLevelCount; level++)
             {
                 // 从缓存中查找, 如果缓存中不存在, 则从文件中加载
                 var key = Utils.GetMapFileNameById(mapId, level);
                 if (mapDataDic != null && mapDataDic.ContainsKey(key))
                 {
-                    var mapData = DeCodeInfo(mapDataDic[key]);
+                    var mapData = mapDataDic[key];
 
                     // 添加地图单元数组
-                    var mapCellArray = GetCells(mapData, level);
+                    var mapCellArray = GetCells(mapData);
                     result.AddMapCellArray(mapCellArray, level);
                 }
                 else
@@ -197,9 +203,8 @@ public class MapManager : SingleItem<MapManager>
     /// 转换地图数据为地图单位
     /// </summary>
     /// <param name="mapData">地图数据</param>
-    /// <param name="layer">绘制层级</param>
     /// <returns></returns>
-    private static MapCellBase[,] GetCells(int[][] mapData, int layer)
+    private static MapCellBase[,] GetCells(int[][] mapData)
     {
         var height = mapData.Length;
         var width = mapData[0].Length;
@@ -211,7 +216,7 @@ public class MapManager : SingleItem<MapManager>
             for (var j = 0; j < width; j++)
             {
                 // 加载模型
-                var mapCell = UnitFictory.Single.GetUnit(UnitType.MapCell, mapData[i][j], layer);
+                var mapCell = UnitFictory.Single.GetUnit(UnitType.MapCell, mapData[i][j]);
                 mapCell.X = j;
                 mapCell.Y = i;
                 // 根据数据加载
@@ -222,42 +227,4 @@ public class MapManager : SingleItem<MapManager>
         return mapCellDataArray;
     }
 
-    /// <summary>
-    /// 解码地图数据
-    /// </summary>
-    /// <param name="mapInfoJson">地图数据json</param>
-    /// <returns>地图数据数组</returns>
-    private int[][] DeCodeInfo(string mapInfoJson)
-    {
-        if (string.IsNullOrEmpty(mapInfoJson))
-        {
-            return null;
-        }
-
-        // 读出数据
-        var mapLines = mapInfoJson.Split('\n');
-
-        int[][] mapInfo = new int[mapLines.Length][];
-        for (var row = 0; row < mapLines.Length; row++)
-        {
-            var line = mapLines[row];
-            if (string.IsNullOrEmpty(line))
-            {
-                continue;
-            }
-
-            var cells = line.Split(',');
-            mapInfo[row] = new int[cells.Length];
-            for (int col = 0; col < cells.Length; col++)
-            {
-                if (string.IsNullOrEmpty(cells[col].Trim()))
-                {
-                    continue;
-                }
-                mapInfo[row][col] = int.Parse(cells[col]);
-            }
-        }
-
-        return mapInfo;
-    }
 }

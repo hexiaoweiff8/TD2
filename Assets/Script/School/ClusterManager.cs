@@ -101,7 +101,6 @@ public class ClusterManager : ILoopItem
             // 绘制四叉树
             DrawQuadTreeLine(targetList.QuadTree);
         #endif
-            Debug.Log(123);
         }
     }
 
@@ -316,18 +315,18 @@ public class ClusterManager : ILoopItem
         {
             return;
         }
-        // 高度控制
-        var heightDiff = member.transform.position.y - member.Height;
-        if (heightDiff != 0)
-        {
-            member.transform.position = new Vector3(member.transform.position.x, member.Height,
-                member.transform.position.z);
-        }
+        //// 高度控制
+        //var heightDiff = member.transform.position.y - member.Height;
+        //if (heightDiff != 0)
+        //{
+        //    member.transform.position = new Vector3(member.transform.position.x, member.Height,
+        //        member.transform.position.z);
+        //}
 
         // 单位状态切换
         ChangeMemberState(member);
         // 当前单位到目标的方向
-        Vector3 targetDir = Utils.WithOutY(member.TargetPos - member.Position);
+        Vector3 targetDir = Utils.WithOutZ(member.TargetPos - member.Position);
         // 转向角度
         float rotate = 0f;
         // 标准化目标方向
@@ -336,7 +335,7 @@ public class ClusterManager : ILoopItem
         var finalDir = GetGtivity(member);
         Debug.DrawLine(member.Position, member.Position + finalDir, Color.cyan);
         // 当前方向与目标方向夹角
-        var angleForTarget = Vector3.Dot(normalizedTargetDir, Utils.WithOutY(member.Direction));
+        var angleForTarget = Vector3.Dot(normalizedTargetDir, Utils.WithOutZ(member.Direction));
 
         // 当前单位位置减去周围单位的位置的和, 与最终方向相加, 这个向量做处理, 只能指向目标方向的左右90°之内, 防止调头
         // 获取周围成员(不论敌友, 包括障碍物)的斥力引力
@@ -369,7 +368,7 @@ public class ClusterManager : ILoopItem
         // 同队伍聚合
         if (member != null) // && member.Group != null
         {
-            var grivity = Utils.WithOutY(member.TargetPos - member.Position);
+            var grivity = Utils.WithOutZ(member.TargetPos - member.Position);
             // 如果当前方向与引力方向
             // 速度不稳定问题
             member.SpeedDirection = grivity.normalized * member.MaxSpeed;
@@ -507,7 +506,7 @@ public class ClusterManager : ILoopItem
             }
         }
 
-        if (Utils.WithOutY(member.Position - member.TargetPos).magnitude < (member.Diameter * 0.5f + 0.5f) * UnitWidth)
+        if (Utils.WithOutZ(member.Position - member.TargetPos).magnitude < (member.Diameter * 0.5f + 0.5f) * UnitWidth)
         {
             if (member.State != SchoolItemState.Complete)
             {
