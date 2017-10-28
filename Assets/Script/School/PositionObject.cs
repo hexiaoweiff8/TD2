@@ -39,10 +39,27 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
         {
             if (collisionGraphics == null)
             {
-                collisionGraphics =
+                switch (AllData.GraphicType)
+                {
+
+                    case GraphicType.Rect:
+                        collisionGraphics =
+                    new RectGraphics(
+                        new Vector2(MepCell.GameObj.transform.position.x, MepCell.GameObj.transform.position.y),
+                        allData.MemberData.SpaceSet * allData.UnitWidth,
+                        allData.MemberData.SpaceSet * allData.UnitWidth,
+                        0);
+                        break;
+
+                    case GraphicType.Circle:
+                    default:
+                        collisionGraphics =
                     new CircleGraphics(
                         new Vector2(MepCell.GameObj.transform.position.x, MepCell.GameObj.transform.position.y),
                         allData.MemberData.SpaceSet * 0.5f * allData.UnitWidth);
+                        break;
+                }
+                
             }
             collisionGraphics.Postion = new Vector2(MepCell.GameObj.transform.position.x,
                 MepCell.GameObj.transform.position.y);

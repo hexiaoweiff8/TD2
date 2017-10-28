@@ -83,7 +83,8 @@ public class FightManager : SingleItem<FightManager>
                         {
                             SpaceSet = diameter
                         },
-                        UnitWidth = MapDrawer.Single.UnitWidth
+                        UnitWidth = MapDrawer.Single.UnitWidth,
+                        GraphicType = GraphicType.Rect
                     }, cell);
 
                     ClusterManager.Single.Add(ob);

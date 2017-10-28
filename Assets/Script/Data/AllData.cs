@@ -24,4 +24,9 @@ public class AllData : ISelectWeightDataHolder
     /// </summary>
     public int UnitWidth { get; set; }
 
+    /// <summary>
+    /// 图形类型
+    /// </summary>
+    public GraphicType GraphicType { get; set; }
+
 }
