@@ -19,4 +19,9 @@ public class AllData : ISelectWeightDataHolder
     /// </summary>
     public SelectWeightData SelectWeightData { get; set; }
 
+    /// <summary>
+    /// TODO 地图单位宽度
+    /// </summary>
+    public int UnitWidth { get; set; }
+
 }

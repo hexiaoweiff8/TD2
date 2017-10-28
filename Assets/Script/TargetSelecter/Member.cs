@@ -160,7 +160,7 @@ public interface IBaseMember : IAllDataHolder
     /// <summary>
     /// 单位数据
     /// </summary>
-    MapCellBase MemberCell { get; set; }
+    MapCellBase MepCell { get; set; }
 
     /// <summary>
     /// 位置X

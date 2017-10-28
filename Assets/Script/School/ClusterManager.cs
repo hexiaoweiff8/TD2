@@ -150,10 +150,9 @@ public class ClusterManager : ILoopItem
     /// <param name="w">四叉树宽度</param>
     /// <param name="h">四叉树高度</param>
     /// <param name="unitw">地面单位格宽度</param>
-    /// <param name="mapBase">地图数据类</param>
-    public void Init([NotNull]MapBase mapBase, float x, float y, int w, int h, int unitw)
+    public void Init(float x, float y, int w, int h, int unitw)
     {
-        targetList = new TargetList<PositionObject>(x, y, w, h, unitw) { MapBase = mapBase };
+        targetList = new TargetList<PositionObject>(x, y, w, h, unitw);
         MapHeight = h;
         MapWidth = w;
         UnitWidth = unitw;

@@ -337,6 +337,11 @@ public abstract class MapCellBase
     public GameObject GameObj { get; set; }
 
     /// <summary>
+    /// 该单元的数据ID
+    /// </summary>
+    public int DataId { get; set; }
+
+    /// <summary>
     /// 位置X
     /// </summary>
     public int X { get; set; }
@@ -388,12 +393,13 @@ public abstract class MapCellBase
     /// <summary>
     /// 基础初始化
     /// </summary>
-    protected MapCellBase(GameObject obj, int drawLayer)
+    protected MapCellBase(GameObject obj, int dataId, int drawLayer)
     {
         // 当前新类的ID并自增
         MapCellId = addtionId++;
         // 初始化模型
         this.GameObj = obj;
+        DataId = dataId;
         this.drawLayer = drawLayer;
     }
 
@@ -459,9 +465,10 @@ public class MapCell : MapCellBase
     /// 初始化地图单元
     /// </summary>
     /// <param name="obj">游戏物体</param>
+    /// <param name="dataId">数据Id</param>
     /// <param name="drawLayer">绘制层级</param>
-    public MapCell(GameObject obj, int drawLayer)
-        : base(obj, drawLayer)
+    public MapCell(GameObject obj, int dataId, int drawLayer)
+        : base(obj, dataId, drawLayer)
     {
         MapCellType = UnitType.MapCell;
     }
@@ -479,9 +486,10 @@ public class Obstacle : MapCellBase
     /// 初始化障碍物
     /// </summary>
     /// <param name="obj">游戏物体</param>
+    /// <param name="dataId">数据Id</param>
     /// <param name="drawLayer">绘制层级</param>
-    public Obstacle(GameObject obj, int drawLayer)
-        : base(obj, drawLayer)
+    public Obstacle(GameObject obj, int dataId, int drawLayer)
+        : base(obj, dataId, drawLayer)
     {
         MapCellType = UnitType.Obstacle;
     }
@@ -498,9 +506,10 @@ public class FightUnit : MapCellBase
     /// 初始化战斗单位
     /// </summary>
     /// <param name="obj">游戏物体</param>
+    /// <param name="dataId">数据Id</param>
     /// <param name="drawLayer">绘制层级</param>
-    public FightUnit(GameObject obj, int drawLayer)
-        : base(obj, drawLayer)
+    public FightUnit(GameObject obj, int dataId, int drawLayer)
+        : base(obj, dataId, drawLayer)
     {
         MapCellType = UnitType.FightUnit;
     }
@@ -517,9 +526,10 @@ public class NPC : MapCellBase
     /// 初始化NPC
     /// </summary>
     /// <param name="obj">游戏物体</param>
+    /// <param name="dataId">数据Id</param>
     /// <param name="drawLayer">绘制层级</param>
-    public NPC(GameObject obj, int drawLayer)
-        : base(obj, drawLayer)
+    public NPC(GameObject obj, int dataId, int drawLayer)
+        : base(obj, dataId, drawLayer)
     {
         MapCellType = UnitType.NPC;
     }

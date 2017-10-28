@@ -18,15 +18,6 @@ public class TargetList<T> where T : IGraphicsHolder//IGraphical<Rectangle>
     public QuadTree<T> QuadTree { get { return quadTree; } }
 
     /// <summary>
-    /// 地图信息
-    /// </summary>
-    public MapBase MapBase
-    {
-        get { return mapBase; }
-        set { mapBase = value; }
-    }
-
-    /// <summary>
     /// 目标总列表
     /// </summary>
     private IList<T> list = null;
@@ -41,11 +32,6 @@ public class TargetList<T> where T : IGraphicsHolder//IGraphical<Rectangle>
     /// </summary>
     private MapBase mapBase = null;
 
-    /// <summary>
-    /// 单位格子宽度
-    /// </summary>
-    private int unitWidht;
-
 
     /// <summary>
     /// 创建目标列表
@@ -58,7 +44,6 @@ public class TargetList<T> where T : IGraphicsHolder//IGraphical<Rectangle>
     public TargetList(float x, float y, int width, int height, int unitWidht)
     {
         var mapRect = new RectGraphics(new Vector2(x, y), width * unitWidht, height * unitWidht, 0);
-        this.unitWidht = unitWidht;
         quadTree = new QuadTree<T>(0, mapRect);
         list = new List<T>();
     }
@@ -105,12 +90,12 @@ public class TargetList<T> where T : IGraphicsHolder//IGraphical<Rectangle>
     /// <summary>
     /// 根据范围获取对象
     /// </summary>
-    /// <param name="rect">矩形对象, 用于判断碰撞</param>
+    /// <param name="graphics">范围对象, 用于判断碰撞</param>
     /// <returns></returns>
-    public IList<T> GetListWithRectangle(RectGraphics rect)
+    public IList<T> GetListWithRectangle(ICollisionGraphics graphics)
     {
         // 返回范围内的对象列表
-        return quadTree.Retrieve(rect);
+        return quadTree.Retrieve(graphics);
     }
 
     /// <summary>
@@ -150,11 +135,6 @@ public class TargetList<T> where T : IGraphicsHolder//IGraphical<Rectangle>
         if (quadTree != null)
         {
             quadTree.Clear();
-        }
-        if (mapBase != null)
-        {
-            mapBase.Clear();
-            mapBase = null;
         }
     }
 

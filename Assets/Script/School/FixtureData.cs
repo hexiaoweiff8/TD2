@@ -15,11 +15,15 @@ public class FixtureData : PositionObject
     /// <summary>
     /// 初始化
     /// </summary>
-    /// <param name="allData"></param>
-    public FixtureData([NotNull]AllData allData)
-        : base(allData)
+    /// <param name="allData">数据类</param>
+    /// <param name="mapCell">地图单元</param>
+    public FixtureData(AllData allData, MapCellBase mapCell)
+        : base(allData, mapCell)
     {
-        AllData.MemberData = new MemberData();
+        if (AllData.MemberData == null)
+        {
+            AllData.MemberData = new MemberData();
+        }
         Quality = 10000;
         SpeedDirection = Vector3.zero;
         

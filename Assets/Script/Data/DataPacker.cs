@@ -66,7 +66,6 @@ public class DataPacker : SingleItem<DataPacker>
         // 从指定路径获取数据
         // TODO 加载测试数据
         var mapTypeDataTable = new DataTable();
-
         // 填充测试数据
         var dataRow = new DataItem();
         // 地图数据
@@ -86,6 +85,23 @@ public class DataPacker : SingleItem<DataPacker>
         mapTypeDataTable.AddDataItem("1001", dataRow);
 
         SetDataItem(UnitFictory.MapCellTableName, mapTypeDataTable);
+
+
+        var obstacleDataTable = new DataTable();
+        // 填充测试数据
+        dataRow = new DataItem();
+        // 障碍直径
+        dataRow.SetInt("Diameter", 1);
+        // 是否可被击毁
+        dataRow.SetBool("CouldDestory", false);
+        obstacleDataTable.AddDataItem("1", dataRow);
+        dataRow = new DataItem();
+        // 障碍直径
+        dataRow.SetInt("Diameter", 1);
+        dataRow.SetBool("CouldDestory", false);
+        obstacleDataTable.AddDataItem("2", dataRow);
+
+        SetDataItem(UnitFictory.ObstacleTableName, obstacleDataTable);
 
     }
 
