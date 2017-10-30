@@ -416,13 +416,12 @@ public class ClusterManager : ILoopItem
                 if (!areadyCollisionList.ContainsKey(compereId1) &&
                     !areadyCollisionList.ContainsKey(compereId2))
                 {
-                    // TODO 如果该单位在我前方左右90°以内则向反方向闪避(闪避力与自身体积与对方体积比成反比)
                     // 获取附近单位的图形
                     var closeGraphics = closeMember.MyCollisionGraphics;
                     // 检测当前单位是否与其有碰撞
                     if (graphics.CheckCollision(closeGraphics))
                     {
-                        // 最小距离
+                        // TODO 最小距离的获取方式需要抽象, 根据不同图形获取对小距离
                         var minDistance = member.Diameter * UnitWidth * 0.5f + closeMember.Diameter * UnitWidth * 0.5f;
                         // 质量比例
                         var qualityRate = Math.Min(member.Quality / closeMember.Quality, CollisionWeight);
