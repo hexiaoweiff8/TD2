@@ -100,12 +100,12 @@ public class MapEditor : MonoBehaviour
     /// <summary>
     /// 建筑层地图数据
     /// </summary>
-    //private int[][] mapLevel3 = null;
+    private int[][] mapLevel3 = null;
 
     /// <summary>
     /// 当前操控中的Level(12,13,14)
     /// </summary>
-    private int controlLevel = LayerLevel1;
+    private int controlLevel = LayerLevel2;
 
     /// <summary>
     /// 鼠标点击状态
@@ -143,6 +143,9 @@ public class MapEditor : MonoBehaviour
     private const int ObstaclerId = 1;
 
 
+    private const int NPCId = 2;
+
+
     // -----------------------------建筑层ID---------------------------------
 
     /// <summary>
@@ -172,6 +175,7 @@ public class MapEditor : MonoBehaviour
     private Dictionary<int, string> mapName = new Dictionary<int, string>()
     {
         {ObstaclerId, "障碍物"},
+        {NPCId, "NPC"},
         {MyBaseId, "我方基地"},
         {MyTurretId, "我方防御塔"},
         {EnemyBaseId, "敌方基地"},
@@ -182,6 +186,7 @@ public class MapEditor : MonoBehaviour
     private Dictionary<int, Color> obstaclerColor = new Dictionary<int, Color>()
     {
         {ObstaclerId, Color.black},
+        {NPCId, Color.white},
         {MyBaseId, Color.blue},
         {MyTurretId, Color.green},
         {EnemyBaseId, Color.red},
@@ -267,10 +272,11 @@ public class MapEditor : MonoBehaviour
             // 创建对应大小的map数据
             mapLevel1 = new int[MapHeight][];
             mapLevel2 = new int[MapHeight][];
-            //mapLevel3 = new int[MapHeight][];
+            mapLevel3 = new int[MapHeight][];
 
             mapStateDic[LayerLevel1] = new GameObject[MapHeight, MapWidth];
             mapStateDic[LayerLevel2] = new GameObject[MapHeight, MapWidth];
+            mapStateDic[LayerLevel3] = new GameObject[MapHeight, MapWidth];
 
             for (var row = 0; row < MapHeight; row++)
             {
@@ -280,10 +286,10 @@ public class MapEditor : MonoBehaviour
             {
                 mapLevel2[row] = new int[MapWidth];
             }
-            //for (var row = 0; row < MapHeight; row++)
-            //{
-            //    mapLevel3[row] = new int[MapWidth];
-            //}
+            for (var row = 0; row < MapHeight; row++)
+            {
+                mapLevel3[row] = new int[MapWidth];
+            }
 
             // 初始化优化数据
             halfMapWidth = MapWidth / 2.0f;
@@ -310,8 +316,8 @@ public class MapEditor : MonoBehaviour
         loadMapData.Start();
         loadMapData.LoadMapData = (mapDataArray) =>
         {
-            mapLevel1 = StringMapData2IntArray(mapDataArray[1]);
-            mapLevel2 = StringMapData2IntArray(mapDataArray[0]);
+            mapLevel1 = StringMapData2IntArray(mapDataArray[0]);
+            mapLevel2 = StringMapData2IntArray(mapDataArray[1]);
         };
     }
 
@@ -452,9 +458,9 @@ public class MapEditor : MonoBehaviour
                 case LayerLevel2:
                     controlMap = mapLevel2;
                     break;
-                //case LayerLevel3:
-                //    controlMap = mapLevel3;
-                //    break;
+                case LayerLevel3:
+                    controlMap = mapLevel3;
+                    break;
                 case LayerLevel1:
                 default:
                     controlMap = mapLevel1;
@@ -508,7 +514,7 @@ public class MapEditor : MonoBehaviour
     {
         RefreshMap(mapLevel1, LayerLevel1);
         RefreshMap(mapLevel2, LayerLevel2);
-        //RefreshMap(mapLevel3, LayerLevel3);
+        RefreshMap(mapLevel3, LayerLevel3);
     }
 
     private void RefreshMap(int[][] map, int layer)
@@ -674,8 +680,8 @@ public class MapEditor : MonoBehaviour
         controlLevel = LayerLevel1;
         // 并将显示层级切换为1
         ChangeDiaplayLayer();
-        NowTypeId = ObstaclerId;
-        Debug.Log("当前类型为: 障碍物");
+        NowTypeId = MyBaseId;
+        Debug.Log("当前类型为: 地板");
     }
 
     /// <summary>
@@ -686,7 +692,8 @@ public class MapEditor : MonoBehaviour
         controlLevel = LayerLevel2;
         // 并将显示层级切换为2
         ChangeDiaplayLayer();
-        NowTypeId = MyBaseId;
+        NowTypeId = ObstaclerId;
+        Debug.Log("当前类型为: 障碍");
     }
 
     /// <summary>
@@ -697,6 +704,8 @@ public class MapEditor : MonoBehaviour
         controlLevel = LayerLevel3;
         // 并将显示层级切换为3
         ChangeDiaplayLayer();
+        NowTypeId = NPCId;
+        Debug.Log("当前类型为: NPC");
     }
 
     /// <summary>

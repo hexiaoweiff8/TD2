@@ -48,6 +48,8 @@ public class FightManager : SingleItem<FightManager>
         // TODO 获取玩家数据
         // 启动战斗单元
         // TODO 创建玩家层
+        // TODO 路标
+        // TODO 敌方数据
         LoadPlayer();
     }
 
