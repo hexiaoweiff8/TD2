@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 //#if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine.UI;
 
 /// <summary>
 /// 地图编辑器
@@ -26,6 +27,11 @@ public class MapEditor : MonoBehaviour
     /// 障碍物父级
     /// </summary>
     public GameObject ObstaclerList;
+
+    /// <summary>
+    /// 列表按钮
+    /// </summary>
+    public Button MenuButton;
 
     /// <summary>
     /// 主相机
@@ -56,6 +62,42 @@ public class MapEditor : MonoBehaviour
     /// 网格线颜色
     /// </summary>
     public Color LineColor = Color.red;
+
+    /// <summary>
+    /// level1层元素
+    /// </summary>
+    public List<KeyValuePair<int, string>> Level1ItemList = new List<KeyValuePair<int, string>>()
+    {
+        new KeyValuePair<int, string>(1, "类型1"),
+        new KeyValuePair<int, string>(2, "类型2"),
+        new KeyValuePair<int, string>(3, "类型3"),
+        new KeyValuePair<int, string>(4, "类型4"),
+        new KeyValuePair<int, string>(5, "类型5"),
+    };
+
+    /// <summary>
+    /// level2层元素
+    /// </summary>
+    public List<KeyValuePair<int, string>> Level2ItemList = new List<KeyValuePair<int, string>>()
+    {
+        new KeyValuePair<int, string>(1, "障碍1"),
+        new KeyValuePair<int, string>(2, "障碍2"),
+        new KeyValuePair<int, string>(3, "障碍3"),
+        new KeyValuePair<int, string>(4, "障碍4"),
+        new KeyValuePair<int, string>(5, "障碍5"),
+    };
+
+    /// <summary>
+    /// level3层元素
+    /// </summary>
+    public List<KeyValuePair<int, string>> Level3ItemList = new List<KeyValuePair<int, string>>()
+    {
+        new KeyValuePair<int, string>(1, "NPC1"),
+        new KeyValuePair<int, string>(2, "NPC2"),
+        new KeyValuePair<int, string>(3, "NPC3"),
+        new KeyValuePair<int, string>(4, "NPC4"),
+        new KeyValuePair<int, string>(5, "NPC5"),
+    };
 
     //--------------------常量---------------------------
 
@@ -129,6 +171,11 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     private Dictionary<int, GameObject[,]> mapStateDic = new Dictionary<int, GameObject[,]>();
 
+    /// <summary>
+    /// 当前level列表
+    /// </summary>
+    private List<KeyValuePair<int, string>> nowLevelItemList = null;
+
 
     // -----------------------------障碍曾ID---------------------------------
 
@@ -137,76 +184,30 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     private const int AccessibilityId = 0;
 
-    /// <summary>
-    /// 障碍物Id
-    /// </summary>
-    private const int ObstaclerId = 1;
 
-
-    private const int NPCId = 2;
-
-
-    // -----------------------------建筑层ID---------------------------------
-
-    /// <summary>
-    /// 我方基地id
-    /// </summary>
-    private const int MyBaseId = 10;
-
-    /// <summary>
-    /// 我方防御塔id
-    /// </summary>
-    private const int MyTurretId = 11;
-
-    /// <summary>
-    /// 敌方基地id
-    /// </summary>
-    private const int EnemyBaseId = 110;
-
-    /// <summary>
-    /// 地方防御塔id
-    /// </summary>
-    private const int EnemyTurretId = 111;
-
-
-    /// <summary>
-    /// 每种ID对应的名称
-    /// </summary>
-    private Dictionary<int, string> mapName = new Dictionary<int, string>()
-    {
-        {ObstaclerId, "障碍物"},
-        {NPCId, "NPC"},
-        {MyBaseId, "我方基地"},
-        {MyTurretId, "我方防御塔"},
-        {EnemyBaseId, "敌方基地"},
-        {EnemyTurretId, "敌方防御塔"},
-    };
 
 
     private Dictionary<int, Color> obstaclerColor = new Dictionary<int, Color>()
     {
-        {ObstaclerId, Color.black},
-        {NPCId, Color.white},
-        {MyBaseId, Color.blue},
-        {MyTurretId, Color.green},
-        {EnemyBaseId, Color.red},
-        {EnemyTurretId, Color.yellow},
+        {1, Color.black},
+        {2, Color.white},
+        {3, Color.blue},
+        {4, Color.green},
+        {5, Color.red},
+        {6, Color.yellow},
     };
 
 
     /// <summary>
     /// 当前类型ID
     /// </summary>
-    private int NowTypeId {
+    private int NowTypeId
+    {
         get { return nowTypeId; }
-        set
-        {
-            nowTypeId = value;
-            Debug.Log("当前绘制类型为:" + mapName[nowTypeId]);
-        } 
+        set { nowTypeId = value; }
     }
 
-    private int nowTypeId = ObstaclerId;
+    private int nowTypeId = 0;
 
     //-------------------计算优化属性---------------------
     /// <summary>
@@ -678,9 +679,14 @@ public class MapEditor : MonoBehaviour
     public void ChangeLevel1()
     {
         controlLevel = LayerLevel1;
+
         // 并将显示层级切换为1
         ChangeDiaplayLayer();
-        NowTypeId = MyBaseId;
+        NowTypeId = Level1ItemList[0].Key;
+        nowLevelItemList = Level1ItemList;
+
+        // 切换列表
+        RefreshList();
         Debug.Log("当前类型为: 地板");
     }
 
@@ -692,7 +698,11 @@ public class MapEditor : MonoBehaviour
         controlLevel = LayerLevel2;
         // 并将显示层级切换为2
         ChangeDiaplayLayer();
-        NowTypeId = ObstaclerId;
+        NowTypeId = Level2ItemList[0].Key;
+        nowLevelItemList = Level2ItemList;
+
+        // 切换列表
+        RefreshList();
         Debug.Log("当前类型为: 障碍");
     }
 
@@ -704,44 +714,28 @@ public class MapEditor : MonoBehaviour
         controlLevel = LayerLevel3;
         // 并将显示层级切换为3
         ChangeDiaplayLayer();
-        NowTypeId = NPCId;
+        // 切换按钮列表, 将按钮列表的第一个设置当前cell的Id
+        NowTypeId = Level3ItemList[0].Key;
+        nowLevelItemList = Level3ItemList;
+
+        // 切换列表
+        RefreshList();
         Debug.Log("当前类型为: NPC");
     }
 
     /// <summary>
-    /// 绘制己方基地位置
+    /// 刷新列表
     /// </summary>
-    public void SelectMyBase()
+    private void RefreshList()
     {
-        ChangeLevel2();
-        NowTypeId = MyBaseId;
-    }
+        Debug.Log("刷新列表");
+        // 清空列表
 
-    /// <summary>
-    /// 绘制己方炮塔位置
-    /// </summary>
-    public void SelectMyTurret()
-    {
-        ChangeLevel2();
-        NowTypeId = MyTurretId;
-    }
 
-    /// <summary>
-    /// 绘制敌方基地位置
-    /// </summary>
-    public void SelectEnemyBase()
-    {
-        ChangeLevel2();
-        NowTypeId = EnemyBaseId;
-    }
+        // 遍历当前level列表
 
-    /// <summary>
-    /// 绘制敌方炮塔位置
-    /// </summary>
-    public void SelectEnemyTurret()
-    {
-        ChangeLevel2();
-        NowTypeId = EnemyTurretId;
+        // 创建按钮并添加事件
+
     }
 }
 
