@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 //#if UNITY_EDITOR
@@ -30,6 +31,11 @@ public class EditMapNameWindow : EditorWindow
     public void Start()
     {
         MapDataFilePath = Application.dataPath + @"\StreamingAssets\config\mapDatas";
+        var dInfo = new DirectoryInfo(MapDataFilePath);
+        if (!dInfo.Exists)
+        {
+            dInfo.Create();
+        }
         Debug.Log("开始编辑地图名称, 文件保存位置:" + MapDataFilePath);
     }
 
@@ -102,14 +108,15 @@ public class LoadOrCreateWindow : EditorWindow
         MapFileName = EditorGUILayout.TextField("地图文件名称:", MapFileName);
         if (GUILayout.Button("加载"))
         {
-            var mapDataLevel1 = Utils.LoadFileInfo(MapDataFilePath + MapFileName + "_Level2");
-            var mapDataLevel2 = Utils.LoadFileInfo(MapDataFilePath + MapFileName + "_Level1");
+            var mapDataLevel1 = Utils.LoadFileInfo(MapDataFilePath + MapFileName + "_Level1");
+            var mapDataLevel2 = Utils.LoadFileInfo(MapDataFilePath + MapFileName + "_Level2");
+            var mapDataLevel3 = Utils.LoadFileInfo(MapDataFilePath + MapFileName + "_Level3");
             if (mapDataLevel1 == null)
             {
                 Debug.LogError("文件不存在:" + MapDataFilePath + MapFileName);
                 return;
             }
-            LoadMapData(new [] { mapDataLevel1, mapDataLevel2});
+            LoadMapData(new[] { mapDataLevel1, mapDataLevel2, mapDataLevel3});
         }
 
         if (GUILayout.Button("新建"))

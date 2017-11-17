@@ -43,6 +43,7 @@ public class FightManager : SingleItem<FightManager>
 
         // 获得地图障碍列表
         LoadObstacle(mapBase);
+        // TODO 初始化的时候只初始化显示范围内单位, 其他部分协程加载
         // TODO 获得地图NPC列表
         // TODO 获得地图敌人列表
         // TODO 获取玩家数据

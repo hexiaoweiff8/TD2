@@ -67,13 +67,16 @@ public class DataPacker : SingleItem<DataPacker>
         // TODO 加载测试数据
         var mapTypeDataTable = new DataTable();
         // 填充测试数据
-        var dataRow = new DataItem();
         // 地图数据
-        dataRow.SetString("Resource", "Prefab/mapCell0001");
+        var dataRow = new DataItem();
+        dataRow.SetString("Resource", "Prefab/empty");
         mapTypeDataTable.AddDataItem("0", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/empty");
-        mapTypeDataTable.AddDataItem("-1", dataRow);
+        dataRow.SetString("Resource", "Prefab/mapCell0001");
+        mapTypeDataTable.AddDataItem("3", dataRow);
+        //dataRow = new DataItem();
+        //dataRow.SetString("Resource", "Prefab/empty");
+        //mapTypeDataTable.AddDataItem("-1", dataRow);
         dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/obstacle0001");
         mapTypeDataTable.AddDataItem("1", dataRow);
@@ -88,6 +91,13 @@ public class DataPacker : SingleItem<DataPacker>
 
 
         var obstacleDataTable = new DataTable();
+        // 填充测试数据
+        dataRow = new DataItem();
+        // 障碍直径
+        dataRow.SetInt("Diameter", 0);
+        // 是否可被击毁
+        dataRow.SetBool("CouldDestory", false);
+        obstacleDataTable.AddDataItem("0", dataRow);
         // 填充测试数据
         dataRow = new DataItem();
         // 障碍直径

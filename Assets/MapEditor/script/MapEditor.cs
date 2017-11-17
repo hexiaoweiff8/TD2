@@ -176,6 +176,11 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     private List<KeyValuePair<int, string>> nowLevelItemList = null;
 
+    /// <summary>
+    /// 按钮列表
+    /// </summary>
+    private List<Button> buttonList = new List<Button>();
+
 
     // -----------------------------障碍曾ID---------------------------------
 
@@ -319,6 +324,7 @@ public class MapEditor : MonoBehaviour
         {
             mapLevel1 = StringMapData2IntArray(mapDataArray[0]);
             mapLevel2 = StringMapData2IntArray(mapDataArray[1]);
+            mapLevel3 = StringMapData2IntArray(mapDataArray[2]);
         };
     }
 
@@ -612,7 +618,7 @@ public class MapEditor : MonoBehaviour
         var window = EditorWindow.GetWindow<EditMapNameWindow>(true, "地图保存");
         window.MapData.Push(IntArrayArrayToString(mapLevel2));
         window.MapData.Push(IntArrayArrayToString(mapLevel1));
-        //window.MapData.Push(IntArrayArrayToString(mapLevel3));
+        window.MapData.Push(IntArrayArrayToString(mapLevel3));
         window.Start();
     }
 
@@ -729,10 +735,46 @@ public class MapEditor : MonoBehaviour
     private void RefreshList()
     {
         Debug.Log("刷新列表");
+        MenuButton.gameObject.SetActive(false);
         // 清空列表
-
+        if (buttonList.Count > 0)
+        {
+            // 销毁所有按钮
+            while (buttonList.Count > 0)
+            {
+                var button = buttonList[0];
+                Destroy(button.gameObject);
+                buttonList.RemoveAt(0);
+            }
+        }
 
         // 遍历当前level列表
+        if (nowLevelItemList != null)
+        {
+            foreach (var kv in nowLevelItemList)
+            {
+                var id = kv.Key;
+                var name = kv.Value;
+                // 创建新按钮
+                var newButton = Instantiate(MenuButton);
+                buttonList.Add(newButton);
+                newButton.transform.parent = MenuButton.transform.parent;
+                newButton.gameObject.SetActive(true);
+                var btnText = newButton.GetComponentInChildren<Text>();
+                btnText.text = name;
+
+                // 添加事件
+                newButton.onClick = new Button.ButtonClickedEvent();
+                newButton.onClick.AddListener(() =>
+                {
+                    Debug.Log("切换:" + name);
+                    // 切换id
+                    NowTypeId = id;
+
+                });
+            }
+        }
+        
 
         // 创建按钮并添加事件
 

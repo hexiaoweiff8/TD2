@@ -142,6 +142,33 @@ public class Utils
     // ---------------------------文件操作----------------------------
 
     /// <summary>
+    /// 合并文件(字符串文件)
+    /// </summary>
+    /// <param name="pathList">被合并文件Path列表</param>
+    /// <returns>合并后的文件内容</returns>
+    public static string CombineFile(List<string> pathList)
+    {
+        if (pathList == null || pathList.Count == 0)
+        {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+
+        foreach (var path in pathList)
+        {
+            var fileInfo = new FileInfo(path);
+            if (fileInfo.Exists)
+            {
+                sb.Append(fileInfo.Name);
+                sb.Append("%--%");
+                sb.Append(LoadFileInfo(fileInfo));
+                sb.Append("%---%");
+            }
+        }
+        return sb.ToString();
+    }
+
+    /// <summary>
     /// 创建文件
     /// </summary>
     /// <param name="path">文件路径</param>

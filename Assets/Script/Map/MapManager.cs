@@ -11,7 +11,6 @@ using UnityEngine;
 public class MapManager : SingleItem<MapManager>
 {
 
-
     /// <summary>
     /// 地图背景层
     /// </summary>
@@ -45,7 +44,7 @@ public class MapManager : SingleItem<MapManager>
     /// <summary>
     /// 加载地图层级数量
     /// </summary>
-    public const int LoadMapLevelCount = 2;
+    public const int LoadMapLevelCount = 3;
 
     /// <summary>
     /// 地图文件地址

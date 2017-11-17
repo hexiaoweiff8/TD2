@@ -44,16 +44,6 @@ public class MapDrawer : MapDrawerBase
     public int UnitWidth { get; private set; }
 
     /// <summary>
-    /// 全绘制
-    /// </summary>
-    public const int DrawAllDrawType = 0;
-
-    /// <summary>
-    /// 绘制范围内单位
-    /// </summary>
-    public const int DrawRectDrawType = 1;
-
-    /// <summary>
     /// 单位父级
     /// </summary>
     public List<Transform> ItemParentList;
@@ -66,27 +56,31 @@ public class MapDrawer : MapDrawerBase
     /// </summary>
     private MapBase mapData = null;
 
-    /// <summary>
-    /// 回收物体位置对应Dic
-    /// </summary>
-    private Dictionary<long, MapCellBase> hideObjDic = new Dictionary<long, MapCellBase>();
+    ///// <summary>
+    ///// 回收物体位置对应Dic
+    ///// </summary>
+    //private Dictionary<long, MapCellBase> hideObjDic = new Dictionary<long, MapCellBase>();
 
     /// <summary>
-    /// 绘制物体对应地图位置Dic
+    /// 隐藏物体二维数组
     /// </summary>
-    private Dictionary<long, MapCellBase> objDic = new Dictionary<long, MapCellBase>();
+    private MapCellBase[,] isHideObjArray = null;
+
+    ///// <summary>
+    ///// 绘制物体对应地图位置Dic
+    ///// </summary>
+    //private Dictionary<long, MapCellBase> objDic = new Dictionary<long, MapCellBase>();
+
+    /// <summary>
+    /// 绘制物体二维数组
+    /// </summary>
+    private MapCellBase[,] objArray = null;
+
 
     /// <summary>
     /// 是否已启动
     /// </summary>
     private bool isStarted = false;
-
-    /// <summary>
-    /// 绘制方式
-    /// 0: 全部绘制
-    /// 1: 绘制指定范围内部分
-    /// </summary>
-    private int drawType = 0;
 
     /// <summary>
     /// 绘制范围
@@ -129,32 +123,32 @@ public class MapDrawer : MapDrawerBase
             {
                 for (j = 0; j < width; j++)
                 {
-                    var key = Utils.GetKey(j, i);
+                    //var key = Utils.GetKey(j, i);
                     var item = array[i, j];
                     if (drawRect.Overlaps(item.GetRect()))
                     {
                         // 刷新范围内单位
                         // 如果物体已存在, 则不重复绘制
-                        if (!objDic.ContainsKey(key))
+                        if (objArray[i, j] == null)
                         {
-                            objDic.Add(key, item);
+                            objArray[i, j] = item;
                         }
-                        if (hideObjDic.ContainsKey(key))
+                        if (isHideObjArray[i, j] != null)
                         {
-                            hideObjDic.Remove(key);
+                            isHideObjArray[i, j] = null;
                         }
                         item.Show();
                     }
                     else
                     {
                         // 将范围外单位回收
-                        if (objDic.ContainsKey(key))
+                        if (objArray[i, j] != null)
                         {
-                            objDic.Remove(key);
+                            objArray[i, j] = null;
                         }
-                        if (!hideObjDic.ContainsKey(key))
+                        if (isHideObjArray[i, j] == null)
                         {
-                            hideObjDic.Add(key, item);
+                            isHideObjArray[i, j] = item;
                         }
                         item.Hide();
                     }
@@ -198,8 +192,10 @@ public class MapDrawer : MapDrawerBase
         Clear();
         mapData = mapBase;
         drawRect = rect;
-        drawType = type;
         UnitWidth = mapBase.UnitWidth;
+        isHideObjArray = new MapCellBase[mapData.MapHeight, mapData.MapWidth];
+        objArray = new MapCellBase[mapData.MapHeight, mapData.MapWidth];
+
 
         ChangeDrawRect(Utils.GetShowRect(mapCenter,
             MapWidth,
@@ -224,18 +220,15 @@ public class MapDrawer : MapDrawerBase
     /// </summary>
     public override void Draw()
     {
-        if (drawType == DrawRectDrawType)
+        // 当前范围是否移动, 如果移动则更新列表, 如果未移动则使用旧列表数据
+        if (drawRect != historyRect)
         {
-            // 当前范围是否移动, 如果移动则更新列表, 如果未移动则使用旧列表数据
-            if (drawRect != historyRect)
-            {
-                // 局部绘制控制
-                mapData.Foreach(drawAction);
-            }
+            // 局部绘制控制
+            mapData.Foreach(drawAction);
+            // 全绘制
+            mapData.DrawMap();
         }
 
-        // 全绘制
-        mapData.DrawMap();
     }
 
 
