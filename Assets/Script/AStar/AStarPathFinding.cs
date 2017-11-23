@@ -530,7 +530,7 @@ public class AStarPathFinding
                     computeY < 0 ||
                     computeX >= computeMap[0].Length ||
                     computeY >= computeMap.Length ||
-                    computeMap[computeY][computeX] == Obstacle)
+                    computeMap[computeY][computeX] > 0 ) //== Obstacle)
                 {
                     return false;
                 }
@@ -554,19 +554,19 @@ public class AStarPathFinding
         var result = 0;
         if (node != null && map != null && ValidPos(node.X, node.Y, colCount, rowCount))
         {
-            if (ValidPos(node.X + 1, node.Y, colCount, rowCount) && map[node.Y][node.X + 1] == Obstacle)
+            if (ValidPos(node.X + 1, node.Y, colCount, rowCount) && map[node.Y][node.X + 1] > 0) // == Obstacle)
             {
                 result++;
             }
-            if (ValidPos(node.X, node.Y + 1, colCount, rowCount) && map[node.Y + 1][node.X] == Obstacle)
+            if (ValidPos(node.X, node.Y + 1, colCount, rowCount) && map[node.Y + 1][node.X] > 0) // == Obstacle)
             {
                 result++;
             }
-            if (ValidPos(node.X - 1, node.Y, colCount, rowCount) && map[node.Y][node.X - 1] == Obstacle)
+            if (ValidPos(node.X - 1, node.Y, colCount, rowCount) && map[node.Y][node.X - 1] > 0) // == Obstacle)
             {
                 result++;
             }
-            if (ValidPos(node.X, node.Y - 1, colCount, rowCount) && map[node.Y - 1][node.X] == Obstacle)
+            if (ValidPos(node.X, node.Y - 1, colCount, rowCount) && map[node.Y - 1][node.X] > 0) // == Obstacle)
             {
                 result++;
             }

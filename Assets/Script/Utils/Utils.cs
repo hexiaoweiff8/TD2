@@ -72,7 +72,7 @@ public class Utils
     public static int[] PositionToNum(Vector3 planePosOffset, Vector3 position, float unitWidth, float mapWidth, float mapHight)
     {
         var x = (int)((position.x - planePosOffset.x + mapWidth * unitWidth * 0.5f) / unitWidth);
-        var y = (int)((position.z - planePosOffset.z + mapHight * unitWidth * 0.5f) / unitWidth);
+        var y = (int)((position.y - planePosOffset.y + mapHight * unitWidth * 0.5f) / unitWidth);
         if (x < 0)
         {
             x = 0;
@@ -108,11 +108,38 @@ public class Utils
             planePosOffset.x - mapWidth * unitWidth * 0.5f
             //+ unitWidth * 0.5f 
             + num.x * unitWidth,
-            planePosOffset.y,
-            planePosOffset.z - mapHight * unitWidth * 0.5f
+            planePosOffset.y - mapHight * unitWidth * 0.5f
             //+ unitWidth * 0.5f
-            + num.y * unitWidth);
+            + num.y * unitWidth,
+            planePosOffset.z 
+            //- mapHight * unitWidth * 0.5f
+            ////+ unitWidth * 0.5f
+            //+ num.y * unitWidth
+            );
 
+        return result;
+    }
+
+    /// <summary>
+    /// 行列位置转换列表
+    /// </summary>
+    /// <param name="planePosOffset">地图底板位置偏移</param>
+    /// <param name="nodeList">map中的行列位置列表</param>
+    /// <param name="unitWidth">单位宽度</param>
+    /// <param name="mapWidth">地图宽度</param>
+    /// <param name="mapHight">地图高度</param>
+    /// <returns>转换后位置列表</returns>
+    public static List<Vector3> NumToPostionByList(Vector3 planePosOffset, IList<Node> nodeList, float unitWidth, float mapWidth, float mapHight)
+    {
+        List<Vector3> result = null;
+        if (nodeList != null && nodeList.Count > 0)
+        {
+            result = new List<Vector3>();
+            foreach (var node in nodeList)
+            {
+                result.Add(NumToPosition(planePosOffset, new Vector2(node.X, node.Y), unitWidth, mapWidth, mapHight));
+            }
+        }
         return result;
     }
 

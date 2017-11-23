@@ -185,7 +185,7 @@ public class MapManager : SingleItem<MapManager>
 
                     // 添加地图单元数组
                     var mapCellArray = GetCells(mapData, (UnitType)level);
-                    result.AddMapCellArray(mapCellArray, level);
+                    result.AddMapCellArray(mapCellArray, mapData, level);
                 }
                 else
                 {

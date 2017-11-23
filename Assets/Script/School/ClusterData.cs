@@ -176,16 +176,16 @@ public class ClusterData: PositionObject
         plusQuality = 0;
     }
 
-//#if UNITY_EDITOR
-//    public void Update()
-//    {
-//        // 显示所有路径点
-//        foreach (var point in targetQueue)
-//        {
-//            Utils.DrawRect(point, ClusterManager.Single.UnitWidth, ClusterManager.Single.UnitWidth, 0, Color.green);
-//        }
-//    }
-//#endif
+#if UNITY_EDITOR
+    public void Do()
+    {
+        // 显示所有路径点
+        foreach (var point in targetQueue)
+        {
+            Utils.DrawRect(point, ClusterManager.Single.UnitWidth, ClusterManager.Single.UnitWidth, 0, Color.magenta);
+        }
+    }
+#endif
 
     public void Destory() {
         // 销毁时从列表中消除当前队员

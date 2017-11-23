@@ -51,11 +51,11 @@ public class FightManager : SingleItem<FightManager>
         // TODO 创建玩家层
         // TODO 路标
         // TODO 敌方数据
-        LoadPlayer();
+        LoadPlayer(mapBase);
     }
 
     /// <summary>
-    /// 加载障碍曾
+    /// 加载障碍层
     /// </summary>
     public void LoadObstacle(MapBase mapBase)
     {
@@ -75,7 +75,7 @@ public class FightManager : SingleItem<FightManager>
             {
                 var cell = obLayer[i, j];
                 // 判断该位置是否有障碍物
-                if (cell.DataId >= 0)
+                if (cell != null && cell.DataId > 0)
                 {
                     // 从数据中获取该障碍物的信息
                     var dataRow = DataPacker.Single.GetDataItem(UnitFictory.ObstacleTableName).GetRowById(cell.DataId.ToString());
@@ -92,17 +92,14 @@ public class FightManager : SingleItem<FightManager>
 
                     ClusterManager.Single.Add(ob);
                 }
-
             }
         }
-
-
     }
 
     /// <summary>
     /// 创建玩家
     /// </summary>
-    public void LoadPlayer()
+    public void LoadPlayer(MapBase mapBase)
     {
 
         // TODO 创建测试单位
@@ -121,14 +118,21 @@ public class FightManager : SingleItem<FightManager>
             UnitWidth = MapDrawer.Single.UnitWidth
         }, UnitFictory.Single.GetUnit(UnitType.FightUnit, 1001));
 
-
-        school.MaxSpeed = 10;
+        // 地图数据
+        // 寻路 获取路径
+        // 获取起始点位置
+        // 获取目标点位置
+        // 单位宽度
+        var mapArray = mapBase.GetMapArray(MapManager.MapObstacleLayer);
+        var posList = AStarPathFinding.SearchRoad(mapArray, 0, 0, 20, 20, 1, 1);
+        school.MaxSpeed = 100;
         school.RotateSpeed = 10;
         school.ItemObj.transform.localPosition = new Vector3(-700, -100, 0);
         school.ItemObj.name = "item" + 1;
-        school.TargetPos = new Vector3(-700, -100, 0);
+        //school.TargetPos = new Vector3(-700, -100, 0);
+        school.PushTargetList(Utils.NumToPostionByList(mapBase.MapCenter, posList, mapBase.UnitWidth, mapBase.MapWidth, mapBase.MapHeight));
         school.Diameter = 1;
-        //school.PushTargetList(Utils.NumToPostionByList(LoadMap.transform.position, cloneList, UnitWidth, MapWidth, MapHeight));
+        
         // 目标选择权重
         var fightData = new SelectWeightData();
         // 选择目标数据

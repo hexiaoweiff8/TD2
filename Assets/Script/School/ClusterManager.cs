@@ -353,6 +353,10 @@ public class ClusterManager : ILoopItem
         member.Position += member.SpeedDirection * Time.deltaTime;
         // 前进
         Debug.DrawLine(member.Position, member.Position + member.SpeedDirection, Color.white);
+        
+#if UNITY_EDITOR
+        member.Do();
+#endif
     }
 
     /// <summary>

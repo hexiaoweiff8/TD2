@@ -85,6 +85,8 @@ public class MapEditor : MonoBehaviour
         new KeyValuePair<int, string>(3, "障碍3"),
         new KeyValuePair<int, string>(4, "障碍4"),
         new KeyValuePair<int, string>(5, "障碍5"),
+        new KeyValuePair<int, string>(101, "出口"),
+        new KeyValuePair<int, string>(102, "如入口"),
     };
 
     /// <summary>
@@ -125,6 +127,21 @@ public class MapEditor : MonoBehaviour
     /// 层级3
     /// </summary>
     public const int LayerLevel3 = 14;
+
+    /// <summary>
+    /// 第一层默认值
+    /// </summary>
+    public int LayerLevel1Default = 1;
+
+    /// <summary>
+    /// 第二层默认值
+    /// </summary>
+    public int LayerLevel2Default = 0;
+
+    /// <summary>
+    /// 第三层默认值
+    /// </summary>
+    public int LayerLevel3Default = 0;
 
 
     //--------------------私有属性-----------------------
@@ -200,6 +217,8 @@ public class MapEditor : MonoBehaviour
         {4, Color.green},
         {5, Color.red},
         {6, Color.yellow},
+        {101, Color.cyan},
+        {102, Color.magenta},
     };
 
 
@@ -287,14 +306,35 @@ public class MapEditor : MonoBehaviour
             for (var row = 0; row < MapHeight; row++)
             {
                 mapLevel1[row] = new int[MapWidth];
+                if (LayerLevel1Default != 0)
+                {
+                    for (var col = 0; col < MapWidth; col++)
+                    {
+                        mapLevel1[row][col] = LayerLevel1Default;
+                    }
+                }
             }
             for (var row = 0; row < MapHeight; row++)
             {
                 mapLevel2[row] = new int[MapWidth];
+                if (LayerLevel2Default != 0)
+                {
+                    for (var col = 0; col < MapWidth; col++)
+                    {
+                        mapLevel2[row][col] = LayerLevel2Default;
+                    }
+                }
             }
             for (var row = 0; row < MapHeight; row++)
             {
                 mapLevel3[row] = new int[MapWidth];
+                if (LayerLevel3Default != 0)
+                {
+                    for (var col = 0; col < MapWidth; col++)
+                    {
+                        mapLevel3[row][col] = LayerLevel3Default;
+                    }
+                }
             }
 
             // 初始化优化数据
@@ -616,9 +656,9 @@ public class MapEditor : MonoBehaviour
     {
         // TODO 弹出框强制输入文件名称
         var window = EditorWindow.GetWindow<EditMapNameWindow>(true, "地图保存");
+        window.MapData.Push(IntArrayArrayToString(mapLevel3));
         window.MapData.Push(IntArrayArrayToString(mapLevel2));
         window.MapData.Push(IntArrayArrayToString(mapLevel1));
-        window.MapData.Push(IntArrayArrayToString(mapLevel3));
         window.Start();
     }
 

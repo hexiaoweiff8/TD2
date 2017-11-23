@@ -68,6 +68,11 @@ public class MapBase
     private Dictionary<int, MapCellBase[,]> mapCellArrayDic = new Dictionary<int, MapCellBase[,]>();
 
     /// <summary>
+    /// 地图数据字典
+    /// </summary>
+    private Dictionary<int, int[][]> mapArrayDic = new Dictionary<int, int[][]>();
+
+    /// <summary>
     /// 地图高度
     /// </summary> 
     private int mapHeight;
@@ -110,13 +115,14 @@ public class MapBase
     /// </summary>
     /// <param name="mapCellArray">地图层数据</param>
     /// <param name="layer">数据所在层</param>
-    public void AddMapCellArray([NotNull]MapCellBase[,] mapCellArray, int layer)
+    public void AddMapCellArray([NotNull]MapCellBase[,] mapCellArray, [NotNull]int[][] mapArray, int layer)
     {
         if (mapCellArrayDic.ContainsKey(layer))
         {
             throw new Exception("该层已存在:" + layer);
         }
         mapCellArrayDic.Add(layer, mapCellArray);
+        mapArrayDic.Add(layer, mapArray);
     }
 
     /// <summary>
@@ -220,7 +226,7 @@ public class MapBase
 
 
     /// <summary>
-    /// 获取地图Array
+    /// 获取地图CellArray
     /// </summary>
     /// <returns>地图数据</returns>
     public MapCellBase[,] GetMapCellArray(int layer)
@@ -230,6 +236,20 @@ public class MapBase
             throw new Exception("不存在地图层:" + layer);
         }
         return mapCellArrayDic[layer];
+    }
+
+    /// <summary>
+    /// 获取地图Array
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <returns></returns>
+    public int[][] GetMapArray(int layer)
+    {
+        if (!mapArrayDic.ContainsKey(layer))
+        {
+            throw new Exception("不存在地图层:" + layer);
+        }
+        return mapArrayDic[layer];
     }
 
     /// <summary>
