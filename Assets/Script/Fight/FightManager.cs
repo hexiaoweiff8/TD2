@@ -88,36 +88,34 @@ public class FightManager : SingleItem<FightManager>
                 // 判断该位置是否有障碍物
                 if (cell != null && cell.DataId > 0)
                 {
-                    // 从数据中获取该障碍物的信息
-                    var dataRow = DataPacker.Single.GetDataItem(UnitFictory.ObstacleTableName).GetRowById(cell.DataId.ToString());
-                    var diameter = dataRow.GetInt("Diameter");
-                    var ob = new FixtureData(new AllData
-                    {
-                        MemberData = new MemberData
-                        {
-                            SpaceSet = diameter
-                        },
-                        UnitWidth = MapDrawer.Single.UnitWidth,
-                        GraphicType = GraphicType.Rect
-                    }, cell);
-
-                    ClusterManager.Single.Add(ob);
-
                     if (cell.DataId == MapManager.OutMosterPointId)
                     {
                         // 出兵点位置
                     }
-                    if (cell.DataId == MapManager.InMonsterPointId)
+                    else if (cell.DataId == MapManager.InMonsterPointId)
                     {
                         // 入兵点位置
+                    }
+                    else
+                    {
+                        // 从数据中获取该障碍物的信息
+                        var dataRow = DataPacker.Single.GetDataItem(UnitFictory.ObstacleTableName).GetRowById(cell.DataId.ToString());
+                        var diameter = dataRow.GetInt("Diameter");
+                        var ob = new FixtureData(new AllData
+                        {
+                            MemberData = new MemberData
+                            {
+                                SpaceSet = diameter
+                            },
+                            UnitWidth = MapDrawer.Single.UnitWidth,
+                            GraphicType = GraphicType.Rect
+                        }, cell);
+                        ClusterManager.Single.Add(ob);
                     }
                 }
             }
         }
 
-        // 出兵点
-
-        // 入兵点
     }
 
     /// <summary>
