@@ -171,9 +171,9 @@ public class MapDrawer : MapDrawerBase
         if (mapData != null && isStarted)
         {
             // 绘制线
-        #if UNITY_EDITOR
-            mapData.DrawLine();
-        #endif
+        //#if UNITY_EDITOR
+        //    mapData.DrawLine();
+        //#endif
             Draw();
         }
         // 更新地图单元相对位置

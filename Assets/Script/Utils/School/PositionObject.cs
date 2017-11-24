@@ -176,7 +176,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// <summary>
     /// 当前对象的gameobject的引用
     /// </summary>
-    public GameObject ItemObj
+    public GameObject MapCell
     {
         get { return MepCell.GameObj.gameObject; }
     }

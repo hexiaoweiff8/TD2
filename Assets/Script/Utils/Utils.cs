@@ -72,7 +72,7 @@ public class Utils
     public static int[] PositionToNum(Vector3 planePosOffset, Vector3 position, float unitWidth, float mapWidth, float mapHight)
     {
         var x = (int)((position.x - planePosOffset.x + mapWidth * unitWidth * 0.5f) / unitWidth);
-        var y = (int)((position.y - planePosOffset.y + mapHight * unitWidth * 0.5f) / unitWidth);
+        var y = (int)((position.z - planePosOffset.z + mapHight * unitWidth * 0.5f) / unitWidth);
         if (x < 0)
         {
             x = 0;
@@ -102,20 +102,40 @@ public class Utils
     /// <param name="mapWidth">地图宽度</param>
     /// <param name="mapHight">地图高度</param>
     /// <returns>当前plane对应位置, 固定位置的中心点</returns>
-    public static Vector3 NumToPosition(Vector3 planePosOffset, Vector2 num, float unitWidth, float mapWidth, float mapHight)
+    public static Vector3 NumToPositionV(Vector3 planePosOffset, Vector2 num, float unitWidth, float mapWidth, float mapHight)
+    {
+        // 中心位置为基准
+        var result = new Vector3(
+            planePosOffset.x - mapWidth * unitWidth * 0.5f
+            + num.x * unitWidth
+            + unitWidth * 0.5f, // 统一中心坐标系
+            planePosOffset.y,
+            planePosOffset.z - mapHight * unitWidth * 0.5f
+            + num.y * unitWidth
+            + unitWidth * 0.5f); // 统一中心坐标系
+
+        return result;
+    }
+
+    /// <summary>
+    /// 行列转位置
+    /// </summary>
+    /// <param name="planePosOffset">地图底板位置偏移</param>
+    /// <param name="num">map中的行列位置</param>
+    /// <param name="unitWidth">单位宽度</param>
+    /// <param name="mapWidth">地图宽度</param>
+    /// <param name="mapHight">地图高度</param>
+    /// <returns>当前plane对应位置, 固定位置的中心点</returns>
+    public static Vector3 NumToPositionH(Vector3 planePosOffset, Vector2 num, float unitWidth, float mapWidth, float mapHight)
     {
         var result = new Vector3(
             planePosOffset.x - mapWidth * unitWidth * 0.5f
-            //+ unitWidth * 0.5f 
-            + num.x * unitWidth,
+            + num.x * unitWidth
+            + unitWidth * 0.5f, // 统一中心坐标系
             planePosOffset.y - mapHight * unitWidth * 0.5f
-            //+ unitWidth * 0.5f
-            + num.y * unitWidth,
-            planePosOffset.z 
-            //- mapHight * unitWidth * 0.5f
-            ////+ unitWidth * 0.5f
-            //+ num.y * unitWidth
-            );
+            + num.y * unitWidth
+            + unitWidth * 0.5f, // 统一中心坐标系
+            planePosOffset.z);
 
         return result;
     }
@@ -137,7 +157,7 @@ public class Utils
             result = new List<Vector3>();
             foreach (var node in nodeList)
             {
-                result.Add(NumToPosition(planePosOffset, new Vector2(node.X, node.Y), unitWidth, mapWidth, mapHight));
+                result.Add(NumToPositionH(planePosOffset, new Vector2(node.X, node.Y), unitWidth, mapWidth, mapHight));
             }
         }
         return result;

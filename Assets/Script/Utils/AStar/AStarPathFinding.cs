@@ -509,33 +509,50 @@ public class AStarPathFinding
         {
             return false;
         }
+        var x = nowNode.X;
+        var y = nowNode.Y;
         var halfX = (int)(diameterX * 0.5f);
         var halfY = (int)(diameterY * 0.5f);
-        // TODO 优化方案 差值判断不同区域, 重复区域忽略
-        // 遍历直径内的点
-        // 优化, 中间忽略, 只判断外圈
-        for (var i = -halfX; i < halfX; i++)
+        // 只有一点, 判断当前点
+        if (halfX == 0 || halfY == 0)
         {
-            for (var j = -halfY; j < halfY; j++)
+            if (x >= computeMap[0].Length ||
+                y >= computeMap.Length ||
+                computeMap[y][x] > 0) //== Obstacle)
             {
-                if (i > 0 && i < diameterX - 1 && j > 0 && j < diameterY - 1)
+                return false;
+            }
+        }
+        else
+        {
+            // TODO 优化方案 差值判断不同区域, 重复区域忽略
+            // 遍历直径内的点
+            // 优化, 中间忽略, 只判断外圈
+            for (var i = -halfX; i < halfX; i++)
+            {
+                for (var j = -halfY; j < halfY; j++)
                 {
-                    continue;
-                }
-                var computeX = nowNode.X + i;
-                var computeY = nowNode.Y + j;
-                // 判断点的位置是否合法
-                // 判断斜向运动时
-                if (computeX < 0 ||
-                    computeY < 0 ||
-                    computeX >= computeMap[0].Length ||
-                    computeY >= computeMap.Length ||
-                    computeMap[computeY][computeX] > 0 ) //== Obstacle)
-                {
-                    return false;
+                    if (i > 0 && i < diameterX - 1 && j > 0 && j < diameterY - 1)
+                    {
+                        continue;
+                    }
+                    var computeX = x + i;
+                    var computeY = x + j;
+                    // 判断点的位置是否合法
+                    // 判断斜向运动时
+                    if (computeX < 0 ||
+                        computeY < 0 ||
+                        computeX >= computeMap[0].Length ||
+                        computeY >= computeMap.Length ||
+                        computeMap[computeY][computeX] > 0) //== Obstacle)
+                    {
+                        return false;
+                    }
                 }
             }
         }
+
+
         //Debug.Log(string.Format("{0:#.#######}",Time.realtimeSinceStartup - now));
 
         return true;

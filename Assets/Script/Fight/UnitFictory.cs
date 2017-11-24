@@ -79,11 +79,12 @@ public class UnitFictory : SingleItem<UnitFictory>
                     dataId,
                     MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
 
-                result = new NPC(go, dataId, MapManager.MapNpcLayer);
+                result = new Npc(go, dataId, MapManager.MapNpcLayer);
                 go.name = result.MapCellId.ToString();
             }
                 break;
         }
+
 
         return result;
     }

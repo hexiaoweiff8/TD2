@@ -190,40 +190,7 @@ public class MapBase
         mapHeight = height;
         mapCellArrayDic.Clear();
     }
-
-
-    ///// <summary>
-    ///// 推入地图单元
-    ///// </summary>
-    ///// <param name="mapCell">地图单元类</param>
-    ///// <param name="posX">所在位置X</param>
-    ///// <param name="posY">所在位置Y</param>
-    //public void PushMapCell(MapCellBase mapCell, int posX, int posY)
-    //{
-    //    if (mapCell == null)
-    //    {
-    //        Debug.LogError("地图单元为空");
-    //        return;
-    //    }
-    //    // 验证x与y是否越界
-    //    if (posX + 1 > mapWidth || posX < 0)
-    //    {
-    //        Debug.LogError("地图X越界:" + posX);
-    //        return;
-    //    }
-    //    if (posY + 1 > mapWidth || posY < 0)
-    //    {
-    //        Debug.LogError("地图Y越界:" + posY);
-    //        return;
-    //    }
-
-    //    if (mapCellArray != null)
-    //    {
-    //        mapCellArray[posY, posX] = mapCell;
-    //    }
-
-    //}
-
+    
 
     /// <summary>
     /// 获取地图CellArray
@@ -270,7 +237,7 @@ public class MapBase
                 }
             }
         }
-
+        mapArrayDic.Clear();
         mapCellArrayDic.Clear();
     }
 
@@ -313,8 +280,8 @@ public class MapBase
 
         this.unitWidth = unitWidth;
         // 地图半宽高
-        var halfWidht = mapWidth * unitWidth * 0.5f;
-        var halfHeight = mapHeight * unitWidth * 0.5f;
+        var halfWidht = mapWidth * unitWidth * 0.5f - unitWidth * 0.5f;
+        var halfHeight = mapHeight * unitWidth * 0.5f - unitWidth * 0.5f;
         // 取矩形四角点
         leftup = new Vector2(MapCenter.x - halfWidht, MapCenter.y + halfHeight);
         rightup = new Vector2(MapCenter.x + halfWidht, MapCenter.y + halfHeight);
@@ -432,8 +399,8 @@ public abstract class MapCellBase
 
         if (X != historyXForDraw || Y != historyYForDraw)
         {
-            GameObj.transform.position = new Vector3(leftdown.x + X*unitWidth + unitWidth*0.5f,
-                leftdown.y + Y * unitWidth + unitWidth * 0.5f);
+            GameObj.transform.position = new Vector3(leftdown.x + X*unitWidth,
+                leftdown.y + Y * unitWidth);
             historyXForDraw = X;
             historyYForDraw = Y;
         }
@@ -475,82 +442,3 @@ public abstract class MapCellBase
     }
 }
 
-
-/// <summary>
-/// 地图单元
-/// </summary>
-public class MapCell : MapCellBase
-{
-    /// <summary>
-    /// 初始化地图单元
-    /// </summary>
-    /// <param name="obj">游戏物体</param>
-    /// <param name="dataId">数据Id</param>
-    /// <param name="drawLayer">绘制层级</param>
-    public MapCell(GameObject obj, int dataId, int drawLayer)
-        : base(obj, dataId, drawLayer)
-    {
-        MapCellType = UnitType.MapCell;
-    }
-}
-
-
-
-
-/// <summary>
-/// 障碍物
-/// </summary>
-public class Obstacle : MapCellBase
-{
-    /// <summary>
-    /// 初始化障碍物
-    /// </summary>
-    /// <param name="obj">游戏物体</param>
-    /// <param name="dataId">数据Id</param>
-    /// <param name="drawLayer">绘制层级</param>
-    public Obstacle(GameObject obj, int dataId, int drawLayer)
-        : base(obj, dataId, drawLayer)
-    {
-        MapCellType = UnitType.Obstacle;
-    }
-}
-
-
-
-/// <summary>
-/// FightUnit
-/// </summary>
-public class FightUnit : MapCellBase
-{
-    /// <summary>
-    /// 初始化战斗单位
-    /// </summary>
-    /// <param name="obj">游戏物体</param>
-    /// <param name="dataId">数据Id</param>
-    /// <param name="drawLayer">绘制层级</param>
-    public FightUnit(GameObject obj, int dataId, int drawLayer)
-        : base(obj, dataId, drawLayer)
-    {
-        MapCellType = UnitType.FightUnit;
-    }
-}
-
-
-
-/// <summary>
-/// NPC
-/// </summary>
-public class NPC : MapCellBase
-{
-    /// <summary>
-    /// 初始化NPC
-    /// </summary>
-    /// <param name="obj">游戏物体</param>
-    /// <param name="dataId">数据Id</param>
-    /// <param name="drawLayer">绘制层级</param>
-    public NPC(GameObject obj, int dataId, int drawLayer)
-        : base(obj, dataId, drawLayer)
-    {
-        MapCellType = UnitType.NPC;
-    }
-}

@@ -47,6 +47,16 @@ public class MapManager : SingleItem<MapManager>
     public const int LoadMapLevelCount = 3;
 
     /// <summary>
+    /// 出兵点Id
+    /// </summary>
+    public const int OutMosterPointId = 101;
+
+    /// <summary>
+    /// 入兵点Id
+    /// </summary>
+    public const int InMonsterPointId = 102;
+
+    /// <summary>
     /// 地图文件地址
     /// </summary>
     public const string MapDataFilePath = @"MapData\mapdata";
@@ -139,6 +149,7 @@ public class MapManager : SingleItem<MapManager>
     {
         // 构建销毁方法
         MapDrawer.Single.Clear();
+        mapBaseDic.Clear();
     }
 
 

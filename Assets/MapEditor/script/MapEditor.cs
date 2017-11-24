@@ -581,7 +581,7 @@ public class MapEditor : MonoBehaviour
                         // 创建该位置标志
                         newObstacler = CreateObstacler(ObstaclerList == null ? null : ObstaclerList.transform,
                             new Vector3(UnitWidth, UnitWidth, UnitWidth),
-                            Utils.NumToPosition(Plane.transform.position + Vector3.up * UnitWidth + new Vector3(UnitWidth * 0.5f, 0, UnitWidth * 0.5f),
+                            Utils.NumToPositionV(Plane.transform.position + Vector3.up * UnitWidth, // + new Vector3(UnitWidth * 0.5f, 0, UnitWidth * 0.5f),
                             new Vector2(col, row),
                             UnitWidth,
                             MapWidth,

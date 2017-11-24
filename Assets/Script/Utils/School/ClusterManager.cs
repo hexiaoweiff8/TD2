@@ -478,7 +478,7 @@ public class ClusterManager : ILoopItem
             member.State = SchoolItemState.Moving;
             if (member.Moveing != null)
             {
-                member.Moveing(member.ItemObj);
+                member.Moveing(member.MapCell);
             }
         }
 
@@ -490,7 +490,7 @@ public class ClusterManager : ILoopItem
                 member.State = SchoolItemState.Waiting;
                 if (member.Wait != null)
                 {
-                    member.Wait(member.ItemObj);
+                    member.Wait(member.MapCell);
                 }
             }
         }
@@ -503,7 +503,7 @@ public class ClusterManager : ILoopItem
                 member.State = SchoolItemState.Moving;
                 if (member.Moveing != null)
                 {
-                    member.Moveing(member.ItemObj);
+                    member.Moveing(member.MapCell);
                 }
             }
         }
@@ -519,7 +519,7 @@ public class ClusterManager : ILoopItem
                     // 单位状态修改为complete
                     member.State = SchoolItemState.Complete;
                     // 调用到达
-                    if (member.Complete != null) { member.Complete(member.ItemObj); }
+                    if (member.Complete != null) { member.Complete(member.MapCell); }
                 }
             }
         }

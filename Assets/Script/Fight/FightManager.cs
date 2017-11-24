@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 /// <summary>
@@ -9,6 +10,11 @@ using UnityEngine;
 /// </summary>
 public class FightManager : SingleItem<FightManager>
 {
+
+    /// <summary>
+    /// 出兵点位置
+    /// </summary>
+    private List<Vector2> outMonsterPointList = new List<Vector2>();
     /// <summary>
     /// 开启章节
     /// </summary>
@@ -42,22 +48,27 @@ public class FightManager : SingleItem<FightManager>
 
 
         // 获得地图障碍列表
-        LoadObstacle(mapBase);
-        // TODO 初始化的时候只初始化显示范围内单位, 其他部分协程加载
+        LoadObstacleLayer(mapBase);
+        // ---- 初始化的时候只初始化显示范围内单位, 其他部分协程加载
         // TODO 获得地图NPC列表
-        // TODO 获得地图敌人列表
         // TODO 获取玩家数据
         // 启动战斗单元
         // TODO 创建玩家层
         // TODO 路标
         // TODO 敌方数据
+        // TODO 出兵位置产兵
         LoadPlayer(mapBase);
+
+
+
+
+        mapBase.DrawMap();
     }
 
     /// <summary>
     /// 加载障碍层
     /// </summary>
-    public void LoadObstacle(MapBase mapBase)
+    public void LoadObstacleLayer([NotNull]MapBase mapBase)
     {
         // 获取障碍层
         var obLayer = mapBase.GetMapCellArray(MapManager.MapObstacleLayer);
@@ -80,9 +91,9 @@ public class FightManager : SingleItem<FightManager>
                     // 从数据中获取该障碍物的信息
                     var dataRow = DataPacker.Single.GetDataItem(UnitFictory.ObstacleTableName).GetRowById(cell.DataId.ToString());
                     var diameter = dataRow.GetInt("Diameter");
-                    var ob = new FixtureData(new AllData()
+                    var ob = new FixtureData(new AllData
                     {
-                        MemberData = new MemberData()
+                        MemberData = new MemberData
                         {
                             SpaceSet = diameter
                         },
@@ -91,9 +102,22 @@ public class FightManager : SingleItem<FightManager>
                     }, cell);
 
                     ClusterManager.Single.Add(ob);
+
+                    if (cell.DataId == MapManager.OutMosterPointId)
+                    {
+                        // 出兵点位置
+                    }
+                    if (cell.DataId == MapManager.InMonsterPointId)
+                    {
+                        // 入兵点位置
+                    }
                 }
             }
         }
+
+        // 出兵点
+
+        // 入兵点
     }
 
     /// <summary>
@@ -124,11 +148,11 @@ public class FightManager : SingleItem<FightManager>
         // 获取目标点位置
         // 单位宽度
         var mapArray = mapBase.GetMapArray(MapManager.MapObstacleLayer);
-        var posList = AStarPathFinding.SearchRoad(mapArray, 0, 0, 20, 20, 1, 1);
+        var posList = AStarPathFinding.SearchRoad(mapArray, 0, 0, 1, 8, 1, 1);
         school.MaxSpeed = 100;
         school.RotateSpeed = 10;
-        school.ItemObj.transform.localPosition = new Vector3(-700, -100, 0);
-        school.ItemObj.name = "item" + 1;
+        school.MapCell.transform.localPosition = new Vector3(-700, -100, 0);
+        school.MapCell.name = "item" + 1;
         //school.TargetPos = new Vector3(-700, -100, 0);
         school.PushTargetList(Utils.NumToPostionByList(mapBase.MapCenter, posList, mapBase.UnitWidth, mapBase.MapWidth, mapBase.MapHeight));
         school.Diameter = 1;
