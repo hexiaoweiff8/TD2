@@ -85,8 +85,6 @@ public class MapEditor : MonoBehaviour
         new KeyValuePair<int, string>(3, "障碍3"),
         new KeyValuePair<int, string>(4, "障碍4"),
         new KeyValuePair<int, string>(5, "障碍5"),
-        new KeyValuePair<int, string>(101, "出口"),
-        new KeyValuePair<int, string>(102, "如入口"),
     };
 
     /// <summary>
@@ -99,6 +97,8 @@ public class MapEditor : MonoBehaviour
         new KeyValuePair<int, string>(3, "NPC3"),
         new KeyValuePair<int, string>(4, "NPC4"),
         new KeyValuePair<int, string>(5, "NPC5"),
+        new KeyValuePair<int, string>(101, "出口"),
+        new KeyValuePair<int, string>(102, "入口"),
     };
 
     //--------------------常量---------------------------
