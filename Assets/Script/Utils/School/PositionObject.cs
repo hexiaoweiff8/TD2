@@ -14,7 +14,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// <summary>
     /// 单位数据
     /// </summary>
-    public MapCellBase MepCell { get; set; }
+    public MapCellBase MapCell { get; set; }
 
     /// <summary>
     /// 所有数据持有
@@ -45,7 +45,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
                     case GraphicType.Rect:
                         collisionGraphics =
                     new RectGraphics(
-                        new Vector2(MepCell.GameObj.transform.position.x, MepCell.GameObj.transform.position.y),
+                        new Vector2(MapCell.GameObj.transform.position.x, MapCell.GameObj.transform.position.y),
                         allData.MemberData.SpaceSet * allData.UnitWidth,
                         allData.MemberData.SpaceSet * allData.UnitWidth,
                         0);
@@ -55,14 +55,14 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
                     default:
                         collisionGraphics =
                     new CircleGraphics(
-                        new Vector2(MepCell.GameObj.transform.position.x, MepCell.GameObj.transform.position.y),
+                        new Vector2(MapCell.GameObj.transform.position.x, MapCell.GameObj.transform.position.y),
                         allData.MemberData.SpaceSet * 0.5f * allData.UnitWidth);
                         break;
                 }
                 
             }
-            collisionGraphics.Postion = new Vector2(MepCell.GameObj.transform.position.x,
-                MepCell.GameObj.transform.position.y);
+            collisionGraphics.Postion = new Vector2(MapCell.GameObj.transform.position.x,
+                MapCell.GameObj.transform.position.y);
             return collisionGraphics;
         }
         set { collisionGraphics = value; }
@@ -110,9 +110,9 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// </summary>
     public Vector3 Position
     {
-        get { return MepCell.GameObj.transform.position; }
+        get { return MapCell.GameObj.transform.position; }
         set
-        { MepCell.GameObj.transform.position = value; }
+        { MapCell.GameObj.transform.position = value; }
     }
 
     /// <summary>
@@ -120,11 +120,11 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// </summary>
     public float X
     {
-        get { return MepCell.GameObj.transform.position.x; }
+        get { return MapCell.GameObj.transform.position.x; }
         set
         {
-            MepCell.GameObj.transform.position = new Vector3(value, MepCell.GameObj.transform.position.y,
-                MepCell.GameObj.transform.position.z);
+            MapCell.GameObj.transform.position = new Vector3(value, MapCell.GameObj.transform.position.y,
+                MapCell.GameObj.transform.position.z);
         }
     }
 
@@ -133,11 +133,11 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// </summary>
     public float Y
     {
-        get { return MepCell.GameObj.transform.position.z; }
+        get { return MapCell.GameObj.transform.position.z; }
         set
         {
-            MepCell.GameObj.transform.position = new Vector3(MepCell.GameObj.transform.position.x,
-                MepCell.GameObj.transform.position.y, value);
+            MapCell.GameObj.transform.position = new Vector3(MapCell.GameObj.transform.position.x,
+                MapCell.GameObj.transform.position.y, value);
         }
     }
 
@@ -156,7 +156,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// </summary>
     public Vector3 Rotate
     {
-        set { MepCell.GameObj.transform.Rotate(value); }
+        set { MapCell.GameObj.transform.Rotate(value); }
     }
 
     /// <summary>
@@ -164,21 +164,21 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// </summary>
     public Vector3 Direction
     {
-        get { return MepCell.GameObj.transform.forward; }
-        set { MepCell.GameObj.transform.forward = value; }
+        get { return MapCell.GameObj.transform.forward; }
+        set { MapCell.GameObj.transform.forward = value; }
     }
 
     public Vector3 DirectionRight
     {
-        get { return MepCell.GameObj.transform.forward; }
+        get { return MapCell.GameObj.transform.forward; }
     }
 
     /// <summary>
     /// 当前对象的gameobject的引用
     /// </summary>
-    public GameObject MapCell
+    public GameObject MapCellObj
     {
-        get { return MepCell.GameObj.gameObject; }
+        get { return MapCell.GameObj.gameObject; }
     }
 
     /// <summary>
@@ -323,7 +323,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     {
         // 设置MemberData
         this.allData = allData;
-        this.MepCell = mapCell;
+        this.MapCell = mapCell;
     }
 
 
@@ -349,7 +349,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// <param name="target">目标点</param>
     public void RotateToWithoutYAxis(Vector3 target)
     {
-        MepCell.GameObj.transform.LookAt(new Vector3(target.x, MepCell.GameObj.transform.position.y, target.z));
+        MapCell.GameObj.transform.LookAt(new Vector3(target.x, MapCell.GameObj.transform.position.y, target.z));
     }
 
     /// <summary>

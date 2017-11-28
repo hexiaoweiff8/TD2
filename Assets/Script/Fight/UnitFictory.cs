@@ -39,7 +39,7 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// <param name="unitType">单位类型</param>
     /// <param name="dataId">数据ID</param>
     /// <returns>地图单元类</returns>
-    public MapCellBase GetUnit(UnitType unitType, int dataId)
+    public MapCellBase CreateUnit(UnitType unitType, int dataId)
     {
         MapCellBase result = null;
         switch (unitType)
@@ -59,6 +59,7 @@ public class UnitFictory : SingleItem<UnitFictory>
                 var go = GetGameObject(MapCellTableName,
                     dataId,
                     MapDrawer.Single.ItemParentList[MapManager.MapObstacleLayer]);
+
                 result = new Obstacle(go, dataId, MapManager.MapObstacleLayer);
                 go.name = result.MapCellId.ToString();
             }
@@ -79,9 +80,97 @@ public class UnitFictory : SingleItem<UnitFictory>
                     dataId,
                     MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
 
-                result = new Npc(go, dataId, MapManager.MapNpcLayer);
+                // TODO 区分出兵点入兵点
+                switch (dataId)
+                {
+                    case 101:
+                        result = new OutMonsterPoint(go, dataId, MapManager.MapObstacleLayer);
+                        break;
+                    case 102:
+                        result = new InMonsterPoint(go, dataId, MapManager.MapObstacleLayer);
+                        break;
+                    default:
+                        result = new Npc(go, dataId, MapManager.MapNpcLayer);
+                        break;
+                }
                 go.name = result.MapCellId.ToString();
             }
+            break;
+            //case UnitType.OutPoint: // 出兵点
+            //{
+            //    var go = GetGameObject(MapCellTableName,
+            //        dataId,
+            //        MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
+
+            //    result = new OutMonsterPoint(go, dataId, MapManager.MapNpcLayer);
+            //    go.name = result.MapCellId.ToString();
+            //}
+            //break;
+            //case UnitType.InPoint: // 入兵点
+            //{
+            //    var go = GetGameObject(MapCellTableName,
+            //        dataId,
+            //        MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
+
+            //    result = new InMonsterPoint(go, dataId, MapManager.MapNpcLayer);
+            //    go.name = result.MapCellId.ToString();
+            //}
+            break;
+        }
+
+
+        return result;
+    }
+
+    /// <summary>
+    /// 获取单位
+    /// </summary>
+    /// <param name="unitType">单位大类型</param>
+    /// <param name="dataId">单位类型Id</param>
+    /// <returns></returns>
+    public MapCellBase GetUnit(UnitType unitType, int dataId)
+    {
+        MapCellBase result = null;
+        switch (unitType)
+        {
+            case UnitType.MapCell: // 地图单元
+                {
+                    var go = GetGameObject(MapCellTableName,
+                        dataId,
+                        MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
+
+                    result = new MapCell(go, dataId, MapManager.MapBaseLayer);
+                    go.name = result.MapCellId.ToString();
+                }
+                break;
+            case UnitType.Obstacle: // 障碍物
+                {
+                    var go = GetGameObject(MapCellTableName,
+                        dataId,
+                        MapDrawer.Single.ItemParentList[MapManager.MapObstacleLayer]);
+                    result = new Obstacle(go, dataId, MapManager.MapObstacleLayer);
+                    go.name = result.MapCellId.ToString();
+                }
+                break;
+            case UnitType.FightUnit: // 战斗单位
+                {
+                    var go = GetGameObject(MapCellTableName,
+                        dataId,
+                        MapDrawer.Single.ItemParentList[MapManager.MapPlayerLayer]);
+
+                    result = new FightUnit(go, dataId, MapManager.MapPlayerLayer);
+                    go.name = result.MapCellId.ToString();
+                }
+                break;
+            case UnitType.NPC: // NPC
+                {
+                    var go = GetGameObject(MapCellTableName,
+                        dataId,
+                        MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
+
+                    result = new Npc(go, dataId, MapManager.MapNpcLayer);
+                    go.name = result.MapCellId.ToString();
+                }
                 break;
         }
 
@@ -135,4 +224,8 @@ public enum UnitType
     NPC = 3,
     // 战斗单位
     FightUnit = 4,
+    // 出兵点
+    OutPoint = 5,
+    // 入兵点
+    InPoint = 6
 }

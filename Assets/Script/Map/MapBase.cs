@@ -73,6 +73,11 @@ public class MapBase
     private Dictionary<int, int[][]> mapArrayDic = new Dictionary<int, int[][]>();
 
     /// <summary>
+    /// 地图数据分组字典
+    /// </summary>
+    private Dictionary<int, Dictionary<int, List<MapCellBase>>> mapDataGroupDic = new Dictionary<int, Dictionary<int, List<MapCellBase>>>();
+
+    /// <summary>
     /// 地图高度
     /// </summary> 
     private int mapHeight;
@@ -123,6 +128,23 @@ public class MapBase
         }
         mapCellArrayDic.Add(layer, mapCellArray);
         mapArrayDic.Add(layer, mapArray);
+        if (!mapDataGroupDic.ContainsKey(layer))
+        {
+            mapDataGroupDic.Add(layer, new Dictionary<int, List<MapCellBase>>());
+        }
+        var groupDic = mapDataGroupDic[layer];
+        // 遍历数据, 添加进分组字典
+        for (var i = 0; i < mapArray.Length; i++)
+        {
+            for (var j = 0; j < mapArray[i].Length; j++)
+            {
+                if (!groupDic.ContainsKey(mapArray[i][j]))
+                {
+                    groupDic.Add(mapArray[i][j], new List<MapCellBase>());
+                }
+                groupDic[mapArray[i][j]].Add(mapCellArray[i, j]);
+            }
+        }
     }
 
     /// <summary>
@@ -217,6 +239,27 @@ public class MapBase
             throw new Exception("不存在地图层:" + layer);
         }
         return mapArrayDic[layer];
+    }
+
+    /// <summary>
+    /// 获取地图单元列表
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public List<MapCellBase> GetMapCellList(int layer, int id)
+    {
+        List<MapCellBase> result = null;
+
+        if (mapDataGroupDic.ContainsKey(layer))
+        {
+            if (mapDataGroupDic[layer].ContainsKey(id))
+            {
+                result = mapDataGroupDic[layer][id];
+            }
+        }
+
+        return result;
     }
 
     /// <summary>

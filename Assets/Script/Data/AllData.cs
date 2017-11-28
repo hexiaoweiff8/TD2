@@ -20,6 +20,21 @@ public class AllData : ISelectWeightDataHolder
     public SelectWeightData SelectWeightData { get; set; }
 
     /// <summary>
+    /// 技能列表
+    /// </summary>
+    public IList<SkillInfo> SkillInfoList { get; set; }
+
+    /// <summary>
+    /// buff列表
+    /// </summary>
+    public IList<BuffInfo> BuffInfoList = new List<BuffInfo>();
+
+    /// <summary>
+    /// 光环列表
+    /// </summary>
+    public IList<RemainInfo> RemainInfoList = new List<RemainInfo>();
+
+    /// <summary>
     /// TODO 地图单位宽度
     /// </summary>
     public int UnitWidth { get; set; }

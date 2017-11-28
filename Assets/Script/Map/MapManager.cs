@@ -227,7 +227,7 @@ public class MapManager : SingleItem<MapManager>
             for (var j = 0; j < width; j++)
             {
                 // 加载模型
-                var mapCell = UnitFictory.Single.GetUnit(layer, mapData[i][j]);
+                var mapCell = UnitFictory.Single.CreateUnit(layer, mapData[i][j]);
                 mapCell.X = j;
                 mapCell.Y = i;
                 // 根据数据加载

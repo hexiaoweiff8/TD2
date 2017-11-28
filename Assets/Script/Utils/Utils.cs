@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -42,6 +43,41 @@ public class Utils
     /// 负趋近0值
     /// </summary>
     public static readonly float ApproachKZero = -0.00001f;
+
+    /// <summary>
+    /// 中立阵营
+    /// </summary>
+    public const int NeutralCamp = 0;
+
+    /// <summary>
+    /// DateTime的Ticks时间转换为秒
+    /// </summary>
+    public const long TicksTimeToSecond = 10000000;
+
+    /// <summary>
+    /// 单位大类型-地面单位
+    /// </summary>
+    public const short GeneralTypeSurface = 1;
+
+    /// <summary>
+    /// 单位大类型-空中单位
+    /// </summary>
+    public const short GeneralTypeAir = 2;
+
+    /// <summary>
+    /// 单位大类型-建筑
+    /// </summary>
+    public const short GeneralTypeBuilding = 3;
+
+    /// <summary>
+    /// 选择目标点已选择X
+    /// </summary>
+    public const string TargetPointSelectorXKey = "SelectedX";
+
+    /// <summary>
+    /// 选择目标点已选择Y
+    /// </summary>
+    public const string TargetPointSelectorYKey = "SelectedY";
 
 
 
@@ -183,6 +219,54 @@ public class Utils
     public static long GetKey(long x, long y)
     {
         var result = (x << 32) + y;
+        return result;
+    }
+
+
+
+    /// <summary>
+    /// 表达式树转换字符串对比数据
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="op"></param>
+    /// <returns></returns>
+    public static Expression<Func<T, T, bool>> Generate<T>(string op)
+    {
+        ParameterExpression x = Expression.Parameter(typeof(T), "x");
+        ParameterExpression y = Expression.Parameter(typeof(T), "y");
+        return Expression.Lambda<Func<T, T, bool>>
+        (
+            (op.Equals(">")) ? Expression.GreaterThan(x, y) :
+                (op.Equals("<")) ? Expression.LessThan(x, y) :
+                    (op.Equals(">=")) ? Expression.GreaterThanOrEqual(x, y) :
+                        (op.Equals("<=")) ? Expression.LessThanOrEqual(x, y) :
+                            (op.Equals("!=")) ? Expression.NotEqual(x, y) :
+                                Expression.Equal(x, y),
+            x,
+            y
+        );
+    }
+
+
+    public static Func<T, T, bool> GetCompare<T>(string op)
+    {
+        return Generate<T>(op).Compile();
+    }
+
+
+
+
+    /// <summary>
+    /// 计算两个向量角度
+    /// </summary>
+    /// <param name="vec"></param>
+    /// <returns></returns>
+    public static float GetAngleWithZ(Vector3 vec)
+    {
+        var result = Vector3.Angle(Vector3.forward, vec);
+
+        result *= (Vector3.Angle(Vector3.right, vec) >= 90 ? -1 : 1);
+
         return result;
     }
 

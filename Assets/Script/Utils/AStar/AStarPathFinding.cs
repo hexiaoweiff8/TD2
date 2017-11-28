@@ -663,11 +663,11 @@ public class AStarPathFinding
         var result = val;
         if (result + diameter >= max)
         {
-            result = max - diameter - 1;
+            result = max - diameter;
         }
         if (result - diameter <= 0)
         {
-            result = diameter + 1;
+            result = diameter;
         }
         return result;
     }
