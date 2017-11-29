@@ -667,7 +667,7 @@ public class AStarPathFinding
         }
         if (result - diameter <= 0)
         {
-            result = diameter;
+            result = diameter >> 1;
         }
         return result;
     }
@@ -782,7 +782,7 @@ public class BinaryHeapList<T> where T : Node
             var tmpArray = new T[bufferLength];
             Utils.CopyArray(itemArray, tmpArray, arrayPos);
             itemArray = tmpArray;
-            tmpArray = null;
+            //tmpArray = null;
         }
         // 加入单元列表
         openPath[item.Y][item.X] = item;

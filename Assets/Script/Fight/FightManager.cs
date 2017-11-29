@@ -76,7 +76,83 @@ public class FightManager : SingleItem<FightManager>
         var outPointList = MapBase.GetMapCellList(MapManager.MapNpcLayer, MapManager.OutMosterPointId);
         MapBase.DrawMap();
 
-        (outPointList[0] as OutMonsterPoint).Begin();
+        var outMonsterPoint = (outPointList[0] as OutMonsterPoint);
+        outMonsterPoint.AddData(new List<MonsterData>()
+        {
+            new MonsterData()
+            {
+                MonsterId = 1001,
+                Count = 3,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 1001,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 1001,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 1001,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 1001,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 2,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 2,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 2,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 2,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 2,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 2,
+                Count = 1,
+                Interval = 1
+            },
+            new MonsterData()
+            {
+                MonsterId = 2,
+                Count = 1,
+                Interval = 1
+            },
+        });
+        outMonsterPoint.Start();
 
     }
 
@@ -207,8 +283,19 @@ public class FightManager : SingleItem<FightManager>
         return result;
     }
 
+
+    public void Destory([NotNull]DisplayOwner displayOwner)
+    {
+        // 删除引用
+        displayOwners.Remove(displayOwner.Id);
+        // 销毁对象
+        displayOwner.Destroy();
+    }
+
+
+
     /// <summary>
-    /// 创建玩家
+    /// TODO test创建玩家
     /// </summary>
     public void LoadPlayer(MapBase mapBase)
     {

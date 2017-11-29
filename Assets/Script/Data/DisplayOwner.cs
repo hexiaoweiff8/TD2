@@ -66,6 +66,7 @@ public class DisplayOwner
     /// </summary>
     public void CleanData()
     {
+        ClusterManager.Single.Remove(ClusterData);
         ClusterData = null;
         //MFAModelRender = null;
         //MemberData = null;
