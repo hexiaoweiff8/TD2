@@ -79,6 +79,42 @@ public class Utils
     /// </summary>
     public const string TargetPointSelectorYKey = "SelectedY";
 
+    /// <summary>
+    /// 特效显示层
+    /// </summary>
+    public const int EffectLayer = 12;
+
+    /// <summary>
+    /// 子弹类型-普通类型
+    /// </summary>
+    public const int BulletTypeNormal = 1;
+
+    /// <summary>
+    /// 子弹类型-其他类型
+    /// </summary>
+    public const int BulletTypeScope = 2;
+
+    // 1.AOE范围中心点为目标单位、2.AOE范围中心点为发动攻击时目标的座标位置、3.AOE范围中心点为自身、4.AOE范围中心在自身前方
+    /// <summary>
+    /// 目标对象位置(跟随,圆形)
+    /// </summary>
+    public const int AOEObjScope = 1;
+
+    /// <summary>
+    /// 目标位置(圆形)
+    /// </summary>
+    public const int AOEPointScope = 2;
+
+    /// <summary>
+    /// 自己位置周围(圆形, 扇形)
+    /// </summary>
+    public const int AOEScope = 3;
+
+    /// <summary>
+    /// 自身前方(矩形, 扇形)
+    /// </summary>
+    public const int AOEForwardScope = 4;
+
 
 
 
@@ -538,7 +574,20 @@ public class Utils
 
 
     // ---------------------------图形-------------------------------
-
+    /// <summary>
+    /// 计算距离(2D)
+    /// </summary>
+    /// <param name="x1">位置1x</param>
+    /// <param name="y1">位置1y</param>
+    /// <param name="x2">位置2x</param>
+    /// <param name="y2">位置2y</param>
+    /// <returns></returns>
+    public static float V2Distance(float x1, float y1, float x2, float y2)
+    {
+        float tx = x1 - x2;
+        float tz = y1 - y2;
+        return (float)Math.Sqrt(tx * tx + tz * tz);
+    }
 
     ///// <summary>
     ///// 排除Y轴

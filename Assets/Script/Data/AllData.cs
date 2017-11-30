@@ -20,6 +20,11 @@ public class AllData : ISelectWeightDataHolder
     public SelectWeightData SelectWeightData { get; set; }
 
     /// <summary>
+    /// 单位特效数据
+    /// </summary>
+    public EffectData EffectData { get; set; }
+
+    /// <summary>
     /// 技能列表
     /// </summary>
     public IList<SkillInfo> SkillInfoList { get; set; }

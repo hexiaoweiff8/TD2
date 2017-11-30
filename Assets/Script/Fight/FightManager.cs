@@ -14,7 +14,7 @@ public class FightManager : SingleItem<FightManager>
     /// <summary>
     /// 战斗单位字典
     /// </summary>
-    private Dictionary<uint, DisplayOwner> displayOwners = new Dictionary<uint, DisplayOwner>();
+    private Dictionary<int, DisplayOwner> displayOwners = new Dictionary<int, DisplayOwner>();
 
     /// <summary>
     /// 出兵点位置
@@ -280,6 +280,78 @@ public class FightManager : SingleItem<FightManager>
 
         // 缓存数据
         displayOwners.Add(result.Id, result);
+        return result;
+    }
+
+    /// <summary>
+    /// 获取单位
+    /// </summary>
+    /// <param name="objId">被获取单位ID</param>
+    /// <returns>被获取单位(如果不存在返回Null</returns>
+    public DisplayOwner GetElementById(ObjectID objId)
+    {
+        if (objId == null)
+        {
+            return null;
+        }
+        return GetElementById(objId.ObjType, objId.ID);
+    }
+
+
+    /// <summary>
+    /// 获取单位
+    /// </summary>
+    /// <param name="objType">单位类型</param>
+    /// <param name="id">单位唯一Id</param>
+    /// <returns>被获取单位(如果不存在返回Null</returns>
+    public DisplayOwner GetElementById(ObjectID.ObjectType objType, int id)
+    {
+        if (displayOwners.ContainsKey(id))
+        {
+            return displayOwners[id];
+        }
+        return null;
+    }
+
+
+
+    /// <summary>
+    /// 获取Display
+    /// </summary>
+    /// <param name="pObj">display对应的pObj</param>
+    /// <returns>pObj对应的DisplayOwner</returns>
+    public DisplayOwner GetElementByPositionObject(PositionObject pObj)
+    {
+        DisplayOwner result = null;
+
+        if (pObj != null)
+        {
+            result = GetElementById(pObj.AllData.MemberData.ObjID);
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 根据PositionObject列表获取对应DisplayOwner列表
+    /// </summary>
+    /// <param name="pObjList">被获取列表</param>
+    /// <returns>返回对应列表, 如果没有对应单位返回null</returns>
+    public IList<DisplayOwner> GetElementsByPositionObjectList(IList<PositionObject> pObjList)
+    {
+        List<DisplayOwner> result = null;
+
+        if (pObjList != null && pObjList.Count > 0)
+        {
+            result = new List<DisplayOwner>(pObjList.Count);
+            foreach (var pObj in pObjList)
+            {
+                var display = GetElementByPositionObject(pObj);
+                if (display != null)
+                {
+                    result.Add(display);
+                }
+            }
+        }
         return result;
     }
 

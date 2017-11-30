@@ -11,7 +11,7 @@ public class DisplayOwner
     /// <summary>
     /// 唯一Id
     /// </summary>
-    public uint Id { get { return additionId++; } }
+    public int Id { get { return ClusterData.AllData.MemberData.ObjID.ID; } }
 
     /// <summary>
     /// 显示对象Obj引用
@@ -36,7 +36,7 @@ public class DisplayOwner
 
 
 
-    private static uint additionId = 0;
+    //private static uint additionId = 0;
 
 
     /// <summary>
