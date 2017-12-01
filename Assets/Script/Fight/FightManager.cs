@@ -208,6 +208,9 @@ public class FightManager : SingleItem<FightManager>
         }
     }
 
+
+
+
     /// <summary>
     /// 加载怪
     /// </summary>
@@ -216,7 +219,7 @@ public class FightManager : SingleItem<FightManager>
     /// <param name="startY">怪起始位置y</param>
     /// <param name="targetX">怪目标位置x</param>
     /// <param name="targetY">怪目标位置y</param>
-    public DisplayOwner LoadMonster(int id, int startX, int startY, int targetX, int targetY)
+    public DisplayOwner LoadMember(int id, int startX, int startY, int targetX, int targetY)
     {
         DisplayOwner result = null;
         // 获取怪数据

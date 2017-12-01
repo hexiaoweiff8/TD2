@@ -92,6 +92,9 @@ public class DataPacker : SingleItem<DataPacker>
         dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/member0001");
         mapTypeDataTable.AddDataItem("1001", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString("Resource", "Prefab/towerPoint0001");
+        mapTypeDataTable.AddDataItem("2001", dataRow);
 
         SetDataItem(UnitFictory.MapCellTableName, mapTypeDataTable);
 

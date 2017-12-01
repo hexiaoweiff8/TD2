@@ -381,6 +381,11 @@ public abstract class MapCellBase
     /// </summary>
     public int Y { get; set; }
 
+    /// <summary>
+    /// 触发事件
+    /// </summary>
+    public Action<MapCellBase> Action { get; set; }
+
 
     /// <summary>
     /// 自增唯一ID

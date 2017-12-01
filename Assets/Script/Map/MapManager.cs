@@ -57,6 +57,11 @@ public class MapManager : SingleItem<MapManager>
     public const int InMonsterPointId = 102;
 
     /// <summary>
+    /// 塔位点Id
+    /// </summary>
+    public const int TowerPointId = 2001;
+
+    /// <summary>
     /// 地图文件地址
     /// </summary>
     public const string MapDataFilePath = @"MapData\mapdata";

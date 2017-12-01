@@ -64,7 +64,7 @@ public class UnitFictory : SingleItem<UnitFictory>
                 go.name = result.MapCellId.ToString();
             }
                 break;
-        case UnitType.FightUnit: // 战斗单位
+            case UnitType.FightUnit: // 战斗单位
             {
                 var go = GetGameObject(MapCellTableName,
                     dataId,
@@ -84,10 +84,16 @@ public class UnitFictory : SingleItem<UnitFictory>
                 switch (dataId)
                 {
                     case 101:
+                        // 出兵点
                         result = new OutMonsterPoint(go, dataId, MapManager.MapObstacleLayer);
                         break;
                     case 102:
+                        // 入兵点
                         result = new InMonsterPoint(go, dataId, MapManager.MapObstacleLayer);
+                        break;
+                    case 2001:
+                        // 塔基
+                        result = new TowerPoint(go, dataId, MapManager.MapObstacleLayer);
                         break;
                     default:
                         result = new Npc(go, dataId, MapManager.MapNpcLayer);
@@ -95,7 +101,7 @@ public class UnitFictory : SingleItem<UnitFictory>
                 }
                 go.name = result.MapCellId.ToString();
             }
-            break;
+                break;
             //case UnitType.OutPoint: // 出兵点
             //{
             //    var go = GetGameObject(MapCellTableName,
@@ -115,7 +121,7 @@ public class UnitFictory : SingleItem<UnitFictory>
             //    result = new InMonsterPoint(go, dataId, MapManager.MapNpcLayer);
             //    go.name = result.MapCellId.ToString();
             //}
-            break;
+                break;
         }
 
 

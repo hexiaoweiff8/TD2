@@ -99,6 +99,7 @@ public class MapEditor : MonoBehaviour
         new KeyValuePair<int, string>(5, "NPC5"),
         new KeyValuePair<int, string>(101, "出口"),
         new KeyValuePair<int, string>(102, "入口"),
+        new KeyValuePair<int, string>(2001, "塔基"),
     };
 
     //--------------------常量---------------------------
@@ -219,6 +220,7 @@ public class MapEditor : MonoBehaviour
         {6, Color.yellow},
         {101, Color.cyan},
         {102, Color.magenta},
+        {2001, Color.gray},
     };
 
 

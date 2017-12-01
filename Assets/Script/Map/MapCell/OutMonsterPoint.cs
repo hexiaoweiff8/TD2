@@ -185,7 +185,7 @@ public class OutMonsterPoint : MapCellBase
                 for (var i = 0; i < monsterData.Count; i++)
                 {
                     // 创建怪单位
-                    var displayOwner = FightManager.Single.LoadMonster(monsterData.MonsterId, X, Y, targetMapCell.X,
+                    var displayOwner = FightManager.Single.LoadMember(monsterData.MonsterId, X, Y, targetMapCell.X,
                         targetMapCell.Y);
                     // 开始移动
                     displayOwner.ClusterData.StartMove();

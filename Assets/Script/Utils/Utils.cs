@@ -571,6 +571,26 @@ public class Utils
     }
 
 
+    // --------------------------数学-------------------------------
+
+    /// <summary>
+    /// 获取列表中最小值
+    /// </summary>
+    /// <param name="values">数值列表</param>
+    /// <returns>最小值</returns>
+    public static float MinValue(params float[] values)
+    {
+        var result = 0f;
+        if (values != null || values.Length > 0)
+        {
+            result = values[0];
+            result = values.Concat(new[] {result}).Min();
+        }
+
+        return result;
+    }
+
+
 
 
     // ---------------------------图形-------------------------------
