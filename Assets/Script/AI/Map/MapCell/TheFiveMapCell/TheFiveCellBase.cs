@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
+using UnityEngine;
 
 /// <summary>
 /// 五行单元基类
 /// </summary>
-public class TheFiveCellBase
+public class TheFiveCellBase : MapCellBase
 {
     /// <summary>
     /// 当前cell属性
     /// </summary>
-    public TheFiveType TheFiveType = TheFiveType.None;
+    public TheFiveType TheFiveType { get; set; }
 
 
     // TODO 四个方向的单位与连通性 放到外部管理
@@ -26,6 +27,20 @@ public class TheFiveCellBase
     /// 输出数量
     /// </summary>
     public int ExoprtCount { get; set; }
+
+
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="dataId"></param>
+    /// <param name="drawLayer"></param>
+    public TheFiveCellBase(GameObject obj, int dataId, int drawLayer)
+        : base(obj, dataId, drawLayer)
+    {
+
+    }
 
 
     /// <summary>

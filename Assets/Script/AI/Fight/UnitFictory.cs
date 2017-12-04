@@ -28,6 +28,12 @@ public class UnitFictory : SingleItem<UnitFictory>
 
 
     /// <summary>
+    /// 障碍单元数据key名称
+    /// </summary>
+    public const string TowerCellTableName = "TowerCellData";
+
+
+    /// <summary>
     /// 
     /// </summary>
     private Dictionary<long, MapCellBase> mapCellBases = new Dictionary<long, MapCellBase>();
