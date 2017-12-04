@@ -108,6 +108,12 @@ public class UnitFictory : SingleItem<UnitFictory>
                 go.name = result.MapCellId.ToString();
             }
                 break;
+
+            case UnitType.Tower:
+            {
+                // 创建塔
+            }
+                break;
             //case UnitType.OutPoint: // 出兵点
             //{
             //    var go = GetGameObject(MapCellTableName,
@@ -127,7 +133,7 @@ public class UnitFictory : SingleItem<UnitFictory>
             //    result = new InMonsterPoint(go, dataId, MapManager.MapNpcLayer);
             //    go.name = result.MapCellId.ToString();
             //}
-                break;
+                //break;
         }
 
 
@@ -239,5 +245,9 @@ public enum UnitType
     // 出兵点
     OutPoint = 5,
     // 入兵点
-    InPoint = 6
+    InPoint = 6,
+    // 塔基
+    TowerPoint = 7,
+    // 塔
+    Tower = 8,
 }
