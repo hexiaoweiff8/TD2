@@ -26,12 +26,12 @@ public class MapDrawer : MapDrawerBase
     /// <summary>
     /// 地图宽度
     /// </summary>
-    public int MapWidth { get { return mapData != null ? mapData.MapWidth : 0; } }
+    public int MapWidth { get { return mapBase != null ? mapBase.MapWidth : 0; } }
 
     /// <summary>
     /// 地图高度
     /// </summary>
-    public int MapHeight { get { return mapData != null ? mapData.MapHeight : 0; } }
+    public int MapHeight { get { return mapBase != null ? mapBase.MapHeight : 0; } }
 
     /// <summary>
     /// 是否已启动
@@ -54,7 +54,7 @@ public class MapDrawer : MapDrawerBase
     /// <summary>
     /// 地图数据
     /// </summary>
-    private MapBase mapData = null;
+    private MapBase mapBase = null;
 
     ///// <summary>
     ///// 回收物体位置对应Dic
@@ -109,9 +109,9 @@ public class MapDrawer : MapDrawerBase
         drawAction = (layer, array) =>
         {
             // 数据宽度
-            var width = mapData.MapWidth;
+            var width = mapBase.MapWidth;
             // 数据长度
-            var height = mapData.MapHeight;
+            var height = mapBase.MapHeight;
 
             // TODO 判断是否有单元被移动, 被移动的需要被检测
 
@@ -168,7 +168,7 @@ public class MapDrawer : MapDrawerBase
     /// </summary>
     void Update()
     {
-        if (mapData != null && isStarted)
+        if (mapBase != null && isStarted)
         {
             // 绘制线
         //#if UNITY_EDITOR
@@ -190,11 +190,11 @@ public class MapDrawer : MapDrawerBase
     public void Init([NotNull] MapBase mapBase, Vector3 mapCenter, Rect rect = new Rect(), int type = 0)
     {
         Clear();
-        mapData = mapBase;
+        this.mapBase = mapBase;
         drawRect = rect;
         UnitWidth = mapBase.UnitWidth;
-        isHideObjArray = new MapCellBase[mapData.MapHeight, mapData.MapWidth];
-        objArray = new MapCellBase[mapData.MapHeight, mapData.MapWidth];
+        isHideObjArray = new MapCellBase[this.mapBase.MapHeight, this.mapBase.MapWidth];
+        objArray = new MapCellBase[this.mapBase.MapHeight, this.mapBase.MapWidth];
 
 
         ChangeDrawRect(Utils.GetShowRect(mapCenter,
@@ -221,13 +221,16 @@ public class MapDrawer : MapDrawerBase
     public override void Draw()
     {
         // 当前范围是否移动, 如果移动则更新列表, 如果未移动则使用旧列表数据
-        if (drawRect != historyRect)
+        if (drawRect != historyRect || mapBase.NeedDraw)
         {
             // 局部绘制控制
-            mapData.Foreach(drawAction);
+            mapBase.Foreach(drawAction);
             // 全绘制
-            mapData.DrawMap();
+            mapBase.DrawMap();
         }
+
+        // 判断是否有移动单位变更
+
 
     }
 
@@ -256,10 +259,10 @@ public class MapDrawer : MapDrawerBase
     public override void Clear()
     {
         Debug.Log("清理数据");
-        if (mapData != null)
+        if (mapBase != null)
         {
-            mapData.Clear();
-            mapData = null;
+            mapBase.Clear();
+            mapBase = null;
         }
         Stop();
     }

@@ -208,6 +208,16 @@ public class MapManager : SingleItem<MapManager>
                     Debug.LogError("地图不存在 ID:" + mapId);
                 }
             }
+            // 添加对应的怪层
+
+            //var monsterMapData = Utils.GetEmptyIntArray(result.MapHeight, result.MapWidth);
+            //var monsterMapCellArray = GetCells(monsterMapData, UnitType.Tower);
+            //result.AddMapCellArray(monsterMapCellArray, monsterMapData, MapPlayerLayer);
+
+            // 添加对应的Tower层
+            var towerMapData = Utils.GetEmptyIntArray(result.MapHeight, result.MapWidth);
+            var towerMapCellArray = GetCells(towerMapData, UnitType.Tower);
+            result.AddMapCellArray(towerMapCellArray, towerMapData, MapPlayerLayer);
         }
 
         return result;

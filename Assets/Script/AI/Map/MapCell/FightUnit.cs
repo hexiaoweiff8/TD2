@@ -21,4 +21,12 @@ public class FightUnit : MapCellBase
     {
         MapCellType = UnitType.FightUnit;
     }
+
+
+    public override void Draw(Vector3 leftdown, int unitWidth)
+    {
+        // 检测缩放, 不进行位置控制
+        CheckScale(unitWidth);
+        //base.Draw(leftdown, unitWidth);
+    }
 }

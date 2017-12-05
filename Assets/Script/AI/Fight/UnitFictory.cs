@@ -112,6 +112,12 @@ public class UnitFictory : SingleItem<UnitFictory>
             case UnitType.Tower:
             {
                 // 创建塔
+                var go = GetGameObject(MapCellTableName,
+                    dataId,
+                    MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
+                result = new Tower(go, dataId, MapManager.MapPlayerLayer);
+                // 设置数据
+                go.name = result.MapCellId.ToString();
             }
                 break;
             //case UnitType.OutPoint: // 出兵点
@@ -137,64 +143,65 @@ public class UnitFictory : SingleItem<UnitFictory>
         }
 
 
-        return result;
-    }
-
-    /// <summary>
-    /// 获取单位
-    /// </summary>
-    /// <param name="unitType">单位大类型</param>
-    /// <param name="dataId">单位类型Id</param>
-    /// <returns></returns>
-    public MapCellBase GetUnit(UnitType unitType, int dataId)
-    {
-        MapCellBase result = null;
-        switch (unitType)
-        {
-            case UnitType.MapCell: // 地图单元
-                {
-                    var go = GetGameObject(MapCellTableName,
-                        dataId,
-                        MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
-
-                    result = new MapCell(go, dataId, MapManager.MapBaseLayer);
-                    go.name = result.MapCellId.ToString();
-                }
-                break;
-            case UnitType.Obstacle: // 障碍物
-                {
-                    var go = GetGameObject(MapCellTableName,
-                        dataId,
-                        MapDrawer.Single.ItemParentList[MapManager.MapObstacleLayer]);
-                    result = new Obstacle(go, dataId, MapManager.MapObstacleLayer);
-                    go.name = result.MapCellId.ToString();
-                }
-                break;
-            case UnitType.FightUnit: // 战斗单位
-                {
-                    var go = GetGameObject(MapCellTableName,
-                        dataId,
-                        MapDrawer.Single.ItemParentList[MapManager.MapPlayerLayer]);
-
-                    result = new FightUnit(go, dataId, MapManager.MapPlayerLayer);
-                    go.name = result.MapCellId.ToString();
-                }
-                break;
-            case UnitType.NPC: // NPC
-                {
-                    var go = GetGameObject(MapCellTableName,
-                        dataId,
-                        MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
-
-                    result = new Npc(go, dataId, MapManager.MapNpcLayer);
-                    go.name = result.MapCellId.ToString();
-                }
-                break;
-        }
-
 
         return result;
     }
+
+    ///// <summary>
+    ///// 获取单位
+    ///// </summary>
+    ///// <param name="unitType">单位大类型</param>
+    ///// <param name="dataId">单位类型Id</param>
+    ///// <returns></returns>
+    //public MapCellBase GetUnit(UnitType unitType, int dataId)
+    //{
+    //    MapCellBase result = null;
+    //    switch (unitType)
+    //    {
+    //        case UnitType.MapCell: // 地图单元
+    //            {
+    //                var go = GetGameObject(MapCellTableName,
+    //                    dataId,
+    //                    MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
+
+    //                result = new MapCell(go, dataId, MapManager.MapBaseLayer);
+    //                go.name = result.MapCellId.ToString();
+    //            }
+    //            break;
+    //        case UnitType.Obstacle: // 障碍物
+    //            {
+    //                var go = GetGameObject(MapCellTableName,
+    //                    dataId,
+    //                    MapDrawer.Single.ItemParentList[MapManager.MapObstacleLayer]);
+    //                result = new Obstacle(go, dataId, MapManager.MapObstacleLayer);
+    //                go.name = result.MapCellId.ToString();
+    //            }
+    //            break;
+    //        case UnitType.FightUnit: // 战斗单位
+    //            {
+    //                var go = GetGameObject(MapCellTableName,
+    //                    dataId,
+    //                    MapDrawer.Single.ItemParentList[MapManager.MapPlayerLayer]);
+
+    //                result = new FightUnit(go, dataId, MapManager.MapPlayerLayer);
+    //                go.name = result.MapCellId.ToString();
+    //            }
+    //            break;
+    //        case UnitType.NPC: // NPC
+    //            {
+    //                var go = GetGameObject(MapCellTableName,
+    //                    dataId,
+    //                    MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
+
+    //                result = new Npc(go, dataId, MapManager.MapNpcLayer);
+    //                go.name = result.MapCellId.ToString();
+    //            }
+    //            break;
+    //    }
+
+
+    //    return result;
+    //}
 
 
     /// <summary>

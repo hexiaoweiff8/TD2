@@ -570,6 +570,33 @@ public class Utils
         }
     }
 
+    /// <summary>
+    /// 创建空int二维数组
+    /// </summary>
+    /// <param name="h">数组高</param>
+    /// <param name="w">数组宽</param>
+    /// <param name="val">默认值</param>
+    /// <returns>空数组</returns>
+    public static int[][] GetEmptyIntArray(int h, int w, int val = 0)
+    {
+        int[][] result = null;
+
+        if (h > 0 && w > 0)
+        {
+            result = new int[h][];
+            for (var i = 0; i < h; i++)
+            {
+                result[i] = new int[w];
+                for(var j = 0; j < w ;j++)
+                {
+                    result[i][j] = val;
+                }
+            }
+        }
+
+        return result;
+    }
+
 
     // --------------------------数学-------------------------------
 

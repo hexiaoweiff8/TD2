@@ -34,6 +34,11 @@ public class MapBase
     /// </summary>
     public Vector3 MapCenter { get; private set; }
 
+    /// <summary>
+    /// 是否需要绘制
+    /// </summary>
+    public bool NeedDraw = false;
+
 
     // ------------------------------私有属性----------------------------------
 
@@ -114,11 +119,12 @@ public class MapBase
         ResetMapPos(newCenter, mapWidth, mapHeight, unitWidth);
         lineColor = Color.red;
     }
-    
+
     /// <summary>
     /// 添加层数据
     /// </summary>
     /// <param name="mapCellArray">地图层数据</param>
+    /// <param name="mapArray">mapDataArray数据</param>
     /// <param name="layer">数据所在层</param>
     public void AddMapCellArray([NotNull]MapCellBase[,] mapCellArray, [NotNull]int[][] mapArray, int layer)
     {
@@ -128,23 +134,36 @@ public class MapBase
         }
         mapCellArrayDic.Add(layer, mapCellArray);
         mapArrayDic.Add(layer, mapArray);
+        // 遍历数据, 添加进分组字典
+        foreach (var mapCell in mapCellArray)
+        {
+            AddMapCell(mapCell, layer);
+        }
+        NeedDraw = true;
+    }
+
+    /// <summary>
+    /// 添加地图单元
+    /// </summary>
+    /// <param name="mapCell"></param>
+    /// <param name="layer"></param>
+    public void AddMapCell([NotNull] MapCellBase mapCell, int layer)
+    {
         if (!mapDataGroupDic.ContainsKey(layer))
         {
             mapDataGroupDic.Add(layer, new Dictionary<int, List<MapCellBase>>());
         }
         var groupDic = mapDataGroupDic[layer];
         // 遍历数据, 添加进分组字典
-        for (var i = 0; i < mapArray.Length; i++)
+        if (!groupDic.ContainsKey(mapCell.DataId))
         {
-            for (var j = 0; j < mapArray[i].Length; j++)
-            {
-                if (!groupDic.ContainsKey(mapArray[i][j]))
-                {
-                    groupDic.Add(mapArray[i][j], new List<MapCellBase>());
-                }
-                groupDic[mapArray[i][j]].Add(mapCellArray[i, j]);
-            }
+            groupDic.Add(mapCell.DataId, new List<MapCellBase>() { mapCell });
         }
+        else
+        {
+            groupDic[mapCell.DataId].Add(mapCell);
+        }
+        NeedDraw = true;
     }
 
     /// <summary>
@@ -177,20 +196,21 @@ public class MapBase
     /// </summary>
     public void DrawMap()
     {
-        MapCellBase item = null;
-        MapCellBase[,] itemArray = null;
+        //MapCellBase item = null;
+        //MapCellBase[,] itemArray = null;
         // 遍历地图
-        foreach (var kv in mapCellArrayDic)
+        foreach (var kv in mapDataGroupDic)
         {
-            itemArray = kv.Value;
-            for (var i = 0; i < mapHeight; i++)
+            foreach (var kv2 in kv.Value)
             {
-                for (var j = 0; j < mapWidth; j++)
+                foreach (var item in kv2.Value)
                 {
-                    itemArray[i, j].Draw(leftdown, unitWidth);
+                    item.Draw(leftdown, unitWidth);
                 }
             }
         }
+
+        NeedDraw = false;
         // 判断变更
         // 绘制变更
         // 否则跳过
@@ -422,6 +442,11 @@ public abstract class MapCellBase
     /// </summary>
     private int historyYForDraw = -1;
 
+    /// <summary>
+    /// 历史单位宽度
+    /// </summary>
+    private int historyUnitWidth = 0;
+
 
 
 
@@ -441,7 +466,7 @@ public abstract class MapCellBase
     /// <summary>
     /// 绘制方法
     /// </summary>
-    public void Draw(Vector3 leftdown, int unitWidth)
+    public virtual void Draw(Vector3 leftdown, int unitWidth)
     {
         // 判断是否有变动
 
@@ -451,13 +476,16 @@ public abstract class MapCellBase
                 leftdown.y + Y * unitWidth);
             historyXForDraw = X;
             historyYForDraw = Y;
+
         }
+
+        CheckScale(unitWidth);
     }
 
     /// <summary>
     /// 显示物体
     /// </summary>
-    public void Show()
+    public virtual void Show()
     {
         GameObj.SetActive(true);
         // 设置显示层级
@@ -467,7 +495,7 @@ public abstract class MapCellBase
     /// <summary>
     /// 隐藏物体
     /// </summary>
-    public void Hide()
+    public virtual void Hide()
     {
         GameObj.SetActive(false);
     }
@@ -476,7 +504,7 @@ public abstract class MapCellBase
     /// 获取该位置的Rect
     /// </summary>
     /// <returns>该位置的Rect</returns>
-    public Rect GetRect()
+    public virtual Rect GetRect()
     {
         // 如果位置有变更则更新Rect
         if (X != historyX || Y != historyY)
@@ -487,6 +515,20 @@ public abstract class MapCellBase
             historyRect = new Rect(X * unitWidth, Y * unitWidth, unitWidth, unitWidth);
         }
         return historyRect;
+    }
+
+    /// <summary>
+    /// 检查并重置缩放
+    /// </summary>
+    /// <param name="unitWidth">单位宽度</param>
+    protected void CheckScale(int unitWidth)
+    {
+        if (unitWidth != historyUnitWidth)
+        {
+            // 控制缩放, 每个单位的prefab大小默认是1, 赞找unitWidth的大小进行拉伸
+            GameObj.transform.localScale = new Vector3(unitWidth, unitWidth, 1);
+            historyUnitWidth = unitWidth;
+        }
     }
 }
 

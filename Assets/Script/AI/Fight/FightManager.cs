@@ -82,7 +82,7 @@ public class FightManager : SingleItem<FightManager>
             new MonsterData()
             {
                 MonsterId = 1001,
-                Count = 3,
+                Count = 1,
                 Interval = 1
             },
             new MonsterData()
@@ -225,6 +225,7 @@ public class FightManager : SingleItem<FightManager>
         // 获取怪数据
         // 创建怪模型
         var objId = new ObjectID(ObjectID.ObjectType.MySoldier);
+        var mapCell = UnitFictory.Single.CreateUnit(UnitType.FightUnit, id);
         var school = new ClusterData(new AllData()
         {
             MemberData = new MemberData()
@@ -237,7 +238,10 @@ public class FightManager : SingleItem<FightManager>
                 Attack1 = 10
             },
             UnitWidth = MapDrawer.Single.UnitWidth
-        }, UnitFictory.Single.CreateUnit(UnitType.FightUnit, id));
+        }, mapCell);
+
+        // 将单位放入地图数据中
+        MapBase.AddMapCell(mapCell, MapManager.MapPlayerLayer);
 
         // 地图数据
         // 寻路 获取路径

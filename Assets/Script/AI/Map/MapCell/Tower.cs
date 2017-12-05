@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 
@@ -33,6 +34,26 @@ public class Tower : MapCellBase
     private MapCellBase[,] towerCellArray = null;
 
     /// <summary>
+    /// 塔cell高度
+    /// </summary>
+    private int height = 0;
+
+    /// <summary>
+    /// 塔cell宽度
+    /// </summary>
+    private int wight = 0;
+
+    /// <summary>
+    /// 塔的相对位置左下角
+    /// </summary>
+    private Vector2 towerLeftDown;
+
+    /// <summary>
+    /// 塔的单位宽度
+    /// </summary>
+    private int towerUnitWidth = 1;
+
+    /// <summary>
     /// 初始化
     /// 该cell
     /// </summary>
@@ -44,16 +65,52 @@ public class Tower : MapCellBase
 
     }
 
+    /// <summary>
+    /// 设置塔数据
+    /// </summary>
+    /// <param name="towerData">他单元数据</param>
+    public void SetTowerData([NotNull]int[,] towerData)
+    {
+        towerCellDataArray = towerData;
+        height = towerData.GetLength(0);
+        wight = towerData.GetLength(1);
+        // 加载地图Cell数据
+    }
+
+    /// <summary>
+    /// 绘制当前单位
+    /// </summary>
+    /// <param name="leftdown">地图左下点位置</param>
+    /// <param name="unitWidth">地图单位宽度</param>
+    public override void Draw(Vector3 leftdown, int unitWidth)
+    {
+        base.Draw(leftdown, unitWidth);
+        // 绘制塔内单位
+        DrawTowerCell();
+    }
+
 
     /// <summary>
     /// 绘制塔对象Cell
     /// </summary>
     public void DrawTowerCell()
     {
-        // 遍历塔分布数据
-        // 将对应cell创建到对应位置
-        // 如果绘制过了则判断变化, 否则不做操作
+        if (towerCellArray != null)
+        {
+            // 遍历塔分布数据
+            for (var i = 0; i < height; i++)
+            {
+                for (var j = 0; j < wight; j++)
+                {
+                    towerCellArray[i, j].Draw(towerLeftDown, towerUnitWidth);
+                }
+            }
+            // 将对应cell创建到对应位置
 
+            // 如果绘制过了则判断变化, 否则不做操作
+
+
+        }
     }
 
 
