@@ -287,16 +287,13 @@ public class MapBase
     /// </summary>
     public void Clear()
     {
-        foreach (var kv in mapCellArrayDic)
+        foreach (var kv in mapDataGroupDic)
         {
-            var itemArray = kv.Value;
-            var height = itemArray.GetLength(0);
-            var width = itemArray.GetLength(1);
-            for (var i = 0; i < height; i++)
+            foreach (var kv2 in kv.Value)
             {
-                for (var j = 0; j < width; j++)
+                foreach (var item in kv2.Value)
                 {
-                    UnitFictory.Single.DestoryMapCell(itemArray[i, j]);
+                    UnitFictory.Single.DestoryMapCell(item);
                 }
             }
         }

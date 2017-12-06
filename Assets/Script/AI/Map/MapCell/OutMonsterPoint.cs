@@ -177,7 +177,7 @@ public class OutMonsterPoint : MapCellBase
         // 获取目标位置
         var targetMapCellList = FightManager.Single.MapBase.GetMapCellList(MapManager.MapNpcLayer,
             MapManager.InMonsterPointId);
-        if (targetMapCellList != null && targetMapCellList.Count > 0)
+        if (targetMapCellList != null && targetMapCellList.Count > 0 && GameObj != null)
         {
             var targetMapCell = targetMapCellList[0] as InMonsterPoint;
             if (targetMapCell != null)
@@ -198,12 +198,22 @@ public class OutMonsterPoint : MapCellBase
                         };
                     }
 
-                    displayOwner.MapCell.GameObj.transform.position = GameObj.transform.position;
+                    try
+                    {
+
+                        displayOwner.MapCell.GameObj.transform.position = GameObj.transform.position;
+                    }
+                    catch (Exception)
+                    {
+                        
+                        throw;
+                    }
                 }
             }
         }
         else
         {
+            timer.Kill();
             Debug.LogError("没有目标位置");
         }
     }
