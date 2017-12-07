@@ -106,57 +106,61 @@ public class MapDrawer : MapDrawerBase
         // 设置切换不销毁
         DontDestroyOnLoad(this);
         // 构建绘制范围变更事件
+        // 只绘制地板层, 障碍层
         drawAction = (layer, array) =>
         {
-            // 数据宽度
-            var width = mapBase.MapWidth;
-            // 数据长度
-            var height = mapBase.MapHeight;
-
-            // TODO 判断是否有单元被移动, 被移动的需要被检测
-
-
-            var i = 0;
-            var j = 0;
-            // 遍历所有单位
-            for (i = 0; i < height; i++)
+            if (layer == MapManager.MapBaseLayer)
             {
-                for (j = 0; j < width; j++)
+                // 数据宽度
+                var width = mapBase.MapWidth;
+                // 数据长度
+                var height = mapBase.MapHeight;
+
+                // TODO 判断是否有单元被移动, 被移动的需要被检测
+
+
+                var i = 0;
+                var j = 0;
+                // 遍历所有单位
+                for (i = 0; i < height; i++)
                 {
-                    //var key = Utils.GetKey(j, i);
-                    var item = array[i, j];
-                    if (drawRect.Overlaps(item.GetRect()))
+                    for (j = 0; j < width; j++)
                     {
-                        // 刷新范围内单位
-                        // 如果物体已存在, 则不重复绘制
-                        if (objArray[i, j] == null)
+                        //var key = Utils.GetKey(j, i);
+                        var item = array[i, j];
+                        if (drawRect.Overlaps(item.GetRect()))
                         {
-                            objArray[i, j] = item;
+                            // 刷新范围内单位
+                            // 如果物体已存在, 则不重复绘制
+                            if (objArray[i, j] == null)
+                            {
+                                objArray[i, j] = item;
+                            }
+                            if (isHideObjArray[i, j] != null)
+                            {
+                                isHideObjArray[i, j] = null;
+                            }
+                            item.Show();
                         }
-                        if (isHideObjArray[i, j] != null)
+                        else
                         {
-                            isHideObjArray[i, j] = null;
+                            // 将范围外单位回收
+                            if (objArray[i, j] != null)
+                            {
+                                objArray[i, j] = null;
+                            }
+                            if (isHideObjArray[i, j] == null)
+                            {
+                                isHideObjArray[i, j] = item;
+                            }
+                            item.Hide();
                         }
-                        item.Show();
-                    }
-                    else
-                    {
-                        // 将范围外单位回收
-                        if (objArray[i, j] != null)
-                        {
-                            objArray[i, j] = null;
-                        }
-                        if (isHideObjArray[i, j] == null)
-                        {
-                            isHideObjArray[i, j] = item;
-                        }
-                        item.Hide();
                     }
                 }
-            }
 
-            // 记录绘制范围
-            historyRect = drawRect;
+                // 记录绘制范围
+                historyRect = drawRect;
+            }
 
         };
     }
@@ -223,9 +227,9 @@ public class MapDrawer : MapDrawerBase
         // 当前范围是否移动, 如果移动则更新列表, 如果未移动则使用旧列表数据
         if (drawRect != historyRect || mapBase.NeedDraw)
         {
-            // 局部绘制控制
+            // 局部绘制控制(只有地板)
             mapBase.Foreach(drawAction);
-            // 全绘制
+            // 全绘制(除了地板)
             mapBase.DrawMap();
         }
 

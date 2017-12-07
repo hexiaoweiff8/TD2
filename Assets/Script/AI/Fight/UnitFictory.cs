@@ -47,17 +47,19 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// <returns>地图单元类</returns>
     public MapCellBase CreateUnit(UnitType unitType, int dataId)
     {
+        // 地图单元与障碍物使用相同单元替换Image的方式进行服用, 来解决创建单位过多问题
         MapCellBase result = null;
         switch (unitType)
         {
+                // ---------------------------加载数据进行替换模式----------------------------
             case UnitType.MapCell: // 地图单元
             {
-                var go = GetGameObject(MapCellTableName,
-                    dataId,
-                    MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
+                //var go = GetGameObject(MapCellTableName,
+                //    dataId,
+                //    MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
 
-                result = new MapCell(go, dataId, MapManager.MapBaseLayer);
-                go.name = result.MapCellId.ToString();
+                result = new MapCell(null, dataId, MapManager.MapBaseLayer);
+                //go.name = result.MapCellId.ToString();
             }
                 break;
             case UnitType.Obstacle: // 障碍物
@@ -70,6 +72,8 @@ public class UnitFictory : SingleItem<UnitFictory>
                 go.name = result.MapCellId.ToString();
             }
                 break;
+
+            // ---------------------------------加载预设模式---------------------------------
             case UnitType.FightUnit: // 战斗单位
             {
                 var go = GetGameObject(MapCellTableName,
@@ -89,15 +93,15 @@ public class UnitFictory : SingleItem<UnitFictory>
                 // TODO 区分出兵点入兵点
                 switch (dataId)
                 {
-                    case 101:
+                    case 301:
                         // 出兵点
                         result = new OutMonsterPoint(go, dataId, MapManager.MapObstacleLayer);
                         break;
-                    case 102:
+                    case 302:
                         // 入兵点
                         result = new InMonsterPoint(go, dataId, MapManager.MapObstacleLayer);
                         break;
-                    case 2001:
+                    case 401:
                         // 塔基
                         result = new TowerPoint(go, dataId, MapManager.MapObstacleLayer);
                         break;
@@ -146,6 +150,7 @@ public class UnitFictory : SingleItem<UnitFictory>
 
         return result;
     }
+
 
     ///// <summary>
     ///// 获取单位

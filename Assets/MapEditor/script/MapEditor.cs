@@ -68,11 +68,7 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     public List<KeyValuePair<int, string>> Level1ItemList = new List<KeyValuePair<int, string>>()
     {
-        new KeyValuePair<int, string>(1, "类型1"),
-        new KeyValuePair<int, string>(2, "类型2"),
-        new KeyValuePair<int, string>(3, "类型3"),
-        new KeyValuePair<int, string>(4, "类型4"),
-        new KeyValuePair<int, string>(5, "类型5"),
+        new KeyValuePair<int, string>(101, "类型1"),
     };
 
     /// <summary>
@@ -80,11 +76,8 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     public List<KeyValuePair<int, string>> Level2ItemList = new List<KeyValuePair<int, string>>()
     {
-        new KeyValuePair<int, string>(1, "障碍1"),
-        new KeyValuePair<int, string>(2, "障碍2"),
-        new KeyValuePair<int, string>(3, "障碍3"),
-        new KeyValuePair<int, string>(4, "障碍4"),
-        new KeyValuePair<int, string>(5, "障碍5"),
+        new KeyValuePair<int, string>(200, "障碍1"),
+        new KeyValuePair<int, string>(201, "障碍2"),
     };
 
     /// <summary>
@@ -92,14 +85,9 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     public List<KeyValuePair<int, string>> Level3ItemList = new List<KeyValuePair<int, string>>()
     {
-        new KeyValuePair<int, string>(1, "NPC1"),
-        new KeyValuePair<int, string>(2, "NPC2"),
-        new KeyValuePair<int, string>(3, "NPC3"),
-        new KeyValuePair<int, string>(4, "NPC4"),
-        new KeyValuePair<int, string>(5, "NPC5"),
-        new KeyValuePair<int, string>(101, "出口"),
-        new KeyValuePair<int, string>(102, "入口"),
-        new KeyValuePair<int, string>(2001, "塔基"),
+        new KeyValuePair<int, string>(301, "出口"),
+        new KeyValuePair<int, string>(302, "入口"),
+        new KeyValuePair<int, string>(401, "塔基"),
     };
 
     //--------------------常量---------------------------
@@ -212,15 +200,15 @@ public class MapEditor : MonoBehaviour
 
     private Dictionary<int, Color> obstaclerColor = new Dictionary<int, Color>()
     {
-        {1, Color.black},
-        {2, Color.white},
-        {3, Color.blue},
-        {4, Color.green},
-        {5, Color.red},
-        {6, Color.yellow},
-        {101, Color.cyan},
-        {102, Color.magenta},
-        {2001, Color.gray},
+        {101, Color.black},
+        {200, Color.white},
+        {201, Color.blue},
+        {301, Color.green},
+        {302, Color.red},
+        {401, Color.yellow},
+        //{101, Color.cyan},
+        //{102, Color.magenta},
+        //{2001, Color.gray},
     };
 
 

@@ -71,29 +71,30 @@ public class DataPacker : SingleItem<DataPacker>
         var dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/empty");
         mapTypeDataTable.AddDataItem("0", dataRow);
-        dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/mapCell0001");
-        mapTypeDataTable.AddDataItem("1", dataRow);
-        dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/obstacle0002");
-        mapTypeDataTable.AddDataItem("2", dataRow);
-        dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/mapCell0001");
-        mapTypeDataTable.AddDataItem("3", dataRow);
+        //dataRow = new DataItem();
+        //dataRow.SetString("Resource", "Prefab/mapCell0001");
+        //mapTypeDataTable.AddDataItem("1", dataRow);
+        //dataRow = new DataItem();
+        //dataRow.SetString("Resource", "Prefab/obstacle0002");
+        //mapTypeDataTable.AddDataItem("2", dataRow);
+        //dataRow = new DataItem();
+        //dataRow.SetString("Resource", "Prefab/mapCell0001");
+        //mapTypeDataTable.AddDataItem("3", dataRow);
         dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/obstacle0001");
-        mapTypeDataTable.AddDataItem("4", dataRow);
+        mapTypeDataTable.AddDataItem("301", dataRow);
         dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/obstacle0002");
-        mapTypeDataTable.AddDataItem("101", dataRow);
-        dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/obstacle0002");
-        mapTypeDataTable.AddDataItem("102", dataRow);
+        mapTypeDataTable.AddDataItem("302", dataRow);
         dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/member0001");
         mapTypeDataTable.AddDataItem("1001", dataRow);
         dataRow = new DataItem();
         dataRow.SetString("Resource", "Prefab/towerPoint0001");
+        mapTypeDataTable.AddDataItem("401", dataRow);
+
+        dataRow = new DataItem();
+        dataRow.SetString("Resource", "Prefab/baseCell");
         mapTypeDataTable.AddDataItem("2001", dataRow);
 
         SetDataItem(UnitFictory.MapCellTableName, mapTypeDataTable);
@@ -107,30 +108,40 @@ public class DataPacker : SingleItem<DataPacker>
         // 是否可被击毁
         dataRow.SetBool("CouldDestory", false);
         obstacleDataTable.AddDataItem("0", dataRow);
-        // 填充测试数据
-        dataRow = new DataItem();
-        // 障碍直径
-        dataRow.SetInt("Diameter", 1);
-        // 是否可被击毁
-        dataRow.SetBool("CouldDestory", false);
-        obstacleDataTable.AddDataItem("1", dataRow);
-        dataRow = new DataItem();
-        // 障碍直径
-        dataRow.SetInt("Diameter", 1);
-        dataRow.SetBool("CouldDestory", false);
-        obstacleDataTable.AddDataItem("2", dataRow);
+
         dataRow = new DataItem();
         // 障碍直径
         dataRow.SetInt("Diameter", 0);
         dataRow.SetBool("CouldDestory", false);
-        obstacleDataTable.AddDataItem("101", dataRow);
+        obstacleDataTable.AddDataItem("201", dataRow);
+
         dataRow = new DataItem();
         // 障碍直径
         dataRow.SetInt("Diameter", 0);
         dataRow.SetBool("CouldDestory", false);
-        obstacleDataTable.AddDataItem("102", dataRow);
+        obstacleDataTable.AddDataItem("202", dataRow);
 
         SetDataItem(UnitFictory.ObstacleTableName, obstacleDataTable);
+
+
+
+        var resourceTable = new DataTable();
+        dataRow = new DataItem();
+        dataRow.SetString("Resource", "Pic/mapbase/floor0001");
+        mapTypeDataTable.AddDataItem("101", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString("Resource", "Pic/mapbase/obstacle0001");
+        mapTypeDataTable.AddDataItem("200", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString("Resource", "Pic/mapbase/obstacle0002");
+        mapTypeDataTable.AddDataItem("201", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString("Resource", "Pic/mapbase/towerPoint0001");
+        mapTypeDataTable.AddDataItem("2001", dataRow);
+
+
+        SetDataItem(UnitFictory.ResourceName, resourceTable);
+
 
     }
 

@@ -371,37 +371,37 @@ public abstract class MapCellBase
     /// <summary>
     /// 地图单元ID
     /// </summary>
-    public long MapCellId { get; private set; }
+    public virtual long MapCellId { get; private set; }
 
     /// <summary>
     /// 地图单位类型
     /// </summary>
-    public UnitType MapCellType { get; set; }
+    public virtual UnitType MapCellType { get; set; }
 
     /// <summary>
     /// 地图Obj单位
     /// </summary>
-    public GameObject GameObj { get; set; }
+    public virtual GameObject GameObj { get; set; }
 
     /// <summary>
     /// 该单元的数据ID
     /// </summary>
-    public int DataId { get; set; }
+    public virtual int DataId { get; set; }
 
     /// <summary>
     /// 位置X
     /// </summary>
-    public int X { get; set; }
+    public virtual int X { get; set; }
 
     /// <summary>
     /// 位置Y
     /// </summary>
-    public int Y { get; set; }
+    public virtual int Y { get; set; }
 
     /// <summary>
     /// 触发事件
     /// </summary>
-    public Action<MapCellBase> Action { get; set; }
+    public virtual Action<MapCellBase> Action { get; set; }
 
 
     /// <summary>
@@ -444,6 +444,11 @@ public abstract class MapCellBase
     /// </summary>
     private int historyUnitWidth = 0;
 
+    /// <summary>
+    /// 是否绘制
+    /// </summary>
+    private bool isShow = true;
+
 
 
 
@@ -466,17 +471,18 @@ public abstract class MapCellBase
     public virtual void Draw(Vector3 leftdown, int unitWidth)
     {
         // 判断是否有变动
-
-        if (X != historyXForDraw || Y != historyYForDraw)
+        if (isShow && GameObj != null)
         {
-            GameObj.transform.position = new Vector3(leftdown.x + X*unitWidth,
-                leftdown.y + Y * unitWidth);
-            historyXForDraw = X;
-            historyYForDraw = Y;
+            if (X != historyXForDraw || Y != historyYForDraw)
+            {
+                GameObj.transform.position = new Vector3(leftdown.x + X * unitWidth,
+                    leftdown.y + Y * unitWidth);
+                historyXForDraw = X;
+                historyYForDraw = Y;
+            }
 
+            CheckScale(unitWidth);
         }
-
-        CheckScale(unitWidth);
     }
 
     /// <summary>
@@ -484,8 +490,12 @@ public abstract class MapCellBase
     /// </summary>
     public virtual void Show()
     {
-        GameObj.SetActive(true);
+        if (GameObj != null)
+        {
+            GameObj.SetActive(true);
+        }
         // 设置显示层级
+        isShow = true;
 
     }
 
@@ -494,7 +504,11 @@ public abstract class MapCellBase
     /// </summary>
     public virtual void Hide()
     {
-        GameObj.SetActive(false);
+        if (GameObj != null)
+        {
+            GameObj.SetActive(false);
+        }
+        isShow = false;
     }
 
     /// <summary>
@@ -520,7 +534,7 @@ public abstract class MapCellBase
     /// <param name="unitWidth">单位宽度</param>
     protected void CheckScale(int unitWidth)
     {
-        if (unitWidth != historyUnitWidth)
+        if (unitWidth != historyUnitWidth && GameObj != null)
         {
             // 控制缩放, 每个单位的prefab大小默认是1, 赞找unitWidth的大小进行拉伸
             GameObj.transform.localScale = new Vector3(unitWidth, unitWidth, 1);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 
@@ -10,6 +11,23 @@ using UnityEngine;
 /// </summary>
 public class MapCell : MapCellBase
 {
+    /// <summary>
+    /// 单位Obj 从该层对应的对象池获取
+    /// </summary>
+    public override GameObject GameObj
+    {
+        get { return base.GameObj; }
+        set { base.GameObj = value; }
+    }
+
+
+    /// <summary>
+    /// 是否在屏幕中
+    /// </summary>
+    protected bool isInScreen = false;
+
+
+
     /// <summary>
     /// 初始化地图单元
     /// </summary>
@@ -21,6 +39,20 @@ public class MapCell : MapCellBase
     {
         MapCellType = UnitType.MapCell;
     }
+
+    /// <summary>
+    /// 进入屏幕操作
+    /// </summary>
+    public void EnterScreen()
+    {
+        isInScreen = true;
+    }
+
+    /// <summary>
+    /// 出屏幕操作
+    /// </summary>
+    public void OutScreen()
+    {
+        isInScreen = false;
+    }
 }
-
-
