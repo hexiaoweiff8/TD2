@@ -25,6 +25,7 @@ public class DataPacker : SingleItem<DataPacker>
     /// <param name="dataTable">数据类</param>
     public void SetDataItem([NotNull]string name, [NotNull]DataTable dataTable)
     {
+        Debug.Log("SetDataItem:" + name);
         if (dataDic.ContainsKey(name))
         {
             throw new Exception("数据Id已存在:" + name);
@@ -65,12 +66,12 @@ public class DataPacker : SingleItem<DataPacker>
     {
         // 从指定路径获取数据
         // TODO 加载测试数据
-        var mapTypeDataTable = new DataTable();
+        var mapTypeDataTable = new DataTable(UnitFictory.MapCellTableName);
         // 填充测试数据
         // 地图数据
         var dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/empty");
-        mapTypeDataTable.AddDataItem("0", dataRow);
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/empty");
+        mapTypeDataTable.AddDataItem("-1", dataRow);
         //dataRow = new DataItem();
         //dataRow.SetString("Resource", "Prefab/mapCell0001");
         //mapTypeDataTable.AddDataItem("1", dataRow);
@@ -81,26 +82,32 @@ public class DataPacker : SingleItem<DataPacker>
         //dataRow.SetString("Resource", "Prefab/mapCell0001");
         //mapTypeDataTable.AddDataItem("3", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/obstacle0001");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0001");
+        mapTypeDataTable.AddDataItem("200", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0002");
+        mapTypeDataTable.AddDataItem("201", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0001");
         mapTypeDataTable.AddDataItem("301", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/obstacle0002");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0002");
         mapTypeDataTable.AddDataItem("302", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/member0001");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/member0001");
         mapTypeDataTable.AddDataItem("1001", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/towerPoint0001");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/towerPoint0001");
         mapTypeDataTable.AddDataItem("401", dataRow);
 
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Prefab/baseCell");
-        mapTypeDataTable.AddDataItem("2001", dataRow);
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/baseCell");
+        mapTypeDataTable.AddDataItem("901", dataRow);
 
         SetDataItem(UnitFictory.MapCellTableName, mapTypeDataTable);
 
 
-        var obstacleDataTable = new DataTable();
+        var obstacleDataTable = new DataTable(UnitFictory.ObstacleTableName);
         // 填充测试数据
         dataRow = new DataItem();
         // 障碍直径
@@ -111,36 +118,36 @@ public class DataPacker : SingleItem<DataPacker>
 
         dataRow = new DataItem();
         // 障碍直径
-        dataRow.SetInt("Diameter", 0);
+        dataRow.SetInt("Diameter", 1);
         dataRow.SetBool("CouldDestory", false);
-        obstacleDataTable.AddDataItem("201", dataRow);
+        obstacleDataTable.AddDataItem("200", dataRow);
 
         dataRow = new DataItem();
         // 障碍直径
-        dataRow.SetInt("Diameter", 0);
+        dataRow.SetInt("Diameter", 1);
         dataRow.SetBool("CouldDestory", false);
-        obstacleDataTable.AddDataItem("202", dataRow);
+        obstacleDataTable.AddDataItem("201", dataRow);
 
         SetDataItem(UnitFictory.ObstacleTableName, obstacleDataTable);
 
 
 
-        var resourceTable = new DataTable();
+        var resourceTable = new DataTable(UnitFictory.ResourceTableName);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Pic/mapbase/floor0001");
-        mapTypeDataTable.AddDataItem("101", dataRow);
+        dataRow.SetString(UnitFictory.ResourceName, "Pic/mapbase/floor0001");
+        resourceTable.AddDataItem("101", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Pic/mapbase/obstacle0001");
-        mapTypeDataTable.AddDataItem("200", dataRow);
+        dataRow.SetString(UnitFictory.ResourceName, "Pic/mapbase/obstacle0001");
+        resourceTable.AddDataItem("200", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Pic/mapbase/obstacle0002");
-        mapTypeDataTable.AddDataItem("201", dataRow);
+        dataRow.SetString(UnitFictory.ResourceName, "Pic/mapbase/obstacle0002");
+        resourceTable.AddDataItem("201", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString("Resource", "Pic/mapbase/towerPoint0001");
-        mapTypeDataTable.AddDataItem("2001", dataRow);
+        dataRow.SetString(UnitFictory.ResourceName, "Pic/mapbase/towerPoint0001");
+        resourceTable.AddDataItem("2001", dataRow);
 
 
-        SetDataItem(UnitFictory.ResourceName, resourceTable);
+        SetDataItem(UnitFictory.ResourceTableName, resourceTable);
 
 
     }
@@ -178,6 +185,15 @@ public class DataTable
     /// </summary>
     private Dictionary<string, DataItem> dataRowDic = new Dictionary<string, DataItem>();
 
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <param name="name">表名称</param>
+    public DataTable([NotNull]string name)
+    {
+        DataName = name;
+    }
+
 
     /// <summary>
     /// 根据ID获取数据
@@ -206,7 +222,8 @@ public class DataTable
         // 是否已包含数据
         if (dataRowDic.ContainsKey(id))
         {
-            Debug.LogError("数据ID已存在.");
+            Debug.LogError("数据ID已存在.:" + id + "," + item.GetString("Resource") + " table:" + DataName + " ," +
+                           dataRowDic[id].GetString("Resource"));
             return;
         }
         // 添加数据
@@ -224,7 +241,7 @@ public class DataTable
         {
             if (!dataRowDic.ContainsKey(id))
             {
-                throw new Exception("不存在数据ID:" + id);
+                throw new Exception("不存在数据ID:" + id + " tabeName:" + DataName);
             }
             return dataRowDic[id];
         }

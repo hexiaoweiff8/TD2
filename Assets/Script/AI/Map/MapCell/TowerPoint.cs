@@ -18,7 +18,7 @@ public class TowerPoint : MapCellBase
     /// <param name="drawLayer"></param>
     public TowerPoint(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
     {
-
+        MapCellType = UnitType.TowerPoint;
     }
 
 }

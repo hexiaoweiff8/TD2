@@ -695,15 +695,12 @@ public class Utils
     /// <param name="camearPos"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    /// <param name="scopeWidth"></param>
-    /// <param name="scopeHeight"></param>
-    /// <param name="unitWidth"></param>
     /// <returns></returns>
-    public static Rect GetShowRect(Vector3 camearPos, float width, float height, float scopeWidth, float scopeHeight, int unitWidth)
+    public static ICollisionGraphics GetShowGraphics(Vector3 camearPos, float width, float height)
     {
-        var cameraPosX = camearPos.x + width * unitWidth * 0.5f - scopeWidth * 0.5f;
-        var cameraPosY = camearPos.y + height * unitWidth * 0.5f - scopeHeight * 0.5f;
-        Rect result = new Rect(cameraPosX, cameraPosY, scopeWidth, scopeHeight);
+        //var cameraPosX = camearPos.x + width * unitWidth * 0.5f - scopeWidth * 0.5f;
+        //var cameraPosY = camearPos.y + height * unitWidth * 0.5f - scopeHeight * 0.5f;
+        var result = new RectGraphics(new Vector2(camearPos.x, camearPos.y), width, height, 0);
         return result;
     }
 

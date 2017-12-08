@@ -120,7 +120,7 @@ public class MapEditor : MonoBehaviour
     /// <summary>
     /// 第一层默认值
     /// </summary>
-    public int LayerLevel1Default = 1;
+    public int LayerLevel1Default = 101;
 
     /// <summary>
     /// 第二层默认值
@@ -200,15 +200,15 @@ public class MapEditor : MonoBehaviour
 
     private Dictionary<int, Color> obstaclerColor = new Dictionary<int, Color>()
     {
-        {101, Color.black},
+        {0, Color.black},
         {200, Color.white},
         {201, Color.blue},
         {301, Color.green},
         {302, Color.red},
         {401, Color.yellow},
-        //{101, Color.cyan},
+        {101, Color.cyan},
         //{102, Color.magenta},
-        //{2001, Color.gray},
+        {1, Color.gray},
     };
 
 
@@ -581,6 +581,7 @@ public class MapEditor : MonoBehaviour
                     }
                     // 变更不同层级单位的颜色
                     var meshRander = newObstacler.GetComponent<MeshRenderer>();
+                    //print(val);
                     meshRander.material.color = obstaclerColor[val];
                     newObstacler.layer = layer;
                 }

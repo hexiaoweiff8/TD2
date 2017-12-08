@@ -137,7 +137,10 @@ public class MapBase
         // 遍历数据, 添加进分组字典
         foreach (var mapCell in mapCellArray)
         {
-            AddMapCell(mapCell, layer);
+            if (mapCell != null)
+            {
+                AddMapCell(mapCell, layer);
+            }
         }
         NeedDraw = true;
     }
@@ -157,7 +160,7 @@ public class MapBase
         // 遍历数据, 添加进分组字典
         if (!groupDic.ContainsKey(mapCell.DataId))
         {
-            groupDic.Add(mapCell.DataId, new List<MapCellBase>() { mapCell });
+            groupDic.Add(mapCell.DataId, new List<MapCellBase>() {mapCell});
         }
         else
         {
@@ -187,17 +190,14 @@ public class MapBase
         {
             Debug.DrawLine(leftdown + new Vector2(0, i*unitWidth), rightdown + new Vector2(0, i*unitWidth), lineColor);
         }
-
     }
 
 
     /// <summary>
     /// 绘制地图
     /// </summary>
-    public void DrawMap()
+    public void DrawMap(ICollisionGraphics rect)
     {
-        //MapCellBase item = null;
-        //MapCellBase[,] itemArray = null;
         // 遍历地图
         foreach (var kv in mapDataGroupDic)
         {
@@ -376,7 +376,7 @@ public abstract class MapCellBase
     /// <summary>
     /// 地图单位类型
     /// </summary>
-    public virtual UnitType MapCellType { get; set; }
+    public UnitType MapCellType { get; set; }
 
     /// <summary>
     /// 地图Obj单位
@@ -417,7 +417,7 @@ public abstract class MapCellBase
     /// <summary>
     /// 历史Rect
     /// </summary>
-    private Rect historyRect;
+    private ICollisionGraphics historyRect;
 
     /// <summary>
     /// 历史位置X
@@ -432,22 +432,22 @@ public abstract class MapCellBase
     /// <summary>
     /// 历史位置X
     /// </summary>
-    private int historyXForDraw = -1;
+    protected int historyXForDraw = -1;
 
     /// <summary>
     /// 历史位置Y
     /// </summary>
-    private int historyYForDraw = -1;
+    protected int historyYForDraw = -1;
 
     /// <summary>
     /// 历史单位宽度
     /// </summary>
-    private int historyUnitWidth = 0;
+    protected int historyUnitWidth = 0;
 
     /// <summary>
     /// 是否绘制
     /// </summary>
-    private bool isShow = true;
+    protected bool isShow = true;
 
 
 
@@ -515,7 +515,7 @@ public abstract class MapCellBase
     /// 获取该位置的Rect
     /// </summary>
     /// <returns>该位置的Rect</returns>
-    public virtual Rect GetRect()
+    public virtual ICollisionGraphics GetGraphics()
     {
         // 如果位置有变更则更新Rect
         if (X != historyX || Y != historyY)
@@ -523,7 +523,7 @@ public abstract class MapCellBase
             var unitWidth = MapDrawer.Single.UnitWidth;
             historyX = X;
             historyY = Y;
-            historyRect = new Rect(X * unitWidth, Y * unitWidth, unitWidth, unitWidth);
+            historyRect = new RectGraphics(new Vector2(X * unitWidth - MapDrawer.Single.MapWidth * unitWidth * 0.5f, Y * unitWidth - MapDrawer.Single.MapHeight * unitWidth * 0.5f), unitWidth, unitWidth, 0);
         }
         return historyRect;
     }

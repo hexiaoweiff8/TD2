@@ -16,15 +16,23 @@ public class MapCell : MapCellBase
     /// </summary>
     public override GameObject GameObj
     {
-        get { return base.GameObj; }
+        get
+        {
+            // 判断当前状态, 如果当前状态为不显示进行报错
+            if (!isShow && !IsInScreen)
+            {
+                Debug.LogError("不在显示范围内的情况下被显示.");
+            }
+            return base.GameObj;
+        }
         set { base.GameObj = value; }
     }
 
-
     /// <summary>
-    /// 是否在屏幕中
+    /// 是否在屏幕中状态
     /// </summary>
-    protected bool isInScreen = false;
+    protected bool IsInScreen = false;
+
 
 
 
@@ -45,7 +53,18 @@ public class MapCell : MapCellBase
     /// </summary>
     public void EnterScreen()
     {
-        isInScreen = true;
+        // 设置标记
+        if (!IsInScreen)
+        {
+            Utils.DrawGraphics(GetGraphics(), Color.white);
+            isShow = true;
+            IsInScreen = true;
+            if (base.GameObj == null)
+            {
+                // 加载对象
+                base.GameObj = UnitFictory.Single.GetMapBaseObjFromPool(DataId);
+            }
+        }
     }
 
     /// <summary>
@@ -53,6 +72,26 @@ public class MapCell : MapCellBase
     /// </summary>
     public void OutScreen()
     {
-        isInScreen = false;
+        // 设置标记
+        if (IsInScreen)
+        {
+            Utils.DrawGraphics(GetGraphics(), Color.red);
+            isShow = false;
+            IsInScreen = false;
+
+            // 回收对象
+            if (base.GameObj != null)
+            {
+                UnitFictory.Single.CycleBackMapBaseObj(base.GameObj);
+                base.GameObj = null;
+            }
+            else
+            {
+                Debug.LogError("单位在回收前已被销毁");
+            }
+            historyUnitWidth = -1;
+            historyXForDraw = -1;
+            historyYForDraw = -1;
+        }
     }
 }

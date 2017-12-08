@@ -85,13 +85,13 @@ public class MapDrawer : MapDrawerBase
     /// <summary>
     /// 绘制范围
     /// </summary>
-    private Rect drawRect;
+    private ICollisionGraphics drawGraphics;
 
     /// <summary>
     /// 历史Rect
     /// 判断Rect变更使用
     /// </summary>
-    private Rect historyRect;
+    private ICollisionGraphics historyGraphics;
 
     /// <summary>
     /// 绘制处理事件
@@ -109,18 +109,17 @@ public class MapDrawer : MapDrawerBase
         // 只绘制地板层, 障碍层
         drawAction = (layer, array) =>
         {
-            if (layer == MapManager.MapBaseLayer)
-            {
-                // 数据宽度
-                var width = mapBase.MapWidth;
-                // 数据长度
-                var height = mapBase.MapHeight;
+            // 数据宽度
+            var width = mapBase.MapWidth;
+            // 数据长度
+            var height = mapBase.MapHeight;
+            var i = 0;
+            var j = 0;
 
+            if (layer != MapManager.MapBaseLayer)
+            {
                 // TODO 判断是否有单元被移动, 被移动的需要被检测
 
-
-                var i = 0;
-                var j = 0;
                 // 遍历所有单位
                 for (i = 0; i < height; i++)
                 {
@@ -128,38 +127,63 @@ public class MapDrawer : MapDrawerBase
                     {
                         //var key = Utils.GetKey(j, i);
                         var item = array[i, j];
-                        if (drawRect.Overlaps(item.GetRect()))
+                        if (item != null)
                         {
-                            // 刷新范围内单位
-                            // 如果物体已存在, 则不重复绘制
-                            if (objArray[i, j] == null)
+                            if (drawGraphics.CheckCollision(item.GetGraphics()))
                             {
-                                objArray[i, j] = item;
+                                // 刷新范围内单位
+                                // 如果物体已存在, 则不重复绘制
+                                if (objArray[i, j] == null)
+                                {
+                                    objArray[i, j] = item;
+                                }
+                                if (isHideObjArray[i, j] != null)
+                                {
+                                    isHideObjArray[i, j] = null;
+                                }
+                                item.Show();
                             }
-                            if (isHideObjArray[i, j] != null)
+                            else
                             {
-                                isHideObjArray[i, j] = null;
+                                // 将范围外单位回收
+                                if (objArray[i, j] != null)
+                                {
+                                    objArray[i, j] = null;
+                                }
+                                if (isHideObjArray[i, j] == null)
+                                {
+                                    isHideObjArray[i, j] = item;
+                                }
+                                item.Hide();
                             }
-                            item.Show();
-                        }
-                        else
-                        {
-                            // 将范围外单位回收
-                            if (objArray[i, j] != null)
-                            {
-                                objArray[i, j] = null;
-                            }
-                            if (isHideObjArray[i, j] == null)
-                            {
-                                isHideObjArray[i, j] = item;
-                            }
-                            item.Hide();
                         }
                     }
                 }
 
-                // 记录绘制范围
-                historyRect = drawRect;
+            }
+            else
+            {
+                // 判断mapBase是否在范围内
+                // 遍历所有单位
+                for (i = 0; i < height; i++)
+                {
+                    for (j = 0; j < width; j++)
+                    {
+                        //var key = Utils.GetKey(j, i);
+                        var item = array[i, j] as MapCell;
+                        if (item != null)
+                        {
+                            if (drawGraphics.CheckCollision(item.GetGraphics()))
+                            {
+                                item.EnterScreen();
+                            }
+                            else
+                            {
+                                item.OutScreen();
+                            }
+                        }
+                    }
+                }
             }
 
         };
@@ -187,35 +211,37 @@ public class MapDrawer : MapDrawerBase
     /// <summary>
     /// 初始化
     /// </summary>
-    /// <param name="mapBase">绘制数据</param>
+    /// <param name="mapBaseParam">绘制数据</param>
     /// <param name="mapCenter">地图中心</param>
-    /// <param name="rect">绘制范围</param>
+    /// <param name="graphics">绘制范围</param>
     /// <param name="type">绘制类型</param>
-    public void Init([NotNull] MapBase mapBase, Vector3 mapCenter, Rect rect = new Rect(), int type = 0)
+    public void Init([NotNull] MapBase mapBaseParam, Vector3 mapCenter, ICollisionGraphics graphics, int type = 0)
     {
         Clear();
-        this.mapBase = mapBase;
-        drawRect = rect;
-        UnitWidth = mapBase.UnitWidth;
+        mapBase = mapBaseParam;
+        drawGraphics = graphics == null ? new RectGraphics(Vector2.zero, 0, 0, 0) : graphics;
+        UnitWidth = mapBaseParam.UnitWidth;
         isHideObjArray = new MapCellBase[this.mapBase.MapHeight, this.mapBase.MapWidth];
         objArray = new MapCellBase[this.mapBase.MapHeight, this.mapBase.MapWidth];
 
 
-        ChangeDrawRect(Utils.GetShowRect(mapCenter,
-            MapWidth,
-            MapHeight,
-            rect.width + UnitWidth * 2,
-            rect.height + UnitWidth * 2,
-            UnitWidth));
+        ChangeDrawGraphics(graphics);
+        //ChangeDrawGraphics(Utils.GetShowGraphics(mapCenter,
+        //    MapWidth,
+        //    MapHeight,
+        //    drawRect + UnitWidth * 2,
+        //    drawRect.height + UnitWidth * 2,
+        //    UnitWidth));
     }
 
     /// <summary>
     /// 修改绘制范围
     /// </summary>
-    /// <param name="rect">绘制范围类</param>
-    public void ChangeDrawRect(Rect rect)
+    /// <param name="graphics">绘制范围类</param>
+    public void ChangeDrawGraphics(ICollisionGraphics graphics)
     {
-        drawRect = rect;
+
+        drawGraphics = graphics;
     }
 
 
@@ -224,13 +250,24 @@ public class MapDrawer : MapDrawerBase
     /// </summary>
     public override void Draw()
     {
+        Utils.DrawGraphics(drawGraphics, Color.yellow);
         // 当前范围是否移动, 如果移动则更新列表, 如果未移动则使用旧列表数据
-        if (drawRect != historyRect || mapBase.NeedDraw)
+        if (drawGraphics == null ||
+            historyGraphics == null ||
+            drawGraphics.Postion != historyGraphics.Postion ||
+            mapBase.NeedDraw)
         {
             // 局部绘制控制(只有地板)
             mapBase.Foreach(drawAction);
             // 全绘制(除了地板)
-            mapBase.DrawMap();
+            mapBase.DrawMap(drawGraphics);
+            // 记录绘制范围
+            if (historyGraphics == null)
+            {
+                historyGraphics = drawGraphics.Clone();
+            }
+            historyGraphics.Copy(drawGraphics);
+
         }
 
         // 判断是否有移动单位变更

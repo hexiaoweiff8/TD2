@@ -49,17 +49,17 @@ public class MapManager : SingleItem<MapManager>
     /// <summary>
     /// 出兵点Id
     /// </summary>
-    public const int OutMosterPointId = 101;
+    public const int OutMosterPointId = 301;
 
     /// <summary>
     /// 入兵点Id
     /// </summary>
-    public const int InMonsterPointId = 102;
+    public const int InMonsterPointId = 302;
 
     /// <summary>
     /// 塔位点Id
     /// </summary>
-    public const int TowerPointId = 2001;
+    public const int TowerPointId = 401;
 
     /// <summary>
     /// 地图文件地址
@@ -241,12 +241,15 @@ public class MapManager : SingleItem<MapManager>
         {
             for (var j = 0; j < width; j++)
             {
-                // 加载模型
-                var mapCell = UnitFictory.Single.CreateUnit(layer, mapData[i][j]);
-                mapCell.X = j;
-                mapCell.Y = i;
-                // 根据数据加载
-                mapCellDataArray[i, j] = mapCell;
+                if (mapData[i][j] > 0)
+                {
+                    // 加载模型
+                    var mapCell = UnitFictory.Single.CreateUnit(layer, mapData[i][j]);
+                    mapCell.X = j;
+                    mapCell.Y = i;
+                    // 根据数据加载
+                    mapCellDataArray[i, j] = mapCell;
+                }
             }
         }
 

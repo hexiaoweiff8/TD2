@@ -25,7 +25,7 @@ public class InMonsterPoint : MapCellBase
     /// <param name="drawLayer">绘制层级</param>
     public InMonsterPoint(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
     {
-
+        MapCellType = UnitType.InPoint;
     }
 
     /// <summary>

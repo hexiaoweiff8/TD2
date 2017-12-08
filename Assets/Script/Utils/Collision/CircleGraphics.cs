@@ -42,4 +42,32 @@ public class CircleGraphics : CollisionGraphics
         // Utils.DrawGraphics(circle, Color.white);
         return circle;
     }
+
+
+    /// <summary>
+    /// 复制
+    /// </summary>
+    /// <returns>被复制出来的单位</returns>
+    public override ICollisionGraphics Clone()
+    {
+        return new CircleGraphics(this.Postion, this.Radius);
+    }
+
+    /// <summary>
+    /// 拷贝
+    /// </summary>
+    /// <param name="graphics"></param>
+    public override void Copy(ICollisionGraphics graphics)
+    {
+        if (graphics.GraphicType == GraphicType.Circle)
+        {
+            var sourceCircle = graphics as CircleGraphics;
+            this.Postion = sourceCircle.Postion;
+            this.Radius = sourceCircle.Radius;
+        }
+        else
+        {
+            Debug.Log("试图拷贝:" + graphics.GraphicType + "类型到圆形");
+        }
+    }
 }

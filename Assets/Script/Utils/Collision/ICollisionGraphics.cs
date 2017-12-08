@@ -28,6 +28,19 @@ public interface ICollisionGraphics
     /// </summary>
     /// <returns></returns>
     RectGraphics GetExternalRect();
+
+
+    /// <summary>
+    /// 复制自己的数据
+    /// </summary>
+    /// <returns></returns>
+    ICollisionGraphics Clone();
+
+    /// <summary>
+    /// 复制单位
+    /// </summary>
+    /// <param name="graphics">被复制单位</param>
+    void Copy(ICollisionGraphics graphics);
 }
 
 

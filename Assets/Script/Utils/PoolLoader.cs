@@ -13,7 +13,8 @@ public class PoolLoader : SingleItem<PoolLoader>
     /// <summary>
     /// 对象池
     /// </summary>
-    private Dictionary<string, GameObject> pool = new Dictionary<string, GameObject>();
+    private Dictionary<string, UnityEngine.Object> pool = new Dictionary<string, UnityEngine.Object>();
+
 
     /// <summary>
     /// 加载对象-Res方式
@@ -28,7 +29,7 @@ public class PoolLoader : SingleItem<PoolLoader>
         if (pool.ContainsKey(path))
         {
             // 实例化新对象
-            result = GameObject.Instantiate(pool[path]);
+            result = GameObject.Instantiate((GameObject)pool[path]);
         }
         else
         {
@@ -65,6 +66,29 @@ public class PoolLoader : SingleItem<PoolLoader>
         if (name != null)
         {
             result.name = name;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 泛型加载
+    /// </summary>
+    /// <typeparam name="T">资源类型</typeparam>
+    /// <param name="path">资源路径</param>
+    /// <returns></returns>
+    public T LoadForType<T>(string path) where T : UnityEngine.Object
+    {
+
+        T result;
+        if (pool.ContainsKey(path))
+        {
+            // 实例化新对象
+            result = (T)pool[path];
+        }
+        else
+        {
+            result = ResourcesLoader.Single.LoadForType<T>(path);
+            pool.Add(path, result);
         }
         return result;
     }

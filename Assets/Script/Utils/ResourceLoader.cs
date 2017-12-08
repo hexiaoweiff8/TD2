@@ -50,6 +50,22 @@ public class ResourcesLoader
         return result;
     }
 
+
+    /// <summary>
+    /// 加载特效
+    /// </summary>
+    /// <param name="key">特效路径</param>
+    /// <returns>特效对象</returns>
+    public T LoadForType<T>(string key) where T : Object
+    {
+        var result = (T)Resources.Load(key, typeof(T));
+        if (result == null)
+        {
+            Debug.Log("Resource not exist:" + key);
+        }
+        return result;
+    }
+
     ///// <summary>
     ///// 加载Ab包资源
     ///// </summary>

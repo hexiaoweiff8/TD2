@@ -53,6 +53,7 @@ public class OutMonsterPoint : MapCellBase
         // 生成创建事件链 
         // 多个事件链
         // 数据格式 : 类型Id, 数量, Id,
+        MapCellType = UnitType.OutPoint;
     }
 
     /// <summary>

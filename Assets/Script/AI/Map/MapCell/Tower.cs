@@ -62,7 +62,7 @@ public class Tower : MapCellBase
     /// <param name="drawLayer">所在层</param>
     public Tower(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
     {
-
+        MapCellType = UnitType.Tower;
     }
 
     /// <summary>

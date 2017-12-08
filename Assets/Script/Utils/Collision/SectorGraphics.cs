@@ -61,4 +61,35 @@ public class SectorGraphics : CollisionGraphics
         //Utils.DrawGraphics(rect, Color.white);
         return rect;
     }
+
+
+
+    /// <summary>
+    /// 复制
+    /// </summary>
+    /// <returns>被复制出来的单位</returns>
+    public override ICollisionGraphics Clone()
+    {
+        return new SectorGraphics(this.Postion, this.Rotation, this.Radius, this.OpenAngle);
+    }
+
+    /// <summary>
+    /// 拷贝
+    /// </summary>
+    /// <param name="graphics"></param>
+    public override void Copy(ICollisionGraphics graphics)
+    {
+        if (graphics.GraphicType == GraphicType.Sector)
+        {
+            var sourceSector = graphics as SectorGraphics;
+            this.Postion = sourceSector.Postion;
+            this.Rotation = sourceSector.Rotation;
+            this.Radius = sourceSector.Radius;
+            this.OpenAngle = sourceSector.OpenAngle;
+        }
+        else
+        {
+            Debug.Log("试图拷贝:" + graphics.GraphicType + "类型到扇形");
+        }
+    }
 }

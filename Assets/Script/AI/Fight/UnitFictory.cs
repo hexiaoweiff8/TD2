@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 /// <summary>
@@ -15,6 +17,12 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// 资源地址
     /// </summary>
     public const string ResourceName = "Resource";
+
+
+    /// <summary>
+    /// 资源表名称
+    /// </summary>
+    public const string ResourceTableName = "ResourceData";
 
     /// <summary>
     /// 地图单元数据key名称
@@ -32,11 +40,21 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// </summary>
     public const string TowerCellTableName = "TowerCellData";
 
+    /// <summary>
+    /// 地图Cell基类ID
+    /// </summary>
+    public const int MapBaseCellDataId = 901;
+
 
     /// <summary>
     /// 
     /// </summary>
     private Dictionary<long, MapCellBase> mapCellBases = new Dictionary<long, MapCellBase>();
+
+    /// <summary>
+    /// 地图base对象队列
+    /// </summary>
+    private Queue<GameObject> mapBasePool = new Queue<GameObject>(); 
 
 
     /// <summary>
@@ -152,6 +170,59 @@ public class UnitFictory : SingleItem<UnitFictory>
     }
 
 
+    /// <summary>
+    /// 获取地板对象池单位
+    /// </summary>
+    /// <returns>从对象池中获取的base单位</returns>
+    public GameObject GetMapBaseObjFromPool(int dataId)
+    {
+        GameObject result = null;
+
+        if (dataId > 0)
+        {
+            // 加载base
+            if (mapBasePool.Count > 0)
+            {
+                result = mapBasePool.Dequeue();
+            }
+            else
+            {
+                // 加载模板
+                result = GetGameObject(MapCellTableName,
+                    MapBaseCellDataId,
+                    MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
+            }
+            // 设置ID对应的资源
+            // 加载dataId对应的资源
+            if (result != null)
+            {
+                var image = result.GetComponent<Image>();
+                var resouceName = DataPacker.Single[ResourceTableName][dataId.ToString()].GetString(ResourceName);
+                image.sprite = PoolLoader.Single.LoadForType<Sprite>(resouceName);
+                result.SetActive(true);
+            }
+
+        }
+        else
+        {
+            Debug.LogError("数据不合法:" + dataId);
+        }
+
+        return result;
+    }
+
+
+    /// <summary>
+    /// 回收地图base对象
+    /// </summary>
+    /// <param name="obj"></param>
+    public void CycleBackMapBaseObj([NotNull]GameObject obj)
+    {
+        obj.SetActive(false);
+        mapBasePool.Enqueue(obj);
+    }
+
+
     ///// <summary>
     ///// 获取单位
     ///// </summary>
@@ -237,6 +308,20 @@ public class UnitFictory : SingleItem<UnitFictory>
     public void DestoryMapCell(MapCellBase mapCell)
     {
         GameObject.Destroy(mapCell.GameObj);
+    }
+
+    /// <summary>
+    /// 清理数据
+    /// </summary>
+    public void Clear()
+    {
+        // 遍历销毁所有单位
+        //mapCellBases.Clear();
+        //mapBasePool.Clear();
+        while (mapBasePool.Count > 0)
+        {
+            GameObject.Destroy(mapBasePool.Dequeue());
+        }
     }
 
 }

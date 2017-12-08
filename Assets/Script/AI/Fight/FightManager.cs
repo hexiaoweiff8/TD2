@@ -33,10 +33,10 @@ public class FightManager : SingleItem<FightManager>
     /// </summary>
     /// <param name="centerPos">地图中心位置</param>
     /// <param name="chapterId">地图章节ID</param>
-    /// <param name="drawRect">绘制范围</param>
+    /// <param name="drawGraphics">绘制范围</param>
     /// <param name="unitWidth">绘制单元大小</param>
     /// <param name="drawType">绘制类型</param>
-    public void StartChapter(int chapterId, Vector3 centerPos, Rect drawRect, int unitWidth, int drawType)
+    public void StartChapter(int chapterId, Vector3 centerPos, ICollisionGraphics drawGraphics, int unitWidth, int drawType)
     {
 
         DataPacker.Single.Clear();
@@ -48,7 +48,7 @@ public class FightManager : SingleItem<FightManager>
         MapBase = MapManager.Single.GetMapBase(chapterId, centerPos, unitWidth, drawType);
 
         // 初始化地图绘制
-        MapDrawer.Single.Init(MapBase, centerPos, drawRect, drawType);
+        MapDrawer.Single.Init(MapBase, centerPos, drawGraphics, drawType);
 
         MapDrawer.Single.Begin();
 
@@ -74,85 +74,47 @@ public class FightManager : SingleItem<FightManager>
 
 
         var outPointList = MapBase.GetMapCellList(MapManager.MapNpcLayer, MapManager.OutMosterPointId);
-        MapBase.DrawMap();
+        MapBase.DrawMap(drawGraphics);
 
-        var outMonsterPoint = (outPointList[0] as OutMonsterPoint);
-        outMonsterPoint.AddData(new List<MonsterData>()
+        if (outPointList != null)
         {
-            new MonsterData()
+            var outMonsterPoint = (outPointList[0] as OutMonsterPoint);
+            outMonsterPoint.AddData(new List<MonsterData>()
             {
-                MonsterId = 1001,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 1001,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 1001,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 1001,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 1001,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 2,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 2,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 2,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 2,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 2,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 2,
-                Count = 1,
-                Interval = 1
-            },
-            new MonsterData()
-            {
-                MonsterId = 2,
-                Count = 1,
-                Interval = 1
-            },
-        });
-        outMonsterPoint.Start();
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+
+            });
+            outMonsterPoint.Start();
+        }
 
     }
 
@@ -180,8 +142,7 @@ public class FightManager : SingleItem<FightManager>
                 if (cell != null && cell.DataId > 0)
                 {
                     // 从数据中获取该障碍物的信息
-                    var dataRow =
-                        DataPacker.Single.GetDataItem(UnitFictory.ObstacleTableName).GetRowById(cell.DataId.ToString());
+                    var dataRow = DataPacker.Single.GetDataItem(UnitFictory.ObstacleTableName).GetRowById(cell.DataId.ToString());
                     var diameter = dataRow.GetInt("Diameter");
                     var ob = new FixtureData(new AllData
                     {
@@ -193,6 +154,7 @@ public class FightManager : SingleItem<FightManager>
                         GraphicType = GraphicType.Rect
                     }, cell);
                     ClusterManager.Single.Add(ob);
+                    Debug.Log("Add Ob:" + i + "," + j);
                 }
 
             }

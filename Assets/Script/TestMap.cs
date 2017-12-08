@@ -27,6 +27,11 @@ public class TestMap : MonoBehaviour
     /// </summary>
     public int DrawType = 1;
 
+    /// <summary>
+    /// 矩形绘制范围
+    /// </summary>
+    private RectGraphics drawRect = null;
+
 
 
 	void Update () {
@@ -43,8 +48,9 @@ public class TestMap : MonoBehaviour
     private void Init()
     {
         var centerPos = new Vector3();
+        drawRect = new RectGraphics(Vector2.zero, Screen.width, Screen.height, 0);
         // 开启章节
-        FightManager.Single.StartChapter(1, centerPos, new Rect(0,0,Screen.width, Screen.height),  UnitWidht, DrawType);
+        FightManager.Single.StartChapter(1, centerPos, drawRect, UnitWidht, DrawType);
 
         // 创建player单位
     }
@@ -77,34 +83,34 @@ public class TestMap : MonoBehaviour
         // 地图绘制
         if (MapDrawer.Single.IsStarted)
         {
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
             {
-                MainCamera.transform.position = new Vector3(MainCamera.transform.position.x,
-                    MainCamera.transform.position.y + CameraMoveSpeed, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    MainCamera.transform.position = new Vector3(MainCamera.transform.position.x,
+                        MainCamera.transform.position.y + CameraMoveSpeed, MainCamera.transform.position.z);
+                }
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    MainCamera.transform.position = new Vector3(MainCamera.transform.position.x,
+                        MainCamera.transform.position.y - CameraMoveSpeed, MainCamera.transform.position.z);
+                }
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    MainCamera.transform.position = new Vector3(MainCamera.transform.position.x - CameraMoveSpeed,
+                        MainCamera.transform.position.y, MainCamera.transform.position.z);
+                }
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    MainCamera.transform.position = new Vector3(MainCamera.transform.position.x + CameraMoveSpeed,
+                        MainCamera.transform.position.y, MainCamera.transform.position.z);
+                }
 
+                drawRect.Postion = MainCamera.transform.position;
+                MapDrawer.Single.ChangeDrawGraphics(drawRect);
             }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                MainCamera.transform.position = new Vector3(MainCamera.transform.position.x,
-                    MainCamera.transform.position.y - CameraMoveSpeed, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
+           
 
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                MainCamera.transform.position = new Vector3(MainCamera.transform.position.x - CameraMoveSpeed,
-                    MainCamera.transform.position.y, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
-
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                MainCamera.transform.position = new Vector3(MainCamera.transform.position.x + CameraMoveSpeed,
-                    MainCamera.transform.position.y, MainCamera.transform.position.z);
-                MapDrawer.Single.ChangeDrawRect(Utils.GetShowRect(MainCamera.transform.position, MapDrawer.Single.MapWidth, MapDrawer.Single.MapHeight, Screen.width + MapDrawer.Single.UnitWidth * 2, Screen.height + MapDrawer.Single.UnitWidth * 2, MapDrawer.Single.UnitWidth));
-
-            }
         }
     }
 }

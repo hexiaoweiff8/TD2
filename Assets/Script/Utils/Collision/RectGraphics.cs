@@ -101,5 +101,34 @@ public class RectGraphics : CollisionGraphics
         return this;
     }
 
+
+    /// <summary>
+    /// 复制
+    /// </summary>
+    /// <returns>被复制出来的单位</returns>
+    public override ICollisionGraphics Clone()
+    {
+        return new RectGraphics(new Vector2(Postion.x, Postion.y), this.Width, this.Height, this.rotation);
+    }
+
+    /// <summary>
+    /// 拷贝
+    /// </summary>
+    /// <param name="graphics"></param>
+    public override void Copy(ICollisionGraphics graphics)
+    {
+        if (graphics.GraphicType == GraphicType.Rect)
+        {
+            var sourceRect = graphics as RectGraphics;
+            this.Postion = sourceRect.Postion;
+            this.Width = sourceRect.Width;
+            this.Height = sourceRect.Height;
+            this.rotation = sourceRect.rotation;
+        }
+        else
+        {
+            Debug.Log("试图拷贝:" + graphics.GraphicType + "类型到矩形");
+        }
+    }
 }
 

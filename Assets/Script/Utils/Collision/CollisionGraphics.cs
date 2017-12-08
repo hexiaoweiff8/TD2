@@ -34,6 +34,10 @@ public abstract class CollisionGraphics : ICollisionGraphics
         return CheckCollision(this, graphics);
     }
 
+    /// <summary>
+    /// 获取外接矩形
+    /// </summary>
+    /// <returns></returns>
     public abstract RectGraphics GetExternalRect();
 
     /// <summary>
@@ -239,7 +243,31 @@ public abstract class CollisionGraphics : ICollisionGraphics
 
         if (rectGraphics1 != null && rectGraphics2 != null)
         {
-            //建立投影, 如果在法线上任意两投影不重合, 说明不想交, 否则相交
+
+            var positionOffset = rectGraphics1.Postion - rectGraphics2.Postion;
+            // 检测矩形的距离, 如果超过最大检测距离, 则不需要继续监测
+            //var r1 = rectGraphics1.Diagonal1.magnitude * 0.5f;
+            //var r2 = rectGraphics2.Diagonal1.magnitude * 0.5f;
+            //if (r1 + r2 > positionOffset.magnitude)
+            //{
+            //    return false;
+            //}
+
+            //如果没有旋转则使用无旋转碰撞
+            if (rectGraphics2.Rotation == 0 && rectGraphics1.Rotation == 0)
+            {
+                var offPos = rectGraphics2.Postion - rectGraphics1.Postion;
+
+                if (Math.Abs(offPos.x) < (rectGraphics2.Width * 0.5f + rectGraphics1.Width * 0.5f) &&
+                    (Math.Abs(offPos.y) < (rectGraphics2.Height * 0.5f + rectGraphics1.Height * 0.5f)))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+
+            // 建立投影, 如果在法线上任意两投影不重合, 说明不想交, 否则相交
             var axisArray = new[]
             {
                 rectGraphics1.HorizonalAxis,
@@ -248,35 +276,27 @@ public abstract class CollisionGraphics : ICollisionGraphics
                 rectGraphics2.VerticalAxis,
             };
 
-            //var positionV3 = new Vector3(rectGraphics1.Postion.x, 0, rectGraphics1.Postion.y);
-            //var rightV3 = new Vector3(rectGraphics1.HorizonalAxis.x, 0, rectGraphics1.HorizonalAxis.y);
-            //var topV3 = new Vector3(rectGraphics1.VerticalAxis.x, 0, rectGraphics1.VerticalAxis.y);
-            //Debug.DrawLine(positionV3, positionV3 + rightV3 * rectGraphics1.Width, Color.red);
-            //Debug.DrawLine(positionV3, positionV3 + topV3 * rectGraphics1.Height, Color.red);
-
-
-            //positionV3 = new Vector3(rectGraphics2.Postion.x, 0, rectGraphics2.Postion.y);
-            //rightV3 = new Vector3(rectGraphics2.HorizonalAxis.x, 0, rectGraphics2.HorizonalAxis.y);
-            //topV3 = new Vector3(rectGraphics2.VerticalAxis.x, 0, rectGraphics2.VerticalAxis.y);
-            //Debug.DrawLine(positionV3, positionV3 + rightV3 * rectGraphics2.Width, Color.red);
-            //Debug.DrawLine(positionV3, positionV3 + topV3 * rectGraphics2.Height, Color.red);
-
-            var positionOffset = rectGraphics1.Postion - rectGraphics2.Postion;
+            var projection1 = 0f;
+            var projection2 = 0f;
+            var projection3 = 0f;
+            var projection4 = 0f;
+            var dot = 0f;
+            Vector2 axis;
             for (var i = 0; i < axisArray.Length; i++)
             {
-                var axis = axisArray[i];
-                var dot = Math.Abs(Vector2.Dot(axis, positionOffset));
+                axis = axisArray[i];
+                dot = Math.Abs(Vector2.Dot(axis, positionOffset));
                 // 映射对角线到四个轴上进行对比
-                var projection1 = Math.Abs(Vector2.Dot(axis, rectGraphics1.Diagonal1)) * 0.5f;
-                var projection2 = Math.Abs(Vector2.Dot(axis, rectGraphics1.Diagonal2)) * 0.5f;
-                var projection3 = Math.Abs(Vector2.Dot(axis, rectGraphics2.Diagonal1)) * 0.5f;
-                var projection4 = Math.Abs(Vector2.Dot(axis, rectGraphics2.Diagonal2)) * 0.5f;
+                projection1 = Math.Abs(Vector2.Dot(axis, rectGraphics1.Diagonal1));
+                projection2 = Math.Abs(Vector2.Dot(axis, rectGraphics1.Diagonal2));
+                projection3 = Math.Abs(Vector2.Dot(axis, rectGraphics2.Diagonal1));
+                projection4 = Math.Abs(Vector2.Dot(axis, rectGraphics2.Diagonal2));
 
                 projection1 = projection1 > projection2 ? projection1 : projection2;
                 projection3 = projection3 > projection4 ? projection3 : projection4;
 
 
-                if (projection1 + projection3 <= dot)
+                if (projection1 * 0.5f + projection3 * 0.5f <= dot)
                 {
                     return false;
                 }
@@ -461,6 +481,18 @@ public abstract class CollisionGraphics : ICollisionGraphics
             }
         }
     }
+
+    /// <summary>
+    /// 复制数据
+    /// </summary>
+    /// <returns>被复制的图形类</returns>
+    public abstract ICollisionGraphics Clone();
+
+    /// <summary>
+    /// 复制数据到当前类中
+    /// </summary>
+    /// <param name="graphics">被复制数据</param>
+    public abstract void Copy(ICollisionGraphics graphics);
 }
 
 
