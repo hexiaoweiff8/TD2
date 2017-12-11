@@ -34,11 +34,15 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// </summary>
     public const string ObstacleTableName = "ObstacleData";
 
-
     /// <summary>
     /// 障碍单元数据key名称
     /// </summary>
     public const string TowerCellTableName = "TowerCellData";
+
+    /// <summary>
+    /// 五行相生相克属性
+    /// </summary>
+    public const string TheFiveDiseasesAndInsectName = "TheFiveDiseasesAndInsectData";
 
     /// <summary>
     /// 地图Cell基类ID
@@ -72,14 +76,10 @@ public class UnitFictory : SingleItem<UnitFictory>
                 // ---------------------------加载数据进行替换模式----------------------------
             case UnitType.MapCell: // 地图单元
             {
-                //var go = GetGameObject(MapCellTableName,
-                //    dataId,
-                //    MapDrawer.Single.ItemParentList[MapManager.MapBaseLayer]);
-
                 result = new MapCell(null, dataId, MapManager.MapBaseLayer);
-                //go.name = result.MapCellId.ToString();
             }
                 break;
+
             case UnitType.Obstacle: // 障碍物
             {
                 var go = GetGameObject(MapCellTableName,
@@ -102,6 +102,7 @@ public class UnitFictory : SingleItem<UnitFictory>
                 go.name = result.MapCellId.ToString();
             }
                 break;
+
             case UnitType.NPC: // NPC
             {
                 var go = GetGameObject(MapCellTableName,
@@ -142,26 +143,18 @@ public class UnitFictory : SingleItem<UnitFictory>
                 go.name = result.MapCellId.ToString();
             }
                 break;
-            //case UnitType.OutPoint: // 出兵点
-            //{
-            //    var go = GetGameObject(MapCellTableName,
-            //        dataId,
-            //        MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
 
-            //    result = new OutMonsterPoint(go, dataId, MapManager.MapNpcLayer);
-            //    go.name = result.MapCellId.ToString();
-            //}
-            //break;
-            //case UnitType.InPoint: // 入兵点
-            //{
-            //    var go = GetGameObject(MapCellTableName,
-            //        dataId,
-            //        MapDrawer.Single.ItemParentList[MapManager.MapNpcLayer]);
-
-            //    result = new InMonsterPoint(go, dataId, MapManager.MapNpcLayer);
-            //    go.name = result.MapCellId.ToString();
-            //}
-                //break;
+            case UnitType.TowerCell:
+            {
+                // 创建塔单元
+                var go = GetGameObject(MapCellTableName,
+                    dataId,
+                    MapDrawer.Single.ItemParentList[MapManager.MapPlayerLayer]);
+                result = new TheFiveCellBase(go, dataId, MapManager.MapPlayerLayer);
+                // 设置数据
+                go.name = result.MapCellId.ToString();
+            }
+                break;
         }
 
 
@@ -347,4 +340,6 @@ public enum UnitType
     TowerPoint = 7,
     // 塔
     Tower = 8,
+    // 塔cell
+    TowerCell = 9,
 }

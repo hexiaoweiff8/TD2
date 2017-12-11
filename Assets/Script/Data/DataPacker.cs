@@ -70,7 +70,7 @@ public class DataPacker : SingleItem<DataPacker>
         // 填充测试数据
         // 地图数据
         var dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/empty");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/empty");
         mapTypeDataTable.AddDataItem("-1", dataRow);
         //dataRow = new DataItem();
         //dataRow.SetString("Resource", "Prefab/mapCell0001");
@@ -82,31 +82,65 @@ public class DataPacker : SingleItem<DataPacker>
         //dataRow.SetString("Resource", "Prefab/mapCell0001");
         //mapTypeDataTable.AddDataItem("3", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0001");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/obstacle0001");
         mapTypeDataTable.AddDataItem("200", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0002");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/obstacle0002");
         mapTypeDataTable.AddDataItem("201", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0001");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/obstacle0001");
         mapTypeDataTable.AddDataItem("301", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/obstacle0002");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/obstacle0002");
         mapTypeDataTable.AddDataItem("302", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/member0001");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/member0001");
         mapTypeDataTable.AddDataItem("1001", dataRow);
         dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/towerPoint0001");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/towerPoint0001");
         mapTypeDataTable.AddDataItem("401", dataRow);
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/towerPoint0001");
+        mapTypeDataTable.AddDataItem("501", dataRow);
 
         dataRow = new DataItem();
-        dataRow.SetString(UnitFictory.ResourceName, "Prefab/baseCell");
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/baseCell");
         mapTypeDataTable.AddDataItem("901", dataRow);
+
+        
+        // 金
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/thefive/metalCell");
+        mapTypeDataTable.AddDataItem("10001", dataRow);
+        // 木
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/thefive/woodCell");
+        mapTypeDataTable.AddDataItem("10002", dataRow);
+        // 水
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/thefive/waterCell");
+        mapTypeDataTable.AddDataItem("10003", dataRow);
+        // 火
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/thefive/fireCell");
+        mapTypeDataTable.AddDataItem("10004", dataRow);
+        // 土
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/thefive/earthCell");
+        mapTypeDataTable.AddDataItem("10005", dataRow);
+        // start节点
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/thefive/startCell");
+        mapTypeDataTable.AddDataItem("90001", dataRow);
+        // end节点
+        dataRow = new DataItem();
+        dataRow.SetString(UnitFictory.ResourceName, "Prefab/mapCell/thefive/endCell");
+        mapTypeDataTable.AddDataItem("90002", dataRow);
 
         SetDataItem(UnitFictory.MapCellTableName, mapTypeDataTable);
 
 
+        // 障碍物描述数据
         var obstacleDataTable = new DataTable(UnitFictory.ObstacleTableName);
         // 填充测试数据
         dataRow = new DataItem();
@@ -131,7 +165,7 @@ public class DataPacker : SingleItem<DataPacker>
         SetDataItem(UnitFictory.ObstacleTableName, obstacleDataTable);
 
 
-
+        // 地图底板Image数据
         var resourceTable = new DataTable(UnitFictory.ResourceTableName);
         dataRow = new DataItem();
         dataRow.SetString(UnitFictory.ResourceName, "Pic/mapbase/floor0001");
@@ -146,8 +180,76 @@ public class DataPacker : SingleItem<DataPacker>
         dataRow.SetString(UnitFictory.ResourceName, "Pic/mapbase/towerPoint0001");
         resourceTable.AddDataItem("2001", dataRow);
 
-
         SetDataItem(UnitFictory.ResourceTableName, resourceTable);
+
+
+        // 五行相生相克数据
+        var theFiveDiseasesAndInsectTable = new DataTable(UnitFictory.ResourceTableName);
+        dataRow = new DataItem();
+        dataRow.SetFloat("" + (int)TheFiveType.None, 0.8f);
+        dataRow.SetFloat("" + (int)TheFiveType.Metal, 0.8f);
+        dataRow.SetFloat("" + (int)TheFiveType.Wood, 0.8f);
+        dataRow.SetFloat("" + (int)TheFiveType.Water, 0.8f);
+        dataRow.SetFloat("" + (int)TheFiveType.Fire, 0.8f);
+        dataRow.SetFloat("" + (int)TheFiveType.Earth, 0.8f);
+        theFiveDiseasesAndInsectTable.AddDataItem("" + (int)TheFiveType.None, dataRow);
+
+        dataRow = new DataItem();
+        dataRow.SetFloat("" + (int)TheFiveType.None, 1.1f);
+        dataRow.SetFloat("" + (int)TheFiveType.Metal, 1);
+        dataRow.SetFloat("" + (int)TheFiveType.Wood, 1.5f);
+        dataRow.SetFloat("" + (int)TheFiveType.Water, 0.7f);
+        dataRow.SetFloat("" + (int)TheFiveType.Fire, 0.5f);
+        dataRow.SetFloat("" + (int)TheFiveType.Earth, 0.9f);
+        theFiveDiseasesAndInsectTable.AddDataItem("" + (int)TheFiveType.Metal, dataRow);
+
+        dataRow = new DataItem();
+        dataRow.SetFloat("" + (int)TheFiveType.None, 1.1f);
+        dataRow.SetFloat("" + (int)TheFiveType.Metal, 0.5f);
+        dataRow.SetFloat("" + (int)TheFiveType.Wood, 1);
+        dataRow.SetFloat("" + (int)TheFiveType.Water, 1.1f);
+        dataRow.SetFloat("" + (int)TheFiveType.Fire, 0.7f);
+        dataRow.SetFloat("" + (int)TheFiveType.Earth, 1.6f);
+        theFiveDiseasesAndInsectTable.AddDataItem("" + (int)TheFiveType.Wood, dataRow);
+
+        dataRow = new DataItem();
+        dataRow.SetFloat("" + (int)TheFiveType.None, 1.1f);
+        dataRow.SetFloat("" + (int)TheFiveType.Metal, 0.9f);
+        dataRow.SetFloat("" + (int)TheFiveType.Wood, 0.7f);
+        dataRow.SetFloat("" + (int)TheFiveType.Water, 1);
+        dataRow.SetFloat("" + (int)TheFiveType.Fire, 1.7f);
+        dataRow.SetFloat("" + (int)TheFiveType.Earth, 0.5f);
+        theFiveDiseasesAndInsectTable.AddDataItem("" + (int)TheFiveType.Water, dataRow);
+
+        dataRow = new DataItem();
+        dataRow.SetFloat("" + (int)TheFiveType.None, 1.1f);
+        dataRow.SetFloat("" + (int)TheFiveType.Metal, 1.5f);
+        dataRow.SetFloat("" + (int)TheFiveType.Wood, 1.2f);
+        dataRow.SetFloat("" + (int)TheFiveType.Water, 0.4f);
+        dataRow.SetFloat("" + (int)TheFiveType.Fire, 1);
+        dataRow.SetFloat("" + (int)TheFiveType.Earth, 0.8f);
+        theFiveDiseasesAndInsectTable.AddDataItem("" + (int)TheFiveType.Fire, dataRow);
+
+        dataRow = new DataItem();
+        dataRow.SetFloat("" + (int)TheFiveType.None, 1.1f);
+        dataRow.SetFloat("" + (int)TheFiveType.Metal, 0.8f);
+        dataRow.SetFloat("" + (int)TheFiveType.Wood, 0.5f);
+        dataRow.SetFloat("" + (int)TheFiveType.Water, 1.5f);
+        dataRow.SetFloat("" + (int)TheFiveType.Fire, 1.1f);
+        dataRow.SetFloat("" + (int)TheFiveType.Earth, 1);
+        theFiveDiseasesAndInsectTable.AddDataItem("" + (int)TheFiveType.Earth, dataRow);
+
+        SetDataItem(UnitFictory.TheFiveDiseasesAndInsectName, theFiveDiseasesAndInsectTable);
+
+
+        //// 塔Cell数据
+        //var towerCellDataTable = new DataTable(UnitFictory.ResourceTableName);
+        //dataRow = new DataItem();
+        //dataRow.SetString(UnitFictory.ResourceName, "Pic/mapbase/floor0001");
+        //towerCellDataTable.AddDataItem("10001", dataRow);
+
+        //SetDataItem(UnitFictory.TowerCellTableName, towerCellDataTable);
+
 
 
     }

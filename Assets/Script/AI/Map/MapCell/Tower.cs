@@ -12,26 +12,22 @@ using UnityEngine;
 public class Tower : MapCellBase
 {
 
-    /// <summary>
-    /// 塔UI对象
-    /// </summary>
-    private GameObject TowerObj = null;
-
 
     /// <summary>
     /// 塔分布数据数组
     /// </summary>
-    private int[,] towerCellDataArray = new int[,]
-    {
-        {100,0,0},
-        {0,0,0},
-        {0,0,101},
-    };
+    private int[,] towerCellDataArray = null;
+
+    /// <summary>
+    /// 节点传导方向
+    /// </summary>
+    private MultiLinkNode<TheFiveCellBase>[,] transDirArray = null;
 
     /// <summary>
     /// 塔单元数组
     /// </summary>
-    private MapCellBase[,] towerCellArray = null;
+    private TheFiveCellBase[,] towerCellArray = null;
+
 
     /// <summary>
     /// 塔cell高度
@@ -46,12 +42,27 @@ public class Tower : MapCellBase
     /// <summary>
     /// 塔的相对位置左下角
     /// </summary>
-    private Vector2 towerLeftDown;
+    private Vector2 towerLeftDown {
+        get
+        {
+            var halfTowerUnitWidth = towerUnitWidth*0.5f;
+            // 获取相对左下角位置
+            var relativePos = new Vector2(-wight * halfTowerUnitWidth + halfTowerUnitWidth, -height * halfTowerUnitWidth + halfTowerUnitWidth);
+            // 合算两个位置
+            return GameObj == null ? Vector2.zero : new Vector2(GameObj.transform.position.x, GameObj.transform.position.y) + relativePos;
+        } 
+    }
 
     /// <summary>
     /// 塔的单位宽度
     /// </summary>
-    private int towerUnitWidth = 1;
+    private int towerUnitWidth
+    {
+        get
+        {
+            return Math.Min(MapDrawer.Single.UnitWidth / height, MapDrawer.Single.UnitWidth / wight);
+        }
+    }
 
     /// <summary>
     /// 初始化
@@ -71,10 +82,19 @@ public class Tower : MapCellBase
     /// <param name="towerData">他单元数据</param>
     public void SetTowerData([NotNull]int[,] towerData)
     {
-        towerCellDataArray = towerData;
         height = towerData.GetLength(0);
         wight = towerData.GetLength(1);
+        // 初始化本地数据
+        towerCellDataArray = towerData;
+        towerCellArray = new TheFiveCellBase[height, wight];
+        transDirArray = new MultiLinkNode<TheFiveCellBase>[height, wight];
         // 加载地图Cell数据
+        // 如果该位置为null则只绘制底板
+
+        // 初始化链接
+
+        // 刷新列表
+        RefreshCells();
     }
 
     /// <summary>
@@ -113,6 +133,50 @@ public class Tower : MapCellBase
         }
     }
 
+    /// <summary>
+    /// 重新绘制单位
+    /// </summary>
+    public void RefreshCells()
+    {
+        // 遍历塔单元数据, 如果TheFiveCell与数据不同, 则更新该位置的cell
+        if (towerCellDataArray != null)
+        {
+            if (towerCellArray == null)
+            {
+                towerCellArray = new TheFiveCellBase[height,wight];
+            }
+            for (var i = 0; i < height; i++)
+            {
+                for (var j = 0; j < wight; j++)
+                {
+                    var val = towerCellDataArray[i, j];
+                    var towerCellItem = towerCellArray[i, j];
+                    if (towerCellItem == null || towerCellItem.DataId != val)
+                    {
+                        // 重新创建单元
+                        var newCell = UnitFictory.Single.CreateUnit(UnitType.TowerCell, val) as TheFiveCellBase;
+                        if (newCell != null)
+                        {
+                            newCell.X = j;
+                            newCell.Y = i;
+                            towerCellArray[i, j] = newCell;
+                        }
+                        else
+                        {
+                            Debug.LogError("TowerCell创建失败:" + val + " x:" + j + " y:" + i);
+                        }
+                        // 销毁原先的单元
+                        if (towerCellItem != null)
+                        {
+                            UnitFictory.Single.DestoryMapCell(towerCellItem);
+                            Debug.Log("销毁x:" + j + " y:" + i + "的TowerCell");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     // 读取模板设置塔的地板类型
     // 定义不同的位置点数据ID
@@ -127,4 +191,84 @@ public class Tower : MapCellBase
     // 101 输出位置
 
 
+}
+
+
+/// <summary>
+/// 多源多响链表节点
+/// </summary>
+public class MultiLinkNode<T>
+{
+    /// <summary>
+    /// 被保存单位
+    /// </summary>
+    public T Tobj { get; set; }
+
+    /// <summary>
+    /// 来源列表
+    /// </summary>
+    private readonly List<MultiLinkNode<T>> sourceNodeList = new List<MultiLinkNode<T>>();
+
+    /// <summary>
+    /// 去向列表
+    /// </summary>
+    private readonly List<MultiLinkNode<T>> targetNodeList = new List<MultiLinkNode<T>>();
+
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <param name="t"></param>
+    public MultiLinkNode(T t)
+    {
+        Tobj = t;
+    }
+
+    /// <summary>
+    /// 添加源对象
+    /// </summary>
+    /// <param name="sourceNode">源对象</param>
+    public void AddSource([NotNull] MultiLinkNode<T> sourceNode)
+    {
+        if (!sourceNodeList.Contains(sourceNode))
+        {
+            sourceNodeList.Add(sourceNode);
+        }
+    }
+
+    /// <summary>
+    /// 添加目标对象
+    /// </summary>
+    /// <param name="targetNode">目标对象</param>
+    public void AddTarget([NotNull] MultiLinkNode<T> targetNode)
+    {
+        if (!targetNodeList.Contains(targetNode))
+        {
+            targetNodeList.Add(targetNode);
+        }
+    }
+
+    /// <summary>
+    /// 删除源对象
+    /// </summary>
+    /// <param name="sourceNode"></param>
+    public void RemoveSource([NotNull] MultiLinkNode<T> sourceNode)
+    {
+        if (sourceNodeList.Contains(sourceNode))
+        {
+            sourceNodeList.Remove(sourceNode);
+        }
+    }
+
+    /// <summary>
+    /// 删除目标对象
+    /// </summary>
+    /// <param name="targetNode"></param>
+    public void RemoveTarget([NotNull] MultiLinkNode<T> targetNode)
+    {
+        if (targetNodeList.Contains(targetNode))
+        {
+            targetNodeList.Remove(targetNode);
+        }
+    }
 }

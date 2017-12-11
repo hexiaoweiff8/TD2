@@ -199,16 +199,7 @@ public class OutMonsterPoint : MapCellBase
                         };
                     }
 
-                    try
-                    {
-
-                        displayOwner.MapCell.GameObj.transform.position = GameObj.transform.position;
-                    }
-                    catch (Exception)
-                    {
-                        
-                        throw;
-                    }
+                    displayOwner.MapCell.GameObj.transform.position = GameObj.transform.position;
                 }
             }
         }

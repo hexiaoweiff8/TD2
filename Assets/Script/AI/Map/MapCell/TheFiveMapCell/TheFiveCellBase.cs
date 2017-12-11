@@ -10,6 +10,13 @@ using UnityEngine;
 /// </summary>
 public class TheFiveCellBase : MapCellBase
 {
+
+    /// <summary>
+    /// 当前单位的父级
+    /// </summary>
+    public Tower Tower { get; set; }
+
+
     /// <summary>
     /// 当前cell属性
     /// </summary>
@@ -21,7 +28,7 @@ public class TheFiveCellBase : MapCellBase
     /// <summary>
     /// 五行属性
     /// </summary>
-    public TheFiveProperties properties = new TheFiveProperties();
+    public TheFiveProperties Properties = new TheFiveProperties();
 
     /// <summary>
     /// 输出数量
@@ -52,11 +59,11 @@ public class TheFiveCellBase : MapCellBase
         if (ExoprtCount > 0)
         {
             // 分裂
-            return properties/ExoprtCount;
+            return Properties/ExoprtCount;
         }
         else
         {
-            return properties;
+            return Properties;
         }
     }
 
@@ -66,8 +73,13 @@ public class TheFiveCellBase : MapCellBase
     /// <param name="fromCell">来源及cell</param>
     public void Absorb([NotNull]TheFiveCellBase fromCell)
     {
-        properties.Plus(fromCell.properties);
+        Properties.Plus(fromCell.Properties);
     }
+
+
+    // TODO 重构Draw 以解决绘制问题, draw时根据现实的实际大小将UntiWidth/当前缩放比例
+
+
 }
 
 /// <summary>
@@ -75,6 +87,12 @@ public class TheFiveCellBase : MapCellBase
 /// </summary>
 public class TheFiveProperties
 {
+
+    /// <summary>
+    /// 五行相生相克关系
+    /// TODO 从表中获取
+    /// </summary>
+    public static float[,] TheFiveDiseasesAndInsect { get; private set; }
 
 
     /// <summary>
@@ -111,6 +129,7 @@ public class TheFiveProperties
     /// 链接次数
     /// </summary>
     public int LinkCount { get; private set; }
+
 
 
     /// <summary>
@@ -162,6 +181,17 @@ public class TheFiveProperties
             EarthValue = cell.EarthValue / count,
         };
     }
+
+
+
+    /// <summary>
+    /// 设置五行克制关系数据
+    /// </summary>
+    /// <param name="data"></param>
+    public static void SetTheFiveDiseasesAndInsect(float[,] data)
+    {
+        TheFiveDiseasesAndInsect = data;
+    }
 }
 
 /// <summary>
@@ -169,10 +199,11 @@ public class TheFiveProperties
 /// </summary>
 public enum TheFiveType
 {
-    None,   // 无属性
-    Fire,   // 火
-    Water,  // 水
-    Metal,  // 金
-    Wood,   // 木
-    Earth   // 土
+    None = 0,   // 无属性
+    Fire = 1,   // 火
+    Water = 2,  // 水
+    Metal = 3,  // 金
+    Wood = 4,   // 木
+    Earth = 5   // 土
 }
+

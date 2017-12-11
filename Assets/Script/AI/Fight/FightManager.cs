@@ -59,9 +59,12 @@ public class FightManager : SingleItem<FightManager>
 
         ClusterManager.Single.Init(centerPos.x, centerPos.y, mapWidth, mapHeight, unitWidth);
 
+        // 加载数据
+        LoadData();
+
 
         // 获得地图障碍列表
-        LoadObstacleLayer(MapBase);
+        LoadLayers(MapBase);
         // ---- 初始化的时候只初始化显示范围内单位, 其他部分协程加载
         // TODO 获得地图NPC列表
         // TODO 获取玩家数据
@@ -73,55 +76,112 @@ public class FightManager : SingleItem<FightManager>
         //LoadPlayer(MapBase);
 
 
-        var outPointList = MapBase.GetMapCellList(MapManager.MapNpcLayer, MapManager.OutMosterPointId);
-        MapBase.DrawMap(drawGraphics);
+        //var outPointList = MapBase.GetMapCellList(MapManager.MapNpcLayer, MapManager.OutMosterPointId);
 
-        if (outPointList != null)
+        //if (outPointList != null)
+        //{
+        //    var outMonsterPoint = (outPointList[0] as OutMonsterPoint);
+        //    outMonsterPoint.AddData(new List<MonsterData>()
+        //    {
+        //        new MonsterData()
+        //        {
+        //            MonsterId = 1001,
+        //            Count = 1,
+        //            Interval = 1
+        //        },
+        //        new MonsterData()
+        //        {
+        //            MonsterId = 1001,
+        //            Count = 1,
+        //            Interval = 1
+        //        },
+        //        new MonsterData()
+        //        {
+        //            MonsterId = 1001,
+        //            Count = 1,
+        //            Interval = 1
+        //        },
+        //        new MonsterData()
+        //        {
+        //            MonsterId = 1001,
+        //            Count = 1,
+        //            Interval = 1
+        //        },
+        //        new MonsterData()
+        //        {
+        //            MonsterId = 1001,
+        //            Count = 1,
+        //            Interval = 1
+        //        },
+
+        //    });
+        //    outMonsterPoint.Start();
+        //}
+
+
+        // TODO 创建塔mapCell
+        var towerPointList = MapBase.GetMapCellList(MapManager.MapNpcLayer, MapManager.TowerPointId);
+
+        if (towerPointList != null)
         {
-            var outMonsterPoint = (outPointList[0] as OutMonsterPoint);
-            outMonsterPoint.AddData(new List<MonsterData>()
+            foreach (var mapCellBase in towerPointList)
             {
-                new MonsterData()
+                var item = mapCellBase as TowerPoint;
+                if (item != null)
                 {
-                    MonsterId = 1001,
-                    Count = 1,
-                    Interval = 1
-                },
-                new MonsterData()
-                {
-                    MonsterId = 1001,
-                    Count = 1,
-                    Interval = 1
-                },
-                new MonsterData()
-                {
-                    MonsterId = 1001,
-                    Count = 1,
-                    Interval = 1
-                },
-                new MonsterData()
-                {
-                    MonsterId = 1001,
-                    Count = 1,
-                    Interval = 1
-                },
-                new MonsterData()
-                {
-                    MonsterId = 1001,
-                    Count = 1,
-                    Interval = 1
-                },
-
-            });
-            outMonsterPoint.Start();
+                    // 创建Tower类
+                    var tower = UnitFictory.Single.CreateUnit(UnitType.Tower, 1001) as Tower;
+                    if (tower != null)
+                    {
+                        tower.X = item.X;
+                        tower.Y = item.Y;
+                        tower.SetTowerData(new int[,]
+                        {
+                            { 90001, -1, -1, 90002 },
+                            { 90001, -1, -1, 90002 },
+                            { 90001, -1, -1, 90002 },
+                            { 90001, -1, -1, 90002 },
+                        });
+                        MapBase.AddMapCell(tower, MapManager.MapPlayerLayer);
+                    }
+                }
+            }
         }
 
+
+        MapBase.DrawMap(drawGraphics);
+
+    }
+
+    /// <summary>
+    /// 加载数据
+    /// </summary>
+    public void LoadData()
+    {
+        // 加载五行相生相克数据
+        var data = new float[6,6];
+        var dataTable = DataPacker.Single.GetDataItem(UnitFictory.TheFiveDiseasesAndInsectName);
+        var i = 0;
+        var j = 0;
+        foreach (int type in Enum.GetValues(typeof(TheFiveType)))
+        {
+            var values = dataTable["" + type];
+            foreach (int type2 in  Enum.GetValues(typeof (TheFiveType)))
+            {
+                data[i, j] = values.GetFloat("" + type2);
+                j++;
+            }
+            i++;
+            j = 0;
+        }
+        // 设置数据
+        TheFiveProperties.SetTheFiveDiseasesAndInsect(data);
     }
 
     /// <summary>
     /// 加载障碍层
     /// </summary>
-    public void LoadObstacleLayer([NotNull]MapBase mapBase)
+    public void LoadLayers([NotNull]MapBase mapBase)
     {
         // 获取障碍层
         var obLayer = mapBase.GetMapCellArray(MapManager.MapObstacleLayer);
@@ -154,7 +214,7 @@ public class FightManager : SingleItem<FightManager>
                         GraphicType = GraphicType.Rect
                     }, cell);
                     ClusterManager.Single.Add(ob);
-                    Debug.Log("Add Ob:" + i + "," + j);
+                    //Debug.Log("Add Ob:" + i + "," + j);
                 }
 
             }
