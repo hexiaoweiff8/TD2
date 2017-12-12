@@ -137,10 +137,10 @@ public class FightManager : SingleItem<FightManager>
                         tower.Y = item.Y;
                         tower.SetTowerData(new int[,]
                         {
-                            { 90001, -1, -1, 90002 },
-                            { 90001, -1, -1, 90002 },
-                            { 90001, -1, -1, 90002 },
-                            { 90001, -1, -1, 90002 },
+                            { 90001, 10001, 10005, 90002 },
+                            { 90001, 10004, 10004, 90002 },
+                            { 90001, 10002, 10003, 90002 },
+                            { 90001, 10002, 10003, 90002 },
                         });
                         MapBase.AddMapCell(tower, MapManager.MapPlayerLayer);
                     }

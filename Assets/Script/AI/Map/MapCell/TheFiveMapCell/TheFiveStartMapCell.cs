@@ -20,27 +20,17 @@ public class TheFiveStartMapCell : TheFiveCellBase
     public TheFiveStartMapCell(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
     {
 
-        this.Action = (mapCell) =>
+        Action = (mapCell) =>
         {
             // 获取下一节点, 向其传导属性
             // TODO 节点链 防止循环
-
+            var targetList = Tower.GetNextTheFiveCellList(X, Y);
+            foreach (var target in targetList)
+            {
+                target.Action(this);
+            }
         };
     }
 
-
-
-
-
-    /// <summary>
-    /// 执行
-    /// </summary>
-    public void DoAction()
-    {
-        if (Action != null)
-        {
-            Action(this);
-        }
-    }
 
 }

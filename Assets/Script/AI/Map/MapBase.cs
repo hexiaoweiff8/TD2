@@ -401,7 +401,7 @@ public abstract class MapCellBase
     /// <summary>
     /// 触发事件
     /// </summary>
-    public virtual Action<MapCellBase> Action { get; set; }
+    public Action<MapCellBase> Action { get; set; }
 
 
     /// <summary>

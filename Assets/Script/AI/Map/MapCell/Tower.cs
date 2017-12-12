@@ -28,7 +28,6 @@ public class Tower : MapCellBase
     /// </summary>
     private TheFiveCellBase[,] towerCellArray = null;
 
-
     /// <summary>
     /// 塔cell高度
     /// </summary>
@@ -50,7 +49,7 @@ public class Tower : MapCellBase
             var relativePos = new Vector2(-wight * halfTowerUnitWidth + halfTowerUnitWidth, -height * halfTowerUnitWidth + halfTowerUnitWidth);
             // 合算两个位置
             return GameObj == null ? Vector2.zero : new Vector2(GameObj.transform.position.x, GameObj.transform.position.y) + relativePos;
-        } 
+        }
     }
 
     /// <summary>
@@ -64,6 +63,10 @@ public class Tower : MapCellBase
         }
     }
 
+
+
+
+
     /// <summary>
     /// 初始化
     /// 该cell
@@ -74,6 +77,27 @@ public class Tower : MapCellBase
     public Tower(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
     {
         MapCellType = UnitType.Tower;
+
+        // 触发事件
+        Action = @base =>
+        {
+            // 获取当前单位的所有StartCell, 并调用他们的Action
+            if (towerCellArray != null)
+            {
+                foreach (var cell in towerCellArray)
+                {
+                    var startCell = cell as TheFiveStartMapCell;
+                    if (startCell != null && startCell.Action != null)
+                    {
+                        startCell.Action(null);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("塔cell为空");
+            }
+        };
     }
 
     /// <summary>
@@ -158,8 +182,10 @@ public class Tower : MapCellBase
                         if (newCell != null)
                         {
                             newCell.X = j;
-                            newCell.Y = i;
+                            // 反向Y轴位置
+                            newCell.Y = height - i - 1;
                             towerCellArray[i, j] = newCell;
+                            Debug.Log(i + "," + j + ":" + newCell.DataId);
                         }
                         else
                         {
@@ -176,6 +202,30 @@ public class Tower : MapCellBase
             }
         }
     }
+
+    /// <summary>
+    /// 获取去向cell列表
+    /// </summary>
+    /// <param name="x">cell位置x</param>
+    /// <param name="y">cell位置y</param>
+    /// <returns></returns>
+    public List<TheFiveCellBase> GetNextTheFiveCellList(int x, int y)
+    {
+        List<TheFiveCellBase> result = null;
+
+        if (x >= 0 && x <= wight && 
+            y >= 0 && y <= height &&
+            transDirArray != null)
+        {
+            var multiMember = transDirArray[x, y];
+            if (multiMember != null)
+            {
+                result = multiMember.GetTargetList();
+            }
+        }
+
+        return result;
+    } 
 
 
     // 读取模板设置塔的地板类型
@@ -271,4 +321,40 @@ public class MultiLinkNode<T>
             targetNodeList.Remove(targetNode);
         }
     }
+
+    /// <summary>
+    /// 获取去列表
+    /// </summary>
+    /// <returns></returns>
+    public List<T> GetTargetList()
+    {
+        List<T> result = null;
+        if (targetNodeList.Count > 0)
+        {
+            result = new List<T>();
+            foreach (var item in targetNodeList)
+            {
+                result.Add(item.Tobj);
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 获取源列表
+    /// </summary>
+    /// <returns></returns>
+    public List<T> GetSourceList()
+    {
+        List<T> result = null;
+        if (sourceNodeList.Count > 0)
+        {
+            result = new List<T>();
+            foreach (var item in sourceNodeList)
+            {
+                result.Add(item.Tobj);
+            }
+        }
+        return result;
+    } 
 }
