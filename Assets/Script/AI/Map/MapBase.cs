@@ -128,7 +128,7 @@ public class MapBase
     /// <param name="layer">数据所在层</param>
     public void AddMapCellArray([NotNull]MapCellBase[,] mapCellArray, [NotNull]int[][] mapArray, int layer)
     {
-        if (mapCellArrayDic.ContainsKey(layer))
+        if (mapCellArrayDic.ContainsKey(layer) || mapArrayDic.ContainsKey(layer))
         {
             throw new Exception("该层已存在:" + layer);
         }
@@ -166,6 +166,10 @@ public class MapBase
         {
             groupDic[mapCell.DataId].Add(mapCell);
         }
+
+        mapCellArrayDic[layer][mapCell.Y, mapCell.X] = mapCell;
+        mapArrayDic[layer][mapCell.Y][mapCell.X] = mapCell.DataId;
+
         NeedDraw = true;
     }
 
@@ -403,6 +407,16 @@ public abstract class MapCellBase
     /// </summary>
     public Action<MapCellBase> Action { get; set; }
 
+    /// <summary>
+    /// step事件
+    /// </summary>
+    public Action<MapCellBase> StepAction { get; set; }
+
+    /// <summary>
+    /// 步驱动时间, 如果小于0则不驱动
+    /// </summary>
+    public float StepIntervalTime = -1;
+
 
     /// <summary>
     /// 自增唯一ID
@@ -428,6 +442,11 @@ public abstract class MapCellBase
     /// 历史位置Y
     /// </summary>
     private int historyY = -1;
+
+    /// <summary>
+    /// 最后一次运行时间
+    /// </summary>
+    private float lastRunTime = -1;
 
     /// <summary>
     /// 历史位置X
@@ -526,6 +545,25 @@ public abstract class MapCellBase
             historyRect = new RectGraphics(new Vector2(X * unitWidth - MapDrawer.Single.MapWidth * unitWidth * 0.5f, Y * unitWidth - MapDrawer.Single.MapHeight * unitWidth * 0.5f), unitWidth, unitWidth, 0);
         }
         return historyRect;
+    }
+
+
+
+
+
+    /// <summary>
+    /// Tower驱动功能
+    /// </summary>
+    public virtual void NextActionStep(float nowTime)
+    {
+        if (StepIntervalTime > 0 && StepAction != null)
+        {
+            if (nowTime - lastRunTime > StepIntervalTime)
+            {
+                StepAction(this);
+                lastRunTime = nowTime;
+            }
+        }
     }
 
     /// <summary>

@@ -98,6 +98,12 @@ public class Tower : MapCellBase
                 Debug.LogError("塔cell为空");
             }
         };
+
+        StepAction = mapCellBase =>
+        {
+            // 检测范围内单位
+            // 
+        };
     }
 
     /// <summary>
@@ -185,7 +191,7 @@ public class Tower : MapCellBase
                             // 反向Y轴位置
                             newCell.Y = height - i - 1;
                             towerCellArray[i, j] = newCell;
-                            Debug.Log(i + "," + j + ":" + newCell.DataId);
+                            //Debug.Log(i + "," + j + ":" + newCell.DataId);
                         }
                         else
                         {
@@ -225,20 +231,45 @@ public class Tower : MapCellBase
         }
 
         return result;
-    } 
+    }
 
+    /// <summary>
+    /// 显示物体
+    /// </summary>
+    public override void Show()
+    {
+        base.Show();
+        // 处理子集cell
+        if (towerCellArray != null)
+        {
+            foreach (var cell in towerCellArray)
+            {
+                if (cell != null)
+                {
+                    cell.Show();
+                }
+            }
+        }
+    }
 
-    // 读取模板设置塔的地板类型
-    // 定义不同的位置点数据ID
-    // 0: 可放置位置
-    // -1: 不可放置位置
-    // 1:金
-    // 2:木
-    // 3:水
-    // 4:火
-    // 5:土
-    // 100 输入位置
-    // 101 输出位置
+    /// <summary>
+    /// 隐藏物体
+    /// </summary>
+    public override void Hide()
+    {
+        base.Hide();
+        // 处理子集cell
+        if (towerCellArray != null)
+        {
+            foreach (var cell in towerCellArray)
+            {
+                if (cell != null)
+                {
+                    cell.Hide();
+                }
+            }
+        }
+    }
 
 
 }

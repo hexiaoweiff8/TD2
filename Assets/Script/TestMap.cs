@@ -47,6 +47,8 @@ public class TestMap : MonoBehaviour
     /// </summary>
     private void Init()
     {
+        // TODO 设置帧率
+        Application.targetFrameRate = 45;
         var centerPos = new Vector3();
         drawRect = new RectGraphics(Vector2.zero, Screen.width, Screen.height, 0);
         // 开启章节

@@ -56,26 +56,6 @@ public class MapDrawer : MapDrawerBase
     /// </summary>
     private MapBase mapBase = null;
 
-    ///// <summary>
-    ///// 回收物体位置对应Dic
-    ///// </summary>
-    //private Dictionary<long, MapCellBase> hideObjDic = new Dictionary<long, MapCellBase>();
-
-    /// <summary>
-    /// 隐藏物体二维数组
-    /// </summary>
-    private MapCellBase[,] isHideObjArray = null;
-
-    ///// <summary>
-    ///// 绘制物体对应地图位置Dic
-    ///// </summary>
-    //private Dictionary<long, MapCellBase> objDic = new Dictionary<long, MapCellBase>();
-
-    /// <summary>
-    /// 绘制物体二维数组
-    /// </summary>
-    private MapCellBase[,] objArray = null;
-
 
     /// <summary>
     /// 是否已启动
@@ -132,28 +112,10 @@ public class MapDrawer : MapDrawerBase
                             if (drawGraphics.CheckCollision(item.GetGraphics()))
                             {
                                 // 刷新范围内单位
-                                // 如果物体已存在, 则不重复绘制
-                                if (objArray[i, j] == null)
-                                {
-                                    objArray[i, j] = item;
-                                }
-                                if (isHideObjArray[i, j] != null)
-                                {
-                                    isHideObjArray[i, j] = null;
-                                }
                                 item.Show();
                             }
                             else
                             {
-                                // 将范围外单位回收
-                                if (objArray[i, j] != null)
-                                {
-                                    objArray[i, j] = null;
-                                }
-                                if (isHideObjArray[i, j] == null)
-                                {
-                                    isHideObjArray[i, j] = item;
-                                }
                                 item.Hide();
                             }
                         }
@@ -221,17 +183,9 @@ public class MapDrawer : MapDrawerBase
         mapBase = mapBaseParam;
         drawGraphics = graphics == null ? new RectGraphics(Vector2.zero, 0, 0, 0) : graphics;
         UnitWidth = mapBaseParam.UnitWidth;
-        isHideObjArray = new MapCellBase[this.mapBase.MapHeight, this.mapBase.MapWidth];
-        objArray = new MapCellBase[this.mapBase.MapHeight, this.mapBase.MapWidth];
 
 
         ChangeDrawGraphics(graphics);
-        //ChangeDrawGraphics(Utils.GetShowGraphics(mapCenter,
-        //    MapWidth,
-        //    MapHeight,
-        //    drawRect + UnitWidth * 2,
-        //    drawRect.height + UnitWidth * 2,
-        //    UnitWidth));
     }
 
     /// <summary>
