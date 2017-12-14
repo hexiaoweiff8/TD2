@@ -29,6 +29,16 @@ public class Tower : MapCellBase
     private TheFiveCellBase[,] towerCellArray = null;
 
     /// <summary>
+    /// 范围碰撞图形
+    /// </summary>
+    private ICollisionGraphics graphics = null;
+
+    /// <summary>
+    /// 是否未设置碰撞图形
+    /// </summary>
+    private bool isNotSetGraphics = true;
+
+    /// <summary>
     /// 塔cell高度
     /// </summary>
     private int height = 0;
@@ -37,6 +47,7 @@ public class Tower : MapCellBase
     /// 塔cell宽度
     /// </summary>
     private int wight = 0;
+
 
     /// <summary>
     /// 塔的相对位置左下角
@@ -102,8 +113,14 @@ public class Tower : MapCellBase
         StepAction = mapCellBase =>
         {
             // 检测范围内单位
-            // 
+            // 如果范围内有单位则继续触发
+            var targetList = ClusterManager.Single.GetPositionObjectListByGraphics(graphics);
+            if (targetList != null && targetList.Count > 0)
+            {
+                // 选定目标
+            }
         };
+
     }
 
     /// <summary>
@@ -137,6 +154,14 @@ public class Tower : MapCellBase
         base.Draw(leftdown, unitWidth);
         // 绘制塔内单位
         DrawTowerCell();
+
+        if (isNotSetGraphics)
+        {
+            graphics = new CircleGraphics(GameObj.transform.position, 10 * unitWidth);
+            isNotSetGraphics = false;
+        }
+
+        //StepAction(this);
     }
 
 

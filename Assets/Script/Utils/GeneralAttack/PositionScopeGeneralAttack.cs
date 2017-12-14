@@ -119,12 +119,12 @@ public class PositionScopeGeneralAttack : IGeneralAttack
         // 范围内选择单位
         var memberList = ClusterManager.Single.CheckRange(graphics, attacker.AllData.MemberData.Camp, true);
         // 攻击者数据
-        var attackerDisplayOwner = FightManager.Single.GetElementByPositionObject(attacker);
+        var attackerDisplayOwner = FightUnitManager.Single.GetElementByPositionObject(attacker);
         // 所有单位扣除生命
         foreach (var member in memberList)
         {
             // 被攻击者数据
-            var beAttackDisplayOwner = FightManager.Single.GetElementByPositionObject(member);
+            var beAttackDisplayOwner = FightUnitManager.Single.GetElementByPositionObject(member);
             if (beAttackDisplayOwner == null || attackerDisplayOwner == null)
             {
                 continue;

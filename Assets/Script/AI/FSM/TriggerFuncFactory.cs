@@ -144,7 +144,7 @@ public class TriggerFuncFactory
             //    }
             //    break;
             // 防御塔类型
-            case SoldierFSMFactory.TurretType:
+            case SoldierFSMFactory.TowerType:
                 {
                     // --------------------------------防御塔类型------------------------------------
                     switch (triggerId)

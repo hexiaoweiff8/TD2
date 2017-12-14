@@ -49,6 +49,6 @@ public class InMonsterPoint : MapCellBase
             onMonsterArrival();
         }
         // 销毁目标
-        FightManager.Single.Destory(displayOwner);
+        FightUnitManager.Single.Destory(displayOwner);
     }
 }

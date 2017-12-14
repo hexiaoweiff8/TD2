@@ -39,28 +39,28 @@ public class MapBase
     /// </summary>
     public bool NeedDraw = false;
 
-
-    // ------------------------------私有属性----------------------------------
-
     /// <summary>
     /// 地图左上点
     /// </summary>
-    private Vector2 leftup;
+    public Vector2 Leftup { get; private set; }
 
     /// <summary>
     /// 地图右上点
     /// </summary>
-    private Vector2 rightup;
+    public Vector2 Rightup { get; private set; }
 
     /// <summary>
     /// 地图左下点
     /// </summary>
-    private Vector2 leftdown;
+    public Vector2 Leftdown { get; private set; }
 
     /// <summary>
     /// 地图右下点
     /// </summary>
-    private Vector2 rightdown;
+    public Vector2 Rightdown { get; private set; }
+
+
+    // ------------------------------私有属性----------------------------------
 
     ///// <summary>
     ///// 地图底板层
@@ -180,19 +180,19 @@ public class MapBase
     {
         // 在底板上画出格子
         // 画四边
-        Debug.DrawLine(leftup, rightup, lineColor);
-        Debug.DrawLine(leftup, leftdown, lineColor);
-        Debug.DrawLine(rightdown, rightup, lineColor);
-        Debug.DrawLine(rightdown, leftdown, lineColor);
+        Debug.DrawLine(Leftup, Rightup, lineColor);
+        Debug.DrawLine(Leftup, Leftdown, lineColor);
+        Debug.DrawLine(Rightdown, Rightup, lineColor);
+        Debug.DrawLine(Rightdown, Leftdown, lineColor);
 
         // 绘制格子
         for (var i = 1; i <= mapWidth; i++)
         {
-            Debug.DrawLine(leftup + new Vector2(i*unitWidth, 0), leftdown + new Vector2(i*unitWidth, 0), lineColor);
+            Debug.DrawLine(Leftup + new Vector2(i*unitWidth, 0), Leftdown + new Vector2(i*unitWidth, 0), lineColor);
         }
         for (var i = 1; i <= mapHeight; i++)
         {
-            Debug.DrawLine(leftdown + new Vector2(0, i*unitWidth), rightdown + new Vector2(0, i*unitWidth), lineColor);
+            Debug.DrawLine(Leftdown + new Vector2(0, i*unitWidth), Rightdown + new Vector2(0, i*unitWidth), lineColor);
         }
     }
 
@@ -209,7 +209,7 @@ public class MapBase
             {
                 foreach (var item in kv2.Value)
                 {
-                    item.Draw(leftdown, unitWidth);
+                    item.Draw(Leftdown, unitWidth);
                 }
             }
         }
@@ -347,10 +347,10 @@ public class MapBase
         var halfWidht = mapWidth * unitWidth * 0.5f - unitWidth * 0.5f;
         var halfHeight = mapHeight * unitWidth * 0.5f - unitWidth * 0.5f;
         // 取矩形四角点
-        leftup = new Vector2(MapCenter.x - halfWidht, MapCenter.y + halfHeight);
-        rightup = new Vector2(MapCenter.x + halfWidht, MapCenter.y + halfHeight);
-        leftdown = new Vector2(MapCenter.x - halfWidht, MapCenter.y - halfHeight);
-        rightdown = new Vector2(MapCenter.x + halfWidht, MapCenter.y - halfHeight);
+        Leftup = new Vector2(MapCenter.x - halfWidht, MapCenter.y + halfHeight);
+        Rightup = new Vector2(MapCenter.x + halfWidht, MapCenter.y + halfHeight);
+        Leftdown = new Vector2(MapCenter.x - halfWidht, MapCenter.y - halfHeight);
+        Rightdown = new Vector2(MapCenter.x + halfWidht, MapCenter.y - halfHeight);
     }
 
     /// <summary>

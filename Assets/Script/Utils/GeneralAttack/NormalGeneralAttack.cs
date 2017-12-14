@@ -45,8 +45,8 @@ public class NormalGeneralAttack : IGeneralAttack
         Action demage = () =>
         {
 
-            var attackerDisplayOwner = FightManager.Single.GetElementByPositionObject(attacker);
-            var beAttackerDisplayOwner = FightManager.Single.GetElementByPositionObject(beAttackMember);
+            var attackerDisplayOwner = FightUnitManager.Single.GetElementByPositionObject(attacker);
+            var beAttackerDisplayOwner = FightUnitManager.Single.GetElementByPositionObject(beAttackMember);
 
             if (beAttackerDisplayOwner == null
                 || attackerDisplayOwner == null

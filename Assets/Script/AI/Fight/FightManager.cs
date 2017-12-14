@@ -12,11 +12,6 @@ public class FightManager : SingleItem<FightManager>
 {
 
     /// <summary>
-    /// 战斗单位字典
-    /// </summary>
-    private Dictionary<int, DisplayOwner> displayOwners = new Dictionary<int, DisplayOwner>();
-
-    /// <summary>
     /// 出兵点位置
     /// </summary>
     private List<Vector2> outMonsterPointList = new List<Vector2>();
@@ -24,7 +19,7 @@ public class FightManager : SingleItem<FightManager>
     /// <summary>
     /// 地图基类
     /// </summary>
-    public MapBase MapBase = null;
+    public MapBase MapBase { get; private set; }
 
 
 
@@ -124,26 +119,38 @@ public class FightManager : SingleItem<FightManager>
 
         if (towerPointList != null)
         {
+            var dataItem = new DataItem();
             foreach (var mapCellBase in towerPointList)
             {
                 var item = mapCellBase as TowerPoint;
                 if (item != null)
                 {
+                    dataItem.SetInt(FightUnitManager.FightItemStartX, item.X);
+                    dataItem.SetInt(FightUnitManager.FightItemStartY, item.Y);
                     // 创建Tower类
-                    var tower = UnitFictory.Single.CreateUnit(UnitType.Tower, 1001) as Tower;
-                    if (tower != null)
-                    {
-                        tower.X = item.X;
-                        tower.Y = item.Y;
-                        tower.SetTowerData(new int[,]
-                        {
-                            { 90001, 10001, 10005, 90002 },
-                            { 90001, 10004, 10004, 90002 },
-                            { 90001, 10002, 10003, 90002 },
-                            { 90001, 10002, 10003, 90002 },
-                        });
-                        MapBase.AddMapCell(tower, MapManager.MapPlayerLayer);
-                    }
+                    //var tower = UnitFictory.Single.CreateUnit(UnitType.Tower, 1001) as Tower;
+                    //if (tower != null)
+                    //{
+                    //    tower.X = item.X;
+                    //    tower.Y = item.Y;
+                    //    tower.SetTowerData(new int[,]
+                    //    {
+                    //        { 90001, 10001, 10005, 90002 },
+                    //        { 90001, 10004, 10004, 90002 },
+                    //        { 90001, 10002, 10003, 90002 },
+                    //        { 90001, 10002, 10003, 90002 },
+                    //    });
+                    //    MapBase.AddMapCell(tower, MapManager.MapPlayerLayer);
+                    //    //// 创建DisplayOwner
+                    //    //var displayOwner = new DisplayOwner(tower, fixed);
+                    //    //// 启动FSM
+                    //    //FSMManager.Single.BeginRunFSM(displayOwner);
+                    //}
+                    var tower = FightUnitManager.Single.LoadMember(UnitType.Tower, 1001, dataItem);
+                    MapBase.AddMapCell(tower.MapCell, MapManager.MapPlayerLayer);
+                    FSMManager.Single.BeginRunFSM(tower);
+
+                    dataItem.Clear();
                 }
             }
         }
@@ -214,7 +221,6 @@ public class FightManager : SingleItem<FightManager>
                         GraphicType = GraphicType.Rect
                     }, cell);
                     ClusterManager.Single.Add(ob);
-                    //Debug.Log("Add Ob:" + i + "," + j);
                 }
 
             }
@@ -222,230 +228,66 @@ public class FightManager : SingleItem<FightManager>
     }
 
 
+    ///// <summary>
+    ///// TODO test创建玩家
+    ///// </summary>
+    //public void LoadPlayer(MapBase mapBase)
+    //{
 
+    //    // TODO 创建测试单位
+    //    var objId = new ObjectID(ObjectID.ObjectType.MySoldier);
+    //    var school = new ClusterData(new AllData()
+    //    {
+    //        MemberData = new MemberData()
+    //        {
+    //            AttackRange = 20,
+    //            ObjID = objId,
+    //            MoveSpeed = 60,
+    //            GeneralType = 1,
+    //            Camp = 1,
+    //            Attack1 = 10
+    //        },
+    //        UnitWidth = MapDrawer.Single.UnitWidth
+    //    }, UnitFictory.Single.CreateUnit(UnitType.FightUnit, 1001));
 
-    /// <summary>
-    /// 加载怪
-    /// </summary>
-    /// <param name="id">怪Id</param>
-    /// <param name="startX">怪起始位置x</param>
-    /// <param name="startY">怪起始位置y</param>
-    /// <param name="targetX">怪目标位置x</param>
-    /// <param name="targetY">怪目标位置y</param>
-    public DisplayOwner LoadMember(int id, int startX, int startY, int targetX, int targetY)
-    {
-        DisplayOwner result = null;
-        // 获取怪数据
-        // 创建怪模型
-        var objId = new ObjectID(ObjectID.ObjectType.MySoldier);
-        var mapCell = UnitFictory.Single.CreateUnit(UnitType.FightUnit, id);
-        var school = new ClusterData(new AllData()
-        {
-            MemberData = new MemberData()
-            {
-                AttackRange = 20,
-                ObjID = objId,
-                MoveSpeed = 60,
-                GeneralType = 1,
-                Camp = 1,
-                Attack1 = 10
-            },
-            UnitWidth = MapDrawer.Single.UnitWidth
-        }, mapCell);
-
-        // 将单位放入地图数据中
-        MapBase.AddMapCell(mapCell, MapManager.MapPlayerLayer);
-
-        // 地图数据
-        // 寻路 获取路径
-        // 获取起始点位置
-        // 获取目标点位置
-        // 单位宽度
-        var mapArray = MapBase.GetMapArray(MapManager.MapObstacleLayer);
-        var posList = AStarPathFinding.SearchRoad(mapArray, startX, startY, targetX, targetY, 1, 1);
-        school.MaxSpeed = 100;
-        school.RotateSpeed = 10;
-        school.MapCellObj.transform.localPosition = new Vector3(-700, -100, 0);
-        school.MapCellObj.name = "item" + 1;
-        //school.TargetPos = new Vector3(-700, -100, 0);
-        school.PushTargetList(Utils.NumToPostionByList(MapBase.MapCenter, posList, MapBase.UnitWidth, MapBase.MapWidth, MapBase.MapHeight));
-        school.Diameter = 1;
-
-        // 目标选择权重
-        var fightData = new SelectWeightData();
-        // 选择目标数据
-        fightData.AirWeight = 100;
-        fightData.BuildWeight = 100;
-        fightData.SurfaceWeight = 100;
-
-        fightData.HumanWeight = 10;
-        fightData.OrcWeight = 10;
-        fightData.OmnicWeight = 10;
-
-        fightData.HideWeight = -1;
-        fightData.TauntWeight = 1000;
-
-        fightData.HealthMaxWeight = 0;
-        fightData.HealthMinWeight = 10;
-        fightData.DistanceMaxWeight = 0;
-        fightData.DistanceMinWeight = 10;
-        school.AllData.SelectWeightData = fightData;
-        school.AllData.MemberData.CurrentHP = 99;
-        school.AllData.MemberData.TotalHp = 100;
-
-        ClusterManager.Single.Add(school);
-        //school.StartMove();
-
-        result = new DisplayOwner(school.MapCell, school);
-
-        // 缓存数据
-        displayOwners.Add(result.Id, result);
-        return result;
-    }
-
-    /// <summary>
-    /// 获取单位
-    /// </summary>
-    /// <param name="objId">被获取单位ID</param>
-    /// <returns>被获取单位(如果不存在返回Null</returns>
-    public DisplayOwner GetElementById(ObjectID objId)
-    {
-        if (objId == null)
-        {
-            return null;
-        }
-        return GetElementById(objId.ObjType, objId.ID);
-    }
-
-
-    /// <summary>
-    /// 获取单位
-    /// </summary>
-    /// <param name="objType">单位类型</param>
-    /// <param name="id">单位唯一Id</param>
-    /// <returns>被获取单位(如果不存在返回Null</returns>
-    public DisplayOwner GetElementById(ObjectID.ObjectType objType, int id)
-    {
-        if (displayOwners.ContainsKey(id))
-        {
-            return displayOwners[id];
-        }
-        return null;
-    }
-
-
-
-    /// <summary>
-    /// 获取Display
-    /// </summary>
-    /// <param name="pObj">display对应的pObj</param>
-    /// <returns>pObj对应的DisplayOwner</returns>
-    public DisplayOwner GetElementByPositionObject(PositionObject pObj)
-    {
-        DisplayOwner result = null;
-
-        if (pObj != null)
-        {
-            result = GetElementById(pObj.AllData.MemberData.ObjID);
-        }
-        return result;
-    }
-
-    /// <summary>
-    /// 根据PositionObject列表获取对应DisplayOwner列表
-    /// </summary>
-    /// <param name="pObjList">被获取列表</param>
-    /// <returns>返回对应列表, 如果没有对应单位返回null</returns>
-    public IList<DisplayOwner> GetElementsByPositionObjectList(IList<PositionObject> pObjList)
-    {
-        List<DisplayOwner> result = null;
-
-        if (pObjList != null && pObjList.Count > 0)
-        {
-            result = new List<DisplayOwner>(pObjList.Count);
-            foreach (var pObj in pObjList)
-            {
-                var display = GetElementByPositionObject(pObj);
-                if (display != null)
-                {
-                    result.Add(display);
-                }
-            }
-        }
-        return result;
-    }
-
-
-    public void Destory([NotNull]DisplayOwner displayOwner)
-    {
-        // 删除引用
-        displayOwners.Remove(displayOwner.Id);
-        // 销毁对象
-        displayOwner.Destroy();
-    }
-
-
-
-    /// <summary>
-    /// TODO test创建玩家
-    /// </summary>
-    public void LoadPlayer(MapBase mapBase)
-    {
-
-        // TODO 创建测试单位
-        var objId = new ObjectID(ObjectID.ObjectType.MySoldier);
-        var school = new ClusterData(new AllData()
-        {
-            MemberData = new MemberData()
-            {
-                AttackRange = 20,
-                ObjID = objId,
-                MoveSpeed = 60,
-                GeneralType = 1,
-                Camp = 1,
-                Attack1 = 10
-            },
-            UnitWidth = MapDrawer.Single.UnitWidth
-        }, UnitFictory.Single.CreateUnit(UnitType.FightUnit, 1001));
-
-        // 地图数据
-        // 寻路 获取路径
-        // 获取起始点位置
-        // 获取目标点位置
-        // 单位宽度
-        var mapArray = mapBase.GetMapArray(MapManager.MapObstacleLayer);
-        var posList = AStarPathFinding.SearchRoad(mapArray, 0, 0, 1, 8, 1, 1);
-        school.MaxSpeed = 100;
-        school.RotateSpeed = 10;
-        school.MapCellObj.transform.localPosition = new Vector3(-700, -100, 0);
-        school.MapCellObj.name = "item" + 1;
-        //school.TargetPos = new Vector3(-700, -100, 0);
-        school.PushTargetList(Utils.NumToPostionByList(mapBase.MapCenter, posList, mapBase.UnitWidth, mapBase.MapWidth, mapBase.MapHeight));
-        school.Diameter = 1;
+    //    // 地图数据
+    //    // 寻路 获取路径
+    //    // 获取起始点位置
+    //    // 获取目标点位置
+    //    // 单位宽度
+    //    var mapArray = mapBase.GetMapArray(MapManager.MapObstacleLayer);
+    //    var posList = AStarPathFinding.SearchRoad(mapArray, 0, 0, 1, 8, 1, 1);
+    //    school.MaxSpeed = 100;
+    //    school.RotateSpeed = 10;
+    //    school.MapCellObj.transform.localPosition = new Vector3(-700, -100, 0);
+    //    school.MapCellObj.name = "item" + 1;
+    //    //school.TargetPos = new Vector3(-700, -100, 0);
+    //    school.PushTargetList(Utils.NumToPostionByList(mapBase.MapCenter, posList, mapBase.UnitWidth, mapBase.MapWidth, mapBase.MapHeight));
+    //    school.Diameter = 1;
         
-        // 目标选择权重
-        var fightData = new SelectWeightData();
-        // 选择目标数据
-        fightData.AirWeight = 100;
-        fightData.BuildWeight = 100;
-        fightData.SurfaceWeight = 100;
+    //    // 目标选择权重
+    //    var fightData = new SelectWeightData();
+    //    // 选择目标数据
+    //    fightData.AirWeight = 100;
+    //    fightData.BuildWeight = 100;
+    //    fightData.SurfaceWeight = 100;
 
-        fightData.HumanWeight = 10;
-        fightData.OrcWeight = 10;
-        fightData.OmnicWeight = 10;
+    //    fightData.HumanWeight = 10;
+    //    fightData.OrcWeight = 10;
+    //    fightData.OmnicWeight = 10;
 
-        fightData.HideWeight = -1;
-        fightData.TauntWeight = 1000;
+    //    fightData.HideWeight = -1;
+    //    fightData.TauntWeight = 1000;
 
-        fightData.HealthMaxWeight = 0;
-        fightData.HealthMinWeight = 10;
-        fightData.DistanceMaxWeight = 0;
-        fightData.DistanceMinWeight = 10;
-        school.AllData.SelectWeightData = fightData;
-        school.AllData.MemberData.CurrentHP = 99;
-        school.AllData.MemberData.TotalHp = 100;
+    //    fightData.HealthMaxWeight = 0;
+    //    fightData.HealthMinWeight = 10;
+    //    fightData.DistanceMaxWeight = 0;
+    //    fightData.DistanceMinWeight = 10;
+    //    school.AllData.SelectWeightData = fightData;
+    //    school.AllData.MemberData.CurrentHP = 99;
+    //    school.AllData.MemberData.TotalHp = 100;
 
-        ClusterManager.Single.Add(school);
-        school.StartMove();
-    }
+    //    ClusterManager.Single.Add(school);
+    //    school.StartMove();
+    //}
 }

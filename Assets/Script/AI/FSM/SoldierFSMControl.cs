@@ -31,6 +31,10 @@ public class SoldierFSMControl{
         _iSAwake = false;
     }
 
+    /// <summary>
+    /// 启动状态机
+    /// </summary>
+    /// <param name="obj"></param>
     public void StartFSM([NotNull]DisplayOwner obj)
     {
         //初始化状态机
@@ -47,7 +51,7 @@ public class SoldierFSMControl{
     /// <param name="objId">单位ObjId</param>
     public void StartFSM([NotNull] ObjectID objId)
     {
-        StartFSM(FightManager.Single.GetElementById(objId));
+        StartFSM(FightUnitManager.Single.GetElementById(objId));
     }
 
 
@@ -117,16 +121,4 @@ public class SoldierFSMControl{
         // 终止技能攻击目标
 
     }
-
-    ///// <summary>
-    ///// 修改该单位的当前状态
-    ///// </summary>
-    //public void SetState(SoldierFSMSystem targetFsm)
-    //{
-    //    // 设置状态数据
-    //    fsm = targetFsm;
-    //    // 切到目标状态
-
-    //}
-
 }

@@ -45,7 +45,10 @@ public class Soldier_PutongGongji_State : SoldierFSMState
         StateID = SoldierStateID.PutongGongji;
     }
 
-
+    /// <summary>
+    /// 切入状态前事件
+    /// </summary>
+    /// <param name="fsm"></param>
     public override void DoBeforeEntering(SoldierFSMSystem fsm)
     {
         _fireTimer = new Timer(fsm.Display.ClusterData.AllData.MemberData.AttackRate1, true);
@@ -139,6 +142,10 @@ public class Soldier_PutongGongji_State : SoldierFSMState
         
     }
 
+    /// <summary>
+    /// 切出状态事件
+    /// </summary>
+    /// <param name="fsm"></param>
     public override void DoBeforeLeaving(SoldierFSMSystem fsm)
     {
         fsm.IsCanInPutonggongji = false;
@@ -154,6 +161,10 @@ public class Soldier_PutongGongji_State : SoldierFSMState
         _isDaiJi = false;
     }
 
+    /// <summary>
+    /// Action执行事件
+    /// </summary>
+    /// <param name="fsm"></param>
     public override void Action(SoldierFSMSystem fsm)
     {
         if (!_stateIsLose)

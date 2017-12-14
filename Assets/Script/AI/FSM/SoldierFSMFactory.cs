@@ -13,7 +13,7 @@ public class SoldierFSMFactory
     /// <summary>
     /// 防御塔类型
     /// </summary>
-    public const int TurretType = 2;
+    public const int TowerType = 2;
 
     /// <summary>
     /// 基地类型
@@ -36,57 +36,57 @@ public class SoldierFSMFactory
         Dictionary<SoldierStateID, List<SoldierStateID>> result = null;
         switch (behaviorType)
         {
-            case SoldierType:
-            {
-                // 常规士兵行为
-                result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
-                {
-                    {SoldierStateID.RuChang, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Xingjin
-                    }},
-                    {SoldierStateID.Xingjin, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Zhunbeizhandou,
-                        SoldierStateID.ZhuiJi,
-                        SoldierStateID.DaiJi,
-                    }},
-                    {SoldierStateID.Zhunbeizhandou, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.JinengGongji,
-                        SoldierStateID.PutongGongji,
-                    }},
-                    {SoldierStateID.SiWang, new List<SoldierStateID>()},
-                    {SoldierStateID.PutongGongji, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.DaiJi,
-                        SoldierStateID.Zhunbeizhandou
-                    }},
-                    {SoldierStateID.JinengGongji, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.DaiJi,
-                    }},
-                    {SoldierStateID.ZhuiJi, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Zhunbeizhandou,
-                        SoldierStateID.DaiJi,
-                    }},
-                    {SoldierStateID.DaiJi, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Zhunbeizhandou,
-                        SoldierStateID.Xingjin,
-                    }},
-                };
-            }
-                break;
-            case TurretType:
+            //case SoldierType:
+            //{
+            //    // 常规士兵行为
+            //    result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
+            //    {
+            //        {SoldierStateID.RuChang, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.Xingjin
+            //        }},
+            //        {SoldierStateID.Xingjin, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.Zhunbeizhandou,
+            //            SoldierStateID.ZhuiJi,
+            //            SoldierStateID.DaiJi,
+            //        }},
+            //        {SoldierStateID.Zhunbeizhandou, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.JinengGongji,
+            //            SoldierStateID.PutongGongji,
+            //        }},
+            //        {SoldierStateID.SiWang, new List<SoldierStateID>()},
+            //        {SoldierStateID.PutongGongji, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.DaiJi,
+            //            SoldierStateID.Zhunbeizhandou
+            //        }},
+            //        {SoldierStateID.JinengGongji, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.DaiJi,
+            //        }},
+            //        {SoldierStateID.ZhuiJi, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.Zhunbeizhandou,
+            //            SoldierStateID.DaiJi,
+            //        }},
+            //        {SoldierStateID.DaiJi, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.Zhunbeizhandou,
+            //            SoldierStateID.Xingjin,
+            //        }},
+            //    };
+            //}
+            //    break;
+            case TowerType:
             {
                 // 防御塔行为
                 result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
@@ -117,48 +117,48 @@ public class SoldierFSMFactory
                 };
             }
                 break;
-            case BaseType:
-            {
-                // 基地行为
-                result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
-                {
-                    {SoldierStateID.RuChang, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.DaiJi,
-                        SoldierStateID.SiWang,
-                    }},
-                    {SoldierStateID.DaiJi, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                    }},
-                    {SoldierStateID.SiWang, new List<SoldierStateID>()},
-                };
-            }
-                break;
-            case MineType:
-            {
-                // 地雷行为
-                result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
-                {
-                    {SoldierStateID.RuChang, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Zhunbeizhandou,
-                    }},
-                    {SoldierStateID.Zhunbeizhandou, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.JinengGongji
-                    }},
-                    {SoldierStateID.JinengGongji, new List<SoldierStateID>()
-                    {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Zhunbeizhandou,
-                    }},
-                    {SoldierStateID.SiWang, new List<SoldierStateID>()},
-                };
-            }
-                break;
+            //case BaseType:
+            //{
+            //    // 基地行为
+            //    result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
+            //    {
+            //        {SoldierStateID.RuChang, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.DaiJi,
+            //            SoldierStateID.SiWang,
+            //        }},
+            //        {SoldierStateID.DaiJi, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //        }},
+            //        {SoldierStateID.SiWang, new List<SoldierStateID>()},
+            //    };
+            //}
+            //    break;
+            //case MineType:
+            //{
+            //    // 地雷行为
+            //    result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
+            //    {
+            //        {SoldierStateID.RuChang, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.Zhunbeizhandou,
+            //        }},
+            //        {SoldierStateID.Zhunbeizhandou, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.JinengGongji
+            //        }},
+            //        {SoldierStateID.JinengGongji, new List<SoldierStateID>()
+            //        {
+            //            SoldierStateID.SiWang,
+            //            SoldierStateID.Zhunbeizhandou,
+            //        }},
+            //        {SoldierStateID.SiWang, new List<SoldierStateID>()},
+            //    };
+            //}
+            //    break;
         }
 
         return result;

@@ -178,6 +178,7 @@ public class OutMonsterPoint : MapCellBase
         // 获取目标位置
         var targetMapCellList = FightManager.Single.MapBase.GetMapCellList(MapManager.MapNpcLayer,
             MapManager.InMonsterPointId);
+        DataItem dataItem = new DataItem();
         if (targetMapCellList != null && targetMapCellList.Count > 0 && GameObj != null)
         {
             var targetMapCell = targetMapCellList[0] as InMonsterPoint;
@@ -185,9 +186,14 @@ public class OutMonsterPoint : MapCellBase
             {
                 for (var i = 0; i < monsterData.Count; i++)
                 {
+                    dataItem.SetInt(FightUnitManager.FightItemStartX, X);
+                    dataItem.SetInt(FightUnitManager.FightItemStartY, Y);
+                    dataItem.SetInt(FightUnitManager.FightItemTargetX, targetMapCell.X);
+                    dataItem.SetInt(FightUnitManager.FightItemTargetY, targetMapCell.Y);
+
                     // 创建怪单位
-                    var displayOwner = FightManager.Single.LoadMember(monsterData.MonsterId, X, Y, targetMapCell.X,
-                        targetMapCell.Y);
+                    var displayOwner = FightUnitManager.Single.LoadMember(UnitType.FightUnit, monsterData.MonsterId,
+                        dataItem);
                     // 开始移动
                     displayOwner.ClusterData.StartMove();
                     var clusterData = displayOwner.ClusterData as ClusterData;
@@ -200,6 +206,7 @@ public class OutMonsterPoint : MapCellBase
                     }
 
                     displayOwner.MapCell.GameObj.transform.position = GameObj.transform.position;
+                    dataItem.Clear();
                 }
             }
         }

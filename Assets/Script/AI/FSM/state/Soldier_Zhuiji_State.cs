@@ -208,7 +208,7 @@ public class Soldier_Zhuiji_State : SoldierFSMState
                 !closeObj.AllData.MemberData.ObjID.Equals(fsm.EnemyTarget.ClusterData.AllData.MemberData.ObjID))
             {
                 //Debug.Log("变更目标.");
-                fsm.EnemyTarget = FightManager.Single.GetElementById(closeObj.AllData.MemberData.ObjID);
+                fsm.EnemyTarget = FightUnitManager.Single.GetElementById(closeObj.AllData.MemberData.ObjID);
             }
         }
 

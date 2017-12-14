@@ -44,27 +44,6 @@ public abstract class SoldierFSMState
     /// </summary>
     public abstract void Init();
 
-    ///// <summary>
-    ///// 添加状态 转换和状态id必须成对存在 且唯一
-    ///// </summary>
-    ///// <param name="trigger"></param>
-    ///// <param name="id"></param>
-    //public void AddTrigger(SoldierTriggerID trigger, SoldierStateID id)//增加关联对（转换，状态ID）
-    //{
-    //    //-----------------------------验证参数的合法性-----------------------------------
-    //    if (dict.ContainsKey(trigger))
-    //    {
-    //        Debug.LogError("SoldierFSMState ERROR: SoldierTriggerID" + id + " 已经存在" + trigger);
-    //        return;
-    //    }
-    //    dict.Add(trigger, id);
-    //    ////通过转换反射出对应的触发器再把触发器添加到触发器列表
-    //    //Type type = Type.GetType(trigger + "Trigger");
-    //    //SoldierFSMTrigger fsmtrigger = Activator.CreateInstance(type) as SoldierFSMTrigger;
-    //    //_fsmTrriggerList.Add(fsmtrigger);
-    //    //SoldierFSMFactory.GetTrigger(trigger, _fsmTrriggerList);
-    //}
-
     /// <summary>
     /// 添加映射trigger
     /// </summary>

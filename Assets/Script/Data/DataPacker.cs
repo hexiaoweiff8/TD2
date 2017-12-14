@@ -485,4 +485,16 @@ public class DataItem
             dataScopeString.Add(key, value);
         }
     }
+
+    /// <summary>
+    /// 清理数据
+    /// </summary>
+    public void Clear()
+    {
+        dataScopeFloat.Clear();
+        dataScopeInt.Clear();
+        dataScopeLong.Clear();
+        dataScopeBool.Clear();
+        dataScopeString.Clear();
+    }
 }

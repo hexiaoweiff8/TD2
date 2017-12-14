@@ -200,7 +200,7 @@ public class MapManager : SingleItem<MapManager>
                     var mapData = mapDataDic[key];
 
                     // 添加地图单元数组
-                    var mapCellArray = GetCells(mapData, (UnitType)level);
+                    var mapCellArray = GetCells(mapData, (UnitType)level, result);
                     result.AddMapCellArray(mapCellArray, mapData, level);
                 }
                 else
@@ -229,8 +229,9 @@ public class MapManager : SingleItem<MapManager>
     /// </summary>
     /// <param name="mapData">地图数据</param>
     /// <param name="layer">层级</param>
+    /// <param name="mapBase">地图基类</param>
     /// <returns></returns>
-    private static MapCellBase[,] GetCells(int[][] mapData, UnitType layer)
+    private static MapCellBase[,] GetCells(int[][] mapData, UnitType layer, MapBase mapBase = null)
     {
         var height = mapData.Length;
         var width = mapData[0].Length;
@@ -247,6 +248,10 @@ public class MapManager : SingleItem<MapManager>
                     var mapCell = UnitFictory.Single.CreateUnit(layer, mapData[i][j]);
                     mapCell.X = j;
                     mapCell.Y = i;
+                    if (mapBase != null)
+                    {
+                        mapCell.Draw(mapBase.Leftdown, mapBase.UnitWidth);
+                    }
                     // 根据数据加载
                     mapCellDataArray[i, j] = mapCell;
                 }
