@@ -47,6 +47,10 @@ public class FightManager : SingleItem<FightManager>
 
         MapDrawer.Single.Begin();
 
+
+        FSMManager.Single.Stop();
+        FSMManager.Single.Start();
+
         // 获得地图宽高
         var mapWidth = MapBase.MapWidth;
         var mapHeight = MapBase.MapHeight;

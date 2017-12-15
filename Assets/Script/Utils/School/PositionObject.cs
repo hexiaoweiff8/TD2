@@ -133,11 +133,11 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// </summary>
     public float Y
     {
-        get { return MapCell.GameObj.transform.position.z; }
+        get { return MapCell.GameObj.transform.position.y; }
         set
         {
             MapCell.GameObj.transform.position = new Vector3(MapCell.GameObj.transform.position.x,
-                MapCell.GameObj.transform.position.y, value);
+                value, MapCell.GameObj.transform.position.z);
         }
     }
 

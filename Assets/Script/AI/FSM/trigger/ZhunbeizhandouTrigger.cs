@@ -134,22 +134,22 @@ public class ZhunbeizhandouTrigger : SoldierFSMTrigger
         // 攻击范围内是否有敌人
         var checkPos = new Vector2(fsm.Display.ClusterData.X, fsm.Display.ClusterData.Y);
         // 目标选择器选择目标列表
-        //var list = TargetSelecter.TargetFilter(searchData,
-        //    ClusterManager.Single.CheckRange(checkPos, searchData.AllData.MemberData.AttackRange, searchData.AllData.MemberData.Camp, true));
+        var list = TargetSelecter.TargetFilter(searchData,
+            ClusterManager.Single.CheckRange(checkPos, searchData.AllData.MemberData.AttackRange, searchData.AllData.MemberData.Camp, true));
 
-        //Utils.DrawGraphics(new CircleGraphics(checkPos, searchData.AllData.MemberData.AttackRange), Color.yellow);
-        //if (list != null && list.Count > 0)
-        //{
-        //    // 攻击目标
-        //    fsm.TargetIsLoseEfficacy = false;
-        //    // 检测普通攻击
-        //    if (SetTarget(fsm, list))
-        //    {
-        //        fsm.IsCanInJinenggongji = false;
-        //        fsm.IsCanInPutonggongji = true;
-        //        return true;
-        //    }
-        //}
+        Utils.DrawGraphics(new CircleGraphics(checkPos, searchData.AllData.MemberData.AttackRange), Color.yellow);
+        if (list != null && list.Count > 0)
+        {
+            // 攻击目标
+            fsm.TargetIsLoseEfficacy = false;
+            // 检测普通攻击
+            if (SetTarget(fsm, list))
+            {
+                fsm.IsCanInJinenggongji = false;
+                fsm.IsCanInPutonggongji = true;
+                return true;
+            }
+        }
         return false;
     }
 
@@ -204,23 +204,23 @@ public class ZhunbeizhandouTrigger : SoldierFSMTrigger
 
     //    return result;
     //}
-    
-    ///// <summary>
-    ///// 设置目标单位
-    ///// </summary>
-    ///// <param name="fsm"></param>
-    ///// <param name="res"></param>
-    ///// <returns></returns>
-    //public static bool SetTarget(SoldierFSMSystem fsm, IList<PositionObject> res)
-    //{
-    //    //var ran = new System.Random();
-    //    if (res == null || res.Count == 0)
-    //    {
-    //        return false;
-    //    }
-    //    // TODO 取最近的
-    //    var target = res[0];
-    //    fsm.EnemyTarget = DisplayerManager.Single.GetElementByPositionObject(target);
-    //    return fsm.EnemyTarget != null;
-    //}
+
+    /// <summary>
+    /// 设置目标单位
+    /// </summary>
+    /// <param name="fsm"></param>
+    /// <param name="res"></param>
+    /// <returns></returns>
+    public static bool SetTarget(SoldierFSMSystem fsm, IList<PositionObject> res)
+    {
+        //var ran = new System.Random();
+        if (res == null || res.Count == 0)
+        {
+            return false;
+        }
+        // TODO 取最近的
+        var target = res[0];
+        fsm.EnemyTarget = FightUnitManager.Single.GetElementByPositionObject(target);
+        return fsm.EnemyTarget != null;
+    }
 }

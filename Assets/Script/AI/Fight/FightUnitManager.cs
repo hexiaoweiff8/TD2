@@ -177,6 +177,8 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                         GeneralType = 1,
                         Camp = 1,
                         Attack1 = 10,
+                        TotalHp = 100,
+                        CurrentHP = 100,
                         BehaviorType = SoldierFSMFactory.TowerType
                     }
                 }, tower);
