@@ -112,6 +112,7 @@ public class Tower : MapCellBase
 
         StepAction = mapCellBase =>
         {
+            Debug.Log("StepAction");
             // 检测范围内单位
             // 如果范围内有单位则继续触发
             var targetList = ClusterManager.Single.GetPositionObjectListByGraphics(graphics);

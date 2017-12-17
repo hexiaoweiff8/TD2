@@ -160,6 +160,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                 tower.X = dataItem.GetInt(FightItemStartX);
                 tower.Y = dataItem.GetInt(FightItemStartY);
 
+                // TODO 临时数据
                 tower.SetTowerData(new int[,]
                 {
                     {90001, 10001, 10005, 90002},
@@ -179,6 +180,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                         Attack1 = 10,
                         TotalHp = 100,
                         CurrentHP = 100,
+                        AttackRate1 = 1,
                         BehaviorType = SoldierFSMFactory.TowerType
                     }
                 }, tower);

@@ -52,7 +52,7 @@ public class Soldier_PutongGongji_State : SoldierFSMState
     public override void DoBeforeEntering(SoldierFSMSystem fsm)
     {
         _fireTimer = new Timer(fsm.Display.ClusterData.AllData.MemberData.AttackRate1, true);
-        _fireTimer.OnCompleteCallback(() => { fire(fsm); }).Start();
+        _fireTimer.OnCompleteCallback(() => { fsm.Display.ClusterData.MapCell.StepAction(fsm.Display.ClusterData.MapCell); }).Start();
 
         _bulletCount = fsm.Display.ClusterData.AllData.MemberData.Clipsize1;
         //_bulletMax = fsm.Display.ClusterData.AllData.MemberData.Clipsize1;
@@ -66,81 +66,81 @@ public class Soldier_PutongGongji_State : SoldierFSMState
     }
 
 
-    /// <summary>
-    /// 攻击方法
-    /// </summary>
-    /// <param name="fsm"></param>
-    private void fire(SoldierFSMSystem fsm)
-    {
-        if (null == fsm.EnemyTarget || null == fsm.EnemyTarget.ClusterData)
-        {
-            return;
-        }
-        var enemyDisplayOwner = fsm.EnemyTarget;
-        var myDisplayOwner = fsm.Display;
-        var myClusterData = myDisplayOwner.ClusterData;
-        var myMemberData = myClusterData.AllData.MemberData;
+    ///// <summary>
+    ///// 攻击方法
+    ///// </summary>
+    ///// <param name="fsm"></param>
+    //private void fire(SoldierFSMSystem fsm)
+    //{
+    //    if (null == fsm.EnemyTarget || null == fsm.EnemyTarget.ClusterData)
+    //    {
+    //        return;
+    //    }
+    //    var enemyDisplayOwner = fsm.EnemyTarget;
+    //    var myDisplayOwner = fsm.Display;
+    //    var myClusterData = myDisplayOwner.ClusterData;
+    //    var myMemberData = myClusterData.AllData.MemberData;
 
-        // 单位转向目标
-        myClusterData.RotateToWithoutYAxis(myClusterData.MapCellObj.transform.position);
+    //    // 单位转向目标
+    //    myClusterData.RotateToWithoutYAxis(myClusterData.MapCellObj.transform.position);
 
 
-        // 重置攻击时间间隔
-        _fireTimer.LoopTime = myMemberData.AttackRate1;
+    //    // 重置攻击时间间隔
+    //    _fireTimer.LoopTime = myMemberData.AttackRate1;
 
-        // 如果能攻击
-        if (myMemberData.CouldNormalAttack)
-        {
-            // 无子弹reload不攻击
-            if (_bulletCount <= 0)
-            {
-                _reloadTimer = new Timer(myMemberData.ReloadTime1);
-                // 等待装填
-                _reloadTimer.OnCompleteCallback(() =>
-                {
-                    _bulletCount = myMemberData.Clipsize1;
-                    _fireTimer.GoOn();
-                }).Start();
+    //    // 如果能攻击
+    //    if (myMemberData.CouldNormalAttack)
+    //    {
+    //        // 无子弹reload不攻击
+    //        if (_bulletCount <= 0)
+    //        {
+    //            _reloadTimer = new Timer(myMemberData.ReloadTime1);
+    //            // 等待装填
+    //            _reloadTimer.OnCompleteCallback(() =>
+    //            {
+    //                _bulletCount = myMemberData.Clipsize1;
+    //                _fireTimer.GoOn();
+    //            }).Start();
 
-                _fireTimer.Pause();
+    //            _fireTimer.Pause();
 
-                // 是否有装填动作使用装填时间来判定
-                if (myMemberData.ReloadTime1 > Utils.ApproachZero)
-                {
-                    SwitchAnim(fsm, SoldierAnimConst.ZHUANGTIAN, WrapMode.Once);
-                }
-                return;
-            }
+    //            // 是否有装填动作使用装填时间来判定
+    //            if (myMemberData.ReloadTime1 > Utils.ApproachZero)
+    //            {
+    //                SwitchAnim(fsm, SoldierAnimConst.ZHUANGTIAN, WrapMode.Once);
+    //            }
+    //            return;
+    //        }
 
-            // 抛出攻击事件
-            SkillManager.Single.SetTriggerData(new TriggerData()
-            {
-                ReceiveMember = enemyDisplayOwner,
-                ReleaseMember = myDisplayOwner,
-                TypeLevel1 = TriggerLevel1.Fight,
-                TypeLevel2 = TriggerLevel2.Attack
-            });
+    //        // 抛出攻击事件
+    //        SkillManager.Single.SetTriggerData(new TriggerData()
+    //        {
+    //            ReceiveMember = enemyDisplayOwner,
+    //            ReleaseMember = myDisplayOwner,
+    //            TypeLevel1 = TriggerLevel1.Fight,
+    //            TypeLevel2 = TriggerLevel2.Attack
+    //        });
 
-            // 发射子弹
-            ShootBullet(fsm);
+    //        // 发射子弹
+    //        ShootBullet(fsm);
 
-            // 攻击动作
-            SwitchAnim(fsm, SoldierAnimConst.GONGJI, WrapMode.Once);
-            // 开火后子弹数量-1
-            _bulletCount--;
-        }
-        else
-        {
-            // 不能攻击
-            // 播放待机动作
-            if (!_isDaiJi)
-            {
-                SwitchAnim(fsm, SoldierAnimConst.DAIJI, WrapMode.Once);
-                _isDaiJi = true;
-            }
-        }
+    //        // 攻击动作
+    //        SwitchAnim(fsm, SoldierAnimConst.GONGJI, WrapMode.Once);
+    //        // 开火后子弹数量-1
+    //        _bulletCount--;
+    //    }
+    //    else
+    //    {
+    //        // 不能攻击
+    //        // 播放待机动作
+    //        if (!_isDaiJi)
+    //        {
+    //            SwitchAnim(fsm, SoldierAnimConst.DAIJI, WrapMode.Once);
+    //            _isDaiJi = true;
+    //        }
+    //    }
         
-    }
+    //}
 
     /// <summary>
     /// 切出状态事件
