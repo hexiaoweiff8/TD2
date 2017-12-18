@@ -2,13 +2,13 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class SoldierFSMTrigger {
+public abstract class FSMTrigger {
     /// <summary>
     /// 触发器id 对应状态转换
     /// </summary>
-    public SoldierTriggerID triggerId;
+    public FSMTriggerID triggerId;
 
-    public SoldierFSMTrigger()
+    public FSMTrigger()
     {
         Init();
     }

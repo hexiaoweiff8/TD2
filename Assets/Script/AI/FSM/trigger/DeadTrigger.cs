@@ -2,11 +2,11 @@
 using System.Collections;
 using System;
 
-public class SiwangTrigger : SoldierFSMTrigger
+public class DeadTrigger : FSMTrigger
 {
     public override void Init()
     {
-        triggerId = SoldierTriggerID.SiWang;
+        triggerId = FSMTriggerID.Dead;
     }
     //public override bool CheckTrigger(SoldierFSMSystem fsm)
     //{

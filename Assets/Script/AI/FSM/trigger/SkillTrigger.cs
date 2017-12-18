@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class JinengGongjiTrigger : SoldierFSMTrigger
+public class SkillTrigger : FSMTrigger
 {
     //public override bool CheckTrigger(SoldierFSMSystem fsm)
     //{
@@ -18,6 +18,6 @@ public class JinengGongjiTrigger : SoldierFSMTrigger
 
     public override void Init()
     {
-        triggerId = SoldierTriggerID.JinengGongji;
+        triggerId = FSMTriggerID.Skill;
     }
 }

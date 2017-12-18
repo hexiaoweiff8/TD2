@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class PutongGongjiTrigger : SoldierFSMTrigger
+public class AttackTrigger : FSMTrigger
 {
 
     ///// <summary>
@@ -26,6 +26,6 @@ public class PutongGongjiTrigger : SoldierFSMTrigger
     /// </summary>
     public override void Init()
     {
-        triggerId = SoldierTriggerID.PutongGongji;
+        triggerId = FSMTriggerID.Attack;
     }
 }

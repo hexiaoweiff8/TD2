@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class DaiJiTrigger : SoldierFSMTrigger {
+public class WaitTrigger : FSMTrigger {
 
     //public override bool CheckTrigger(SoldierFSMSystem fsm)
     //{
@@ -11,6 +11,6 @@ public class DaiJiTrigger : SoldierFSMTrigger {
 
     public override void Init()
     {
-        triggerId = SoldierTriggerID.DaiJi;
+        triggerId = FSMTriggerID.Wait;
     }
 }

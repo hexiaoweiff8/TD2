@@ -7,71 +7,61 @@ using System.Reflection;
 /// <summary>
 /// 抽象类，所有状态必须继承它 并在子类中实例化
 /// </summary>
-public abstract class SoldierFSMState
+public abstract class FSMState
 {
 
-    public SoldierStateID StateID
+    public FSMStateID StateID
     {
         get { return _stateId; }
         set { _stateId = value; }
     }
 
     /// <summary>
-    /// 状态ID
+    /// 进入改状态
     /// </summary>
-    protected SoldierStateID _stateId;
+    public Action<SoldierFSMSystem> DoBeforeEnterintAction;
 
     /// <summary>
-    /// 本状态是否过期
+    /// 执行Action
     /// </summary>
-    protected bool _stateIsLose = false;
+    public Action<SoldierFSMSystem> DoAction;
+
+    /// <summary>
+    /// 离开改状态Action
+    /// </summary>
+    public Action<SoldierFSMSystem> DoBeforeLeavingAction;
+
+    /// <summary>
+    /// 状态ID
+    /// </summary>
+    protected FSMStateID _stateId;
+
 
     /// <summary>
     /// 当前状态可切换状态的trigger检测列表
     /// </summary>
-    private List<SoldierFSMTrigger> _fsmTrriggerList = new List<SoldierFSMTrigger>();
+    private List<FSMTrigger> _fsmTrriggerList = new List<FSMTrigger>();
 
     /// <summary>
     /// 初始化
     /// </summary>
-    public SoldierFSMState()
+    public FSMState()
     {
         Init();
     }
-
-    /// <summary>
-    /// 初始化方法
-    /// </summary>
-    public abstract void Init();
 
     /// <summary>
     /// 添加映射trigger
     /// </summary>
     /// <param name="triggerId">被映射TriggerId</param>
     /// <param name="triggerFunc">trigger具体行为</param>
-    public void AddMappingTrigger(SoldierTriggerID triggerId, Func<SoldierFSMSystem, bool> triggerFunc)
+    public void AddMappingTrigger(FSMTriggerID triggerId, Func<SoldierFSMSystem, bool> triggerFunc)
     {
         var triggerType = SoldierFSMFactory.GetTriggerTypeByTriggerId(triggerId);
-        var triggerInvoke = (SoldierFSMTrigger)triggerType.InvokeMember("", BindingFlags.Public | BindingFlags.CreateInstance,
+        var triggerInvoke = (FSMTrigger)triggerType.InvokeMember("", BindingFlags.Public | BindingFlags.CreateInstance,
                null, null, null);
         triggerInvoke.CheckTriggerFunc = triggerFunc;
         _fsmTrriggerList.Add(triggerInvoke);
-    }
-
-    /// <summary>
-    /// 子类中覆写，进入状态前的准备工作
-    /// </summary>
-    public virtual void DoBeforeEntering(SoldierFSMSystem fsm)
-    {
-        _stateIsLose = false;
-    }
-
-    /// <summary>
-    /// 子类中覆写，离开状态之前的处理工作 清理当前状态的过期数据等
-    /// </summary>
-    public virtual void DoBeforeLeaving(SoldierFSMSystem fsm)
-    {
-        _stateIsLose = true;
     }
 
     /// <summary>
@@ -111,74 +101,71 @@ public abstract class SoldierFSMState
         //dict.Clear();
     }
 
+
+
     /// <summary>
-    /// 该事件行为
+    /// 初始化方法
     /// </summary>
-    /// <param name="fsm"></param>
-    public abstract void Action(SoldierFSMSystem fsm);
+    public abstract void Init();
 }
 
 
 /// <summary>
 /// 士兵的各个状态
 /// </summary>
-public enum SoldierStateID
+public enum FSMStateID
 {
     //入场
-    RuChang,
+    Enter,
     //待机
-    DaiJi,
+    Wait,
     //行进
-    Xingjin,
+    Move,
     //死亡
-    SiWang,
+    Dead,
     //尸体
     ShiTi,
     //准备战斗状态 因为攻击分为普通攻击和技能攻击 所以扩展准备战斗状态 在这个状态里决定是哪种战斗
-    Zhunbeizhandou,
+    PreFight,
     //隐身
-    YinShen,
+    Hide,
     //普通攻击中状态
-    PutongGongji,
+    Attack,
     //技能攻击中状态
-    JinengGongji,
+    Skill,
     // 追击状态
-    ZhuiJi,
+    Pursue,
     //受击状态
-    Shouji,
-    //混乱状态
-    Hunluan,
+    BeAttack,
     NullState = -10001
 }
 
 /// <summary>
 /// 定义Transition(转换)类型的枚举变量，以后根据需要扩展
 /// </summary>
-public enum SoldierTriggerID
+public enum FSMTriggerID
 {
     //入场
-    RuChang,
+    Enter,
     //待机
-    DaiJi,
+    Wait,
     //行进
-    Xingjin,
+    Move,
     //死亡
-    SiWang,
+    Dead,
     //尸体
     ShiTi,
     //准备战斗
-    Zhunbeizhandou,
+    PreFight,
     //隐身
-    YinShen,
+    Hide,
     //普通攻击
-    PutongGongji,
+    Attack,
     //技能攻击
-    JinengGongji,
+    Skill,
     // 追击
-    ZhuiJi,
+    Pursue,
     //受击
-    Shouji,
-    //混乱
-    Hunluan,
+    BeAttack,
     NullTri = -10001
 }

@@ -55,17 +55,6 @@ public class SoldierFSMControl{
     }
 
 
-    public void UpdateFSM() //作为驱动源
-    {
-        if (_iSAwake) return;
-        fsm.CurrentState.CheckTrigger(fsm);
-        fsm.CurrentState.Action(fsm);
-    }
-
-    public void Destory()
-    {
-        fsm.Destory();
-    }
 
     /// <summary>
     /// 初始化行为状态机
@@ -73,8 +62,31 @@ public class SoldierFSMControl{
     /// <param name="behaviorType"></param>
     public void InitState(int behaviorType)
     {
-        SetStateMappingConfig(SoldierFSMFactory.GetBehaviorMappingDicById(behaviorType), 
+        SetStateMappingConfig(SoldierFSMFactory.GetBehaviorMappingDicById(behaviorType),
             SoldierFSMFactory.GetTriggerFuncDicById(behaviorType));
+    }
+
+
+    /// <summary>
+    /// 驱动状态机
+    /// </summary>
+    public void UpdateFSM()
+    {
+        if (_iSAwake) return;
+        fsm.CurrentState.CheckTrigger(fsm);
+        if (fsm.CurrentState.DoAction != null)
+        {
+            fsm.CurrentState.DoAction(fsm);
+        }
+    }
+
+
+    /// <summary>
+    /// 销毁
+    /// </summary>
+    public void Destory()
+    {
+        fsm.Destory();
     }
 
 
@@ -83,7 +95,7 @@ public class SoldierFSMControl{
     /// </summary>
     /// <param name="mapDic">切换关系列表</param>
     /// <param name="triggerFuncDic">节点具体行为列表</param>
-    public void SetStateMappingConfig(Dictionary<SoldierStateID, List<SoldierStateID>> mapDic, Dictionary<SoldierTriggerID, Func<SoldierFSMSystem, bool>> triggerFuncDic)
+    public void SetStateMappingConfig(Dictionary<FSMStateID, List<FSMStateID>> mapDic, Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>> triggerFuncDic)
     {
         if (mapDic == null)
         {
@@ -93,7 +105,7 @@ public class SoldierFSMControl{
         foreach (var kv in mapDic)
         {
             var keyType = SoldierFSMFactory.GetStateTypeByStateId(kv.Key);
-            var keyStateInvoke = (SoldierFSMState)keyType.InvokeMember("", BindingFlags.Public | BindingFlags.CreateInstance,
+            var keyStateInvoke = (FSMState)keyType.InvokeMember("", BindingFlags.Public | BindingFlags.CreateInstance,
                 null, null, null);
 
             foreach (var mapStateId in kv.Value)
@@ -108,17 +120,17 @@ public class SoldierFSMControl{
         }
     }
 
-    /// <summary>
-    /// 停止攻击当前目标
-    /// </summary>
-    public void CleanTarget()
-    {
-        // 终止普通攻击目标
-        if (fsm.CurrentStateID == SoldierStateID.PutongGongji)
-        {
-            fsm.CurrentState.DoBeforeLeaving(fsm);
-        }
-        // 终止技能攻击目标
+    ///// <summary>
+    ///// 停止攻击当前目标
+    ///// </summary>
+    //public void CleanTarget()
+    //{
+    //    // 终止普通攻击目标
+    //    if (fsm.CurrentStateID == FSMStateID.Attack && fsm.CurrentState.DoBeforeLeavingAction != null)
+    //    {
+    //        fsm.CurrentState.DoBeforeLeavingAction(fsm);
+    //    }
+    //    // 终止技能攻击目标
 
-    }
+    //}
 }

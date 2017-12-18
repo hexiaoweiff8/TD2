@@ -3,7 +3,7 @@ using System.Collections;
 using Util;
 using System;
 
-public class Soldier_PutongGongji_State : SoldierFSMState
+public class AttackState : FSMState
 {
     ///// <summary>
     ///// 开火间隔
@@ -13,57 +13,57 @@ public class Soldier_PutongGongji_State : SoldierFSMState
     /// <summary>
     /// 当前发射的子弹数量 当达到子弹上限后 需要填充子弹 并清零
     /// </summary>
-    private int _bulletCount;
+    //private int _bulletCount;
 
     ///// <summary>
     ///// 一弹夹子弹上限
     ///// </summary>
     //private int _bulletMax;
 
-    /// <summary>
-    /// 开火计时器
-    /// </summary>
-    private Timer _fireTimer;
+    ///// <summary>
+    ///// 开火计时器
+    ///// </summary>
+    //private Timer _fireTimer;
 
-    /// <summary>
-    /// 再装填计时器
-    /// </summary>
-    private Timer _reloadTimer;
+    ///// <summary>
+    ///// 再装填计时器
+    ///// </summary>
+    //private Timer _reloadTimer;
 
     ///// <summary>
     ///// 装填时间 两弹夹子弹之间的间隔
     ///// </summary>
     //private float _reloadTime;
 
-    /// <summary>
-    /// 是否正在待机
-    /// </summary>
-    private bool _isDaiJi = false;
+    ///// <summary>
+    ///// 是否正在待机
+    ///// </summary>
+    //private bool _isDaiJi = false;
 
     public override void Init()
     {
-        StateID = SoldierStateID.PutongGongji;
+        StateID = FSMStateID.Attack;
     }
 
-    /// <summary>
-    /// 切入状态前事件
-    /// </summary>
-    /// <param name="fsm"></param>
-    public override void DoBeforeEntering(SoldierFSMSystem fsm)
-    {
-        _fireTimer = new Timer(fsm.Display.ClusterData.AllData.MemberData.AttackRate1, true);
-        _fireTimer.OnCompleteCallback(() => { fsm.Display.ClusterData.MapCell.StepAction(fsm.Display.ClusterData.MapCell); }).Start();
+    ///// <summary>
+    ///// 切入状态前事件
+    ///// </summary>
+    ///// <param name="fsm"></param>
+    //public override void DoBeforeEntering(SoldierFSMSystem fsm)
+    //{
+    //    _fireTimer = new Timer(fsm.Display.ClusterData.AllData.MemberData.AttackRate1, true);
+    //    _fireTimer.OnCompleteCallback(() => { fsm.Display.ClusterData.MapCell.StepAction(fsm.Display.ClusterData.MapCell); }).Start();
 
-        _bulletCount = fsm.Display.ClusterData.AllData.MemberData.Clipsize1;
-        //_bulletMax = fsm.Display.ClusterData.AllData.MemberData.Clipsize1;
-        //_reloadTime = fsm.Display.ClusterData.AllData.MemberData.ReloadTime1;
-        // 单位转向目标
-        var clusterData = fsm.Display.ClusterData;
-        if (clusterData != null && fsm.EnemyTarget != null && fsm.EnemyTarget.ClusterData != null)
-        {
-            clusterData.RotateToWithoutYAxis(fsm.EnemyTarget.ClusterData.MapCellObj.transform.position);
-        }
-    }
+    //    //_bulletCount = fsm.Display.ClusterData.AllData.MemberData.Clipsize1;
+    //    //_bulletMax = fsm.Display.ClusterData.AllData.MemberData.Clipsize1;
+    //    //_reloadTime = fsm.Display.ClusterData.AllData.MemberData.ReloadTime1;
+    //    // 单位转向目标
+    //    var clusterData = fsm.Display.ClusterData;
+    //    if (clusterData != null && fsm.EnemyTarget != null && fsm.EnemyTarget.ClusterData != null)
+    //    {
+    //        clusterData.RotateToWithoutYAxis(fsm.EnemyTarget.ClusterData.MapCellObj.transform.position);
+    //    }
+    //}
 
 
     ///// <summary>
@@ -142,41 +142,38 @@ public class Soldier_PutongGongji_State : SoldierFSMState
         
     //}
 
-    /// <summary>
-    /// 切出状态事件
-    /// </summary>
-    /// <param name="fsm"></param>
-    public override void DoBeforeLeaving(SoldierFSMSystem fsm)
-    {
-        fsm.IsCanInPutonggongji = false;
-        fsm.TargetIsLoseEfficacy = true;
-        if (_fireTimer != null)
-        {
-            _fireTimer.Kill();
-        }
-        if (_reloadTimer != null)
-        {
-            _reloadTimer.Kill();
-        }
-        _isDaiJi = false;
-    }
+    ///// <summary>
+    ///// 切出状态事件
+    ///// </summary>
+    ///// <param name="fsm"></param>
+    //public override void DoBeforeLeaving(SoldierFSMSystem fsm)
+    //{
+    //    fsm.IsCanInPutonggongji = false;
+    //    fsm.TargetIsLoseEfficacy = true;
+    //    if (_fireTimer != null)
+    //    {
+    //        _fireTimer.Kill();
+    //    }
+    //    if (_reloadTimer != null)
+    //    {
+    //        _reloadTimer.Kill();
+    //    }
+    //    //_isDaiJi = false;
+    //}
 
-    /// <summary>
-    /// Action执行事件
-    /// </summary>
-    /// <param name="fsm"></param>
-    public override void Action(SoldierFSMSystem fsm)
-    {
-        if (!_stateIsLose)
-        {
-            // 范围内没有敌人
-            if (AdjustTargetIsInRange(fsm))
-            {
-                fsm.IsCanInPutonggongji = false;
-                fsm.TargetIsLoseEfficacy = true;
-            }
-        }
-    }
+    ///// <summary>
+    ///// Action执行事件
+    ///// </summary>
+    ///// <param name="fsm"></param>
+    //public override void Action(SoldierFSMSystem fsm)
+    //{
+    //    // 范围内没有敌人
+    //    if (AdjustTargetIsInRange(fsm))
+    //    {
+    //        fsm.IsCanInPutonggongji = false;
+    //        fsm.TargetIsLoseEfficacy = true;
+    //    }
+    //}
 
     /// <summary>
     /// 判断目标是否还在范围内 两种情况会脱离范围 跑出视野 或者血为0

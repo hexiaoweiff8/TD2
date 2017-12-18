@@ -57,12 +57,12 @@ public class SoldierFSMSystem {
     /// 当前状态ID
     /// 不要直接修改这个变量，之所以让他公有是因为得让其他脚本调用这个变量。
     /// </summary>
-    public SoldierStateID CurrentStateID { get { return _currentStateId; } }
+    public FSMStateID CurrentStateID { get { return _currentStateId; } }
 
     /// <summary>
     /// 当前状态
     /// </summary>
-    public SoldierFSMState CurrentState { get { return _currentState; } }
+    public FSMState CurrentState { get { return _currentState; } }
 
     ///// <summary>
     ///// 来源状态
@@ -74,17 +74,17 @@ public class SoldierFSMSystem {
     /// <summary>
     /// 现有状态列表
     /// </summary>
-    private List<SoldierFSMState> _states;
+    private List<FSMState> _states;
 
     /// <summary>
     /// 当前状态Id
     /// </summary>
-    private SoldierStateID _currentStateId;
+    private FSMStateID _currentStateId;
 
     /// <summary>
     /// 当前状态
     /// </summary>
-    private SoldierFSMState _currentState;
+    private FSMState _currentState;
 
     // -----------------------------公共方法-----------------------------
 
@@ -94,14 +94,14 @@ public class SoldierFSMSystem {
     /// </summary>
     public SoldierFSMSystem()
     {
-        _states = new List<SoldierFSMState>();
+        _states = new List<FSMState>();
     }
 
     /// <summary>
     /// 增加状态转换对 第一次添加的状态是默认状态
     /// </summary>
     /// <param name="s"></param>
-    public void AddState(SoldierFSMState s)
+    public void AddState(FSMState s)
     {
         //_currentState = _states.Find((e) => e.StateID == s.StateID);
         if (s == null)
@@ -117,7 +117,7 @@ public class SoldierFSMSystem {
             return;
         }
         //排除相同的状态
-        foreach (SoldierFSMState state in _states)
+        foreach (FSMState state in _states)
         {
             if (state.StateID == s.StateID)
             {
@@ -132,21 +132,21 @@ public class SoldierFSMSystem {
     /// 查找并切换对应id的状态 
     /// </summary>
     /// <param name="stateId"></param>
-    public void ChangeState(SoldierStateID stateId)
+    public void ChangeState(FSMStateID stateId)
     {
-        if (stateId == SoldierStateID.NullState)
+        if (stateId == FSMStateID.NullState)
         {
             Debug.LogError("不允许切换空状态");
         }
 
         //遍历此状态容器 
-        foreach (SoldierFSMState state in _states)
+        foreach (FSMState state in _states)
         {
             if (state.StateID == stateId)
             {
-                if (null != _currentState)
+                if (null != _currentState && _currentState.DoBeforeLeavingAction != null)
                 {
-                    _currentState.DoBeforeLeaving(this);
+                    _currentState.DoBeforeLeavingAction(this);
                 }
                 // 设置前置状态
                 //SourceStateID = _currentStateId;
@@ -154,9 +154,9 @@ public class SoldierFSMSystem {
                 _currentState = state;
                 _currentStateId = state.StateID;
                 //Debug.Log("执行状态切换-------------------" + state.StateID);
-                if (null != _currentState)
+                if (null != _currentState && _currentState.DoBeforeEnterintAction != null)
                 {
-                    _currentState.DoBeforeEntering(this);
+                    _currentState.DoBeforeEnterintAction(this);
                 }
                 break;
             }

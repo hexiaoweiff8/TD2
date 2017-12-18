@@ -30,10 +30,10 @@ public class SoldierFSMFactory
     /// </summary>
     /// <param name="behaviorType">行为编号</param>
     /// <returns></returns>
-    public static Dictionary<SoldierStateID, List<SoldierStateID>> GetBehaviorMappingDicById(int behaviorType)
+    public static Dictionary<FSMStateID, List<FSMStateID>> GetBehaviorMappingDicById(int behaviorType)
     {
 
-        Dictionary<SoldierStateID, List<SoldierStateID>> result = null;
+        Dictionary<FSMStateID, List<FSMStateID>> result = null;
         switch (behaviorType)
         {
             //case SoldierType:
@@ -89,31 +89,31 @@ public class SoldierFSMFactory
             case TowerType:
             {
                 // 防御塔行为
-                result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
+                result = new Dictionary<FSMStateID, List<FSMStateID>>()
                 {
-                    {SoldierStateID.RuChang, new List<SoldierStateID>()
+                    {FSMStateID.Enter, new List<FSMStateID>()
                     {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.DaiJi,
-                        SoldierStateID.Zhunbeizhandou,
+                        FSMStateID.Dead,
+                        FSMStateID.Wait,
+                        FSMStateID.PreFight,
                     }},
-                    {SoldierStateID.Zhunbeizhandou, new List<SoldierStateID>()
+                    {FSMStateID.PreFight, new List<FSMStateID>()
                     {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.PutongGongji
+                        FSMStateID.Dead,
+                        FSMStateID.Attack
                     }},
-                    {SoldierStateID.PutongGongji, new List<SoldierStateID>()
+                    {FSMStateID.Attack, new List<FSMStateID>()
                     {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Zhunbeizhandou,
-                        SoldierStateID.DaiJi,
+                        FSMStateID.Dead,
+                        FSMStateID.PreFight,
+                        FSMStateID.Wait,
                     }},
-                    {SoldierStateID.DaiJi, new List<SoldierStateID>()
+                    {FSMStateID.Wait, new List<FSMStateID>()
                     {
-                        SoldierStateID.SiWang,
-                        SoldierStateID.Zhunbeizhandou,
+                        FSMStateID.Dead,
+                        FSMStateID.PreFight,
                     }},
-                    {SoldierStateID.SiWang, new List<SoldierStateID>()},
+                    {FSMStateID.Dead, new List<FSMStateID>()},
                 };
             }
                 break;
@@ -170,10 +170,10 @@ public class SoldierFSMFactory
     /// </summary>
     /// <param name="behaviorType">行为编号</param>
     /// <returns></returns>
-    public static Dictionary<SoldierTriggerID, Func<SoldierFSMSystem, bool>> GetTriggerFuncDicById(int behaviorType)
+    public static Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>> GetTriggerFuncDicById(int behaviorType)
     {
 
-        Dictionary<SoldierTriggerID, Func<SoldierFSMSystem, bool>> result = new Dictionary<SoldierTriggerID, Func<SoldierFSMSystem, bool>>();
+        Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>> result = new Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>>();
 
         // 获取当前行为类型的行为列表
         var behaviorDic = GetBehaviorMappingDicById(behaviorType);
@@ -194,28 +194,28 @@ public class SoldierFSMFactory
     /// </summary>
     /// <param name="id">SoldierTriggerID</param>
     /// <returns>SoldierStateID</returns>
-    public static SoldierStateID GetStateIdByTrigger(SoldierTriggerID id)
+    public static FSMStateID GetStateIdByTrigger(FSMTriggerID id)
     {
         switch (id)
         {
-            case SoldierTriggerID.RuChang:
-                return SoldierStateID.RuChang;
-            case SoldierTriggerID.Xingjin:
-                return SoldierStateID.Xingjin;
-            case SoldierTriggerID.Zhunbeizhandou:
-                return SoldierStateID.Zhunbeizhandou;
-            case SoldierTriggerID.PutongGongji:
-                return SoldierStateID.PutongGongji;
-            case SoldierTriggerID.JinengGongji:
-                return SoldierStateID.JinengGongji;
-            case SoldierTriggerID.SiWang:
-                return SoldierStateID.SiWang;
-            case SoldierTriggerID.ZhuiJi:
-                return SoldierStateID.ZhuiJi;
-            case SoldierTriggerID.DaiJi:
-                return SoldierStateID.DaiJi;
+            case FSMTriggerID.Enter:
+                return FSMStateID.Enter;
+            case FSMTriggerID.Move:
+                return FSMStateID.Move;
+            case FSMTriggerID.PreFight:
+                return FSMStateID.PreFight;
+            case FSMTriggerID.Attack:
+                return FSMStateID.Attack;
+            case FSMTriggerID.Skill:
+                return FSMStateID.Skill;
+            case FSMTriggerID.Dead:
+                return FSMStateID.Dead;
+            case FSMTriggerID.Pursue:
+                return FSMStateID.Pursue;
+            case FSMTriggerID.Wait:
+                return FSMStateID.Wait;
         }
-        return SoldierStateID.NullState;
+        return FSMStateID.NullState;
     }
 
     /// <summary>
@@ -223,28 +223,28 @@ public class SoldierFSMFactory
     /// </summary>
     /// <param name="id">SoldierStateID</param>
     /// <returns>SoldierTriggerID</returns>
-    public static SoldierTriggerID GetTriggerByStateId(SoldierStateID id)
+    public static FSMTriggerID GetTriggerByStateId(FSMStateID id)
     {
         switch (id)
         {
-            case SoldierStateID.RuChang:
-                return SoldierTriggerID.RuChang;
-            case SoldierStateID.Xingjin:
-                return SoldierTriggerID.Xingjin;
-            case SoldierStateID.Zhunbeizhandou:
-                return SoldierTriggerID.Zhunbeizhandou;
-            case SoldierStateID.PutongGongji:
-                return SoldierTriggerID.PutongGongji;
-            case SoldierStateID.JinengGongji:
-                return SoldierTriggerID.JinengGongji;
-            case SoldierStateID.SiWang:
-                return SoldierTriggerID.SiWang;
-            case SoldierStateID.ZhuiJi:
-                return SoldierTriggerID.ZhuiJi;
-            case SoldierStateID.DaiJi:
-                return SoldierTriggerID.DaiJi;
+            case FSMStateID.Enter:
+                return FSMTriggerID.Enter;
+            case FSMStateID.Move:
+                return FSMTriggerID.Move;
+            case FSMStateID.PreFight:
+                return FSMTriggerID.PreFight;
+            case FSMStateID.Attack:
+                return FSMTriggerID.Attack;
+            case FSMStateID.Skill:
+                return FSMTriggerID.Skill;
+            case FSMStateID.Dead:
+                return FSMTriggerID.Dead;
+            case FSMStateID.Pursue:
+                return FSMTriggerID.Pursue;
+            case FSMStateID.Wait:
+                return FSMTriggerID.Wait;
         }
-        return SoldierTriggerID.NullTri;
+        return FSMTriggerID.NullTri;
     }
 
     /// <summary>
@@ -252,28 +252,28 @@ public class SoldierFSMFactory
     /// </summary>
     /// <param name="id">SoldierStateID</param>
     /// <returns>FSMState类Type</returns>
-    public static Type GetStateTypeByStateId(SoldierStateID id)
+    public static Type GetStateTypeByStateId(FSMStateID id)
     {
         switch (id)
         {
-            case SoldierStateID.RuChang:
-                return typeof(Soldier_Ruchang_State);
-            case SoldierStateID.Xingjin:
-                return typeof(Soldier_Xingjin_State);
-            case SoldierStateID.Zhunbeizhandou:
-                return typeof(Soldier_Zhunbeizhandou_State);
-            case SoldierStateID.PutongGongji:
-                return typeof(Soldier_PutongGongji_State);
-            case SoldierStateID.JinengGongji:
-                return typeof(Soldier_JinengGongji_State);
-            case SoldierStateID.SiWang:
-                return typeof(Soldier_Siwang_State);
-            case SoldierStateID.ZhuiJi:
-                return typeof(Soldier_Zhuiji_State);
-            case SoldierStateID.DaiJi:
-                return typeof(Soldier_Daiji_State);
+            case FSMStateID.Enter:
+                return typeof(EnterState);
+            //case FSMStateID.Move:
+            //    return typeof(MoveState);
+            case FSMStateID.PreFight:
+                return typeof(PreFightState);
+            case FSMStateID.Attack:
+                return typeof(AttackState);
+            case FSMStateID.Skill:
+                return typeof(SkillState);
+            case FSMStateID.Dead:
+                return typeof(DeadState);
+            //case FSMStateID.Pursue:
+            //    return typeof(PursueState);
+            case FSMStateID.Wait:
+                return typeof(WaitState);
         }
-        return typeof(Soldier_Ruchang_State);
+        return typeof(EnterState);
     }
 
     /// <summary>
@@ -281,27 +281,27 @@ public class SoldierFSMFactory
     /// </summary>
     /// <param name="id">SoldierTriggerID</param>
     /// <returns>FSMState类Type</returns>
-    public static Type GetTriggerTypeByTriggerId(SoldierTriggerID id)
+    public static Type GetTriggerTypeByTriggerId(FSMTriggerID id)
     {
         switch (id)
         {
-            case SoldierTriggerID.RuChang:
-                return typeof(RuChangTrigger);
-            case SoldierTriggerID.Xingjin:
-                return typeof(XingjinTrigger);
-            case SoldierTriggerID.Zhunbeizhandou:
-                return typeof(ZhunbeizhandouTrigger);
-            case SoldierTriggerID.PutongGongji:
-                return typeof(PutongGongjiTrigger);
-            case SoldierTriggerID.JinengGongji:
-                return typeof(JinengGongjiTrigger);
-            case SoldierTriggerID.SiWang:
-                return typeof(SiwangTrigger);
-            case SoldierTriggerID.ZhuiJi:
-                return typeof(ZhuiJiTrigger);
-            case SoldierTriggerID.DaiJi:
-                return typeof(DaiJiTrigger);
+            case FSMTriggerID.Enter:
+                return typeof(EnterTrigger);
+            case FSMTriggerID.Move:
+                return typeof(MoveTrigger);
+            case FSMTriggerID.PreFight:
+                return typeof(PreFightTrigger);
+            case FSMTriggerID.Attack:
+                return typeof(AttackTrigger);
+            case FSMTriggerID.Skill:
+                return typeof(SkillTrigger);
+            case FSMTriggerID.Dead:
+                return typeof(DeadTrigger);
+            case FSMTriggerID.Pursue:
+                return typeof(PursueTrigger);
+            case FSMTriggerID.Wait:
+                return typeof(WaitTrigger);
         }
-        return typeof(RuChangTrigger);
+        return typeof(EnterTrigger);
     }
 }

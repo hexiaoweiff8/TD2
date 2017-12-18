@@ -15,7 +15,7 @@ public class TriggerFuncFactory
     /// <param name="triggerId">trigger类型</param>
     /// <param name="behaviorType">行为类型</param>
     /// <returns>检测方法</returns>
-    public static Func<SoldierFSMSystem, bool> GetTriggerFuncByBehaviorType(SoldierTriggerID triggerId, int behaviorType)
+    public static Func<SoldierFSMSystem, bool> GetTriggerFuncByBehaviorType(FSMTriggerID triggerId, int behaviorType)
     {
         Func<SoldierFSMSystem, bool> result = null;
 
@@ -149,14 +149,14 @@ public class TriggerFuncFactory
                     // --------------------------------防御塔类型------------------------------------
                     switch (triggerId)
                     {
-                        case SoldierTriggerID.RuChang:
+                        case FSMTriggerID.Enter:
                             // -----------------------入场------------------------------
                             result = (fsm) =>
                             {
                                 return false;
                             };
                             break;
-                        case SoldierTriggerID.Zhunbeizhandou:
+                        case FSMTriggerID.PreFight:
                             // -----------------------准备战斗------------------------------
                             result = (fsm) =>
                             {
@@ -164,12 +164,12 @@ public class TriggerFuncFactory
                                 switch (fsm.CurrentStateID)
                                 {
                                     // 行进追击切准备战斗
-                                    case SoldierStateID.DaiJi:
+                                    case FSMStateID.Wait:
                                         {
-                                            return ZhunbeizhandouTrigger.CheckNormalAttack(fsm);
+                                            return PreFightTrigger.CheckNormalAttack(fsm);
                                         }
                                     // 技能攻击/普通攻击切准备战斗
-                                    case SoldierStateID.PutongGongji:
+                                    case FSMStateID.Attack:
                                         {
                                             return false;
                                         }
@@ -177,38 +177,38 @@ public class TriggerFuncFactory
                                 return false;
                             };
                             break;
-                        case SoldierTriggerID.PutongGongji:
+                        case FSMTriggerID.Attack:
                             // -----------------------普通攻击------------------------------
                             result = (fsm) =>
                             {
                                 switch (fsm.CurrentStateID)
                                 {
-                                    case SoldierStateID.Zhunbeizhandou:
+                                    case FSMStateID.PreFight:
                                         return fsm.IsCanInPutonggongji;
                                 }
                                 return false;
                             };
                             break;
-                        case SoldierTriggerID.SiWang:
+                        case FSMTriggerID.Dead:
                             // -----------------------死亡------------------------------
                             result = (fsm) =>
                             {
                                 return fsm.Display.ClusterData.AllData.MemberData.CurrentHP <= 0;
                             };
                             break;
-                        case SoldierTriggerID.DaiJi:
+                        case FSMTriggerID.Wait:
                             result = (fsm) =>
                             {
                                 // 状态检查路由
                                 switch (fsm.CurrentStateID)
                                 {
                                     // 行进追击切准备战斗
-                                    case SoldierStateID.RuChang:
+                                    case FSMStateID.Enter:
                                     {
                                         return true;
                                     }
                                     // 技能攻击/普通攻击切准备战斗
-                                    case SoldierStateID.PutongGongji:
+                                    case FSMStateID.Attack:
                                     {
                                         return fsm.TargetIsLoseEfficacy;
                                     }

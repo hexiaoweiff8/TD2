@@ -6,14 +6,14 @@ using System.Collections.Generic;
 /// <summary>
 /// 准备战斗触发器
 /// </summary>
-public class ZhunbeizhandouTrigger : SoldierFSMTrigger
+public class PreFightTrigger : FSMTrigger
 {
     /// <summary>
     /// 初始化
     /// </summary>
     public override void Init()
     {
-        triggerId = SoldierTriggerID.Zhunbeizhandou;
+        triggerId = FSMTriggerID.PreFight;
     }
 
     ///// <summary>
@@ -57,13 +57,13 @@ public class ZhunbeizhandouTrigger : SoldierFSMTrigger
         switch (fsm.CurrentStateID)
         {
             // 行进追击切准备战斗
-            case SoldierStateID.Xingjin:
-            case SoldierStateID.ZhuiJi:
+            case FSMStateID.Move:
+            case FSMStateID.Pursue:
             {
                 return CheckChangeState(fsm);
             }
             // 技能攻击/普通攻击切准备战斗
-            case SoldierStateID.PutongGongji:
+            case FSMStateID.Attack:
             {
                 return false;
             }

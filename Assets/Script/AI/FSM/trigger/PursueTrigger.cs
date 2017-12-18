@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// 追击状态检测
 /// </summary>
-public class ZhuiJiTrigger : SoldierFSMTrigger
+public class PursueTrigger : FSMTrigger
 {
 
     /// <summary>
@@ -16,7 +16,7 @@ public class ZhuiJiTrigger : SoldierFSMTrigger
     /// </summary>
     public override void Init()
     {
-        triggerId = SoldierTriggerID.ZhuiJi;
+        triggerId = FSMTriggerID.Pursue;
     }
 
 
