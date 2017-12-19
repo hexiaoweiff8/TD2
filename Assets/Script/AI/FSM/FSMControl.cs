@@ -6,9 +6,9 @@ using System.Linq;
 using JetBrains.Annotations;
 using System.Reflection;
 
-public class SoldierFSMControl{
+public class FSMControl{
 
-    private SoldierFSMSystem fsm;//内置一个fsm
+    private FSMSystem fsm;//内置一个fsm
 
     /// <summary>
     /// 标记状态机是否唤醒的 如果宿主在对象池中需要把它置为休眠
@@ -38,7 +38,7 @@ public class SoldierFSMControl{
     public void StartFSM([NotNull]DisplayOwner obj)
     {
         //初始化状态机
-        fsm = new SoldierFSMSystem();
+        fsm = new FSMSystem();
         fsm.Display = obj;
 
         // 初始化行为状态机
@@ -62,8 +62,8 @@ public class SoldierFSMControl{
     /// <param name="behaviorType"></param>
     public void InitState(int behaviorType)
     {
-        SetStateMappingConfig(SoldierFSMFactory.GetBehaviorMappingDicById(behaviorType),
-            SoldierFSMFactory.GetTriggerFuncDicById(behaviorType));
+        SetStateMappingConfig(FSMFactory.GetBehaviorMappingDicById(behaviorType),
+            FSMFactory.GetTriggerFuncDicById(behaviorType), behaviorType);
     }
 
 
@@ -95,7 +95,10 @@ public class SoldierFSMControl{
     /// </summary>
     /// <param name="mapDic">切换关系列表</param>
     /// <param name="triggerFuncDic">节点具体行为列表</param>
-    public void SetStateMappingConfig(Dictionary<FSMStateID, List<FSMStateID>> mapDic, Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>> triggerFuncDic)
+    /// <param name="behaviorId">行为Id</param>
+    public void SetStateMappingConfig(Dictionary<FSMStateID, List<FSMStateID>> mapDic,
+        Dictionary<FSMTriggerID, Func<FSMSystem, bool>> triggerFuncDic,
+        int behaviorId)
     {
         if (mapDic == null)
         {
@@ -104,17 +107,24 @@ public class SoldierFSMControl{
 
         foreach (var kv in mapDic)
         {
-            var keyType = SoldierFSMFactory.GetStateTypeByStateId(kv.Key);
-            var keyStateInvoke = (FSMState)keyType.InvokeMember("", BindingFlags.Public | BindingFlags.CreateInstance,
+            var keyType = FSMFactory.GetStateTypeByStateId(kv.Key);
+            var keyStateInvoke = (FSMState) keyType.InvokeMember("", BindingFlags.Public | BindingFlags.CreateInstance,
                 null, null, null);
 
             foreach (var mapStateId in kv.Value)
             {
                 // 设置映射关系
-                keyStateInvoke.AddMappingTrigger(SoldierFSMFactory.GetTriggerByStateId(mapStateId),
-                    triggerFuncDic[SoldierFSMFactory.GetTriggerByStateId(mapStateId)]);
-
+                keyStateInvoke.AddMappingTrigger(FSMFactory.GetTriggerByStateId(mapStateId),
+                    triggerFuncDic[FSMFactory.GetTriggerByStateId(mapStateId)]);
             }
+
+            // 获取状态的EnterAction
+            keyStateInvoke.DoBeforeEnterintAction = StateFuncFunction.GetStateBeforeEnterFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
+            // 获取状态的DoAction
+            keyStateInvoke.DoAction = StateFuncFunction.GetStateDoActionFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
+            // 获取状态的LeaveAction
+            keyStateInvoke.DoBeforeLeavingAction = StateFuncFunction.GetStateBeforeLeaveFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
+
             // 添加状态
             fsm.AddState(keyStateInvoke);
         }

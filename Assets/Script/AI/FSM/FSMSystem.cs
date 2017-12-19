@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 状态机主类 管理各状态切换
 /// </summary>
-public class SoldierFSMSystem {
+public class FSMSystem {
 
 
     /// <summary>
@@ -13,45 +13,45 @@ public class SoldierFSMSystem {
     /// </summary>
     public DisplayOwner Display;
 
-    /// <summary>
-    /// 通过目标选择器筛选并锁定的敌人
-    /// </summary>
-    public DisplayOwner EnemyTarget;
+    ///// <summary>
+    ///// 通过目标选择器筛选并锁定的敌人
+    ///// </summary>
+    //public DisplayOwner EnemyTarget;
 
-    /// <summary>
-    /// 是否可以开始走的标记 只被用在判断士兵入场以后是否已经经过了一秒的等待
-    /// </summary>
-    public bool IsCanRun = false;
+    ///// <summary>
+    ///// 是否可以开始走的标记 只被用在判断士兵入场以后是否已经经过了一秒的等待
+    ///// </summary>
+    //public bool IsCanRun = false;
 
-    /// <summary>
-    /// 是否已经做好战斗准备 可以进入战斗的标记（普通攻击）
-    /// </summary>
-    public bool IsCanInPutonggongji = false;
+    ///// <summary>
+    ///// 是否已经做好战斗准备 可以进入战斗的标记（普通攻击）
+    ///// </summary>
+    //public bool IsCanInPutonggongji = false;
 
-    /// <summary>
-    /// 是否已经做好战斗准备 可以进入战斗的标记（普通攻击）
-    /// </summary>
-    public bool IsCanInJinenggongji = false;
+    ///// <summary>
+    ///// 是否已经做好战斗准备 可以进入战斗的标记（普通攻击）
+    ///// </summary>
+    //public bool IsCanInJinenggongji = false;
 
-    /// <summary>
-    /// 是否追击
-    /// </summary>
-    public bool IsZhuiJi = false;
+    ///// <summary>
+    ///// 是否追击
+    ///// </summary>
+    //public bool IsZhuiJi = false;
 
-    /// <summary>
-    /// 标记角色血量是否为0
-    /// </summary>
-    public bool IsDie = false;
+    ///// <summary>
+    ///// 标记角色血量是否为0
+    ///// </summary>
+    //public bool IsDie = false;
 
-    /// <summary>
-    /// 标记攻击目标是否失效 如果目标失效需要切除状态
-    /// </summary>
-    public bool TargetIsLoseEfficacy;
+    ///// <summary>
+    ///// 标记攻击目标是否失效 如果目标失效需要切除状态
+    ///// </summary>
+    //public bool TargetIsLoseEfficacy;
 
-    /// <summary>
-    /// 被释放技能
-    /// </summary>
-    public SkillInfo Skill = null;
+    ///// <summary>
+    ///// 被释放技能
+    ///// </summary>
+    //public SkillInfo Skill = null;
 
     /// <summary>
     /// 当前状态ID
@@ -92,7 +92,7 @@ public class SoldierFSMSystem {
     /// <summary>
     /// 初始化
     /// </summary>
-    public SoldierFSMSystem()
+    public FSMSystem()
     {
         _states = new List<FSMState>();
     }

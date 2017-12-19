@@ -14,12 +14,12 @@ public class FSMManager : SingleItem<FSMManager>, ILoopItem
     /// <summary>
     /// 状态机列表
     /// </summary>
-    private Dictionary<int, SoldierFSMControl> fsmDic = new Dictionary<int, SoldierFSMControl>();
+    private Dictionary<int, FSMControl> fsmDic = new Dictionary<int, FSMControl>();
 
     /// <summary>
     /// 运行中Fsm
     /// </summary>
-    private Dictionary<int, SoldierFSMControl> runingFsmDic = new Dictionary<int, SoldierFSMControl>();
+    private Dictionary<int, FSMControl> runingFsmDic = new Dictionary<int, FSMControl>();
 
     /// <summary>
     /// looper编号
@@ -51,12 +51,12 @@ public class FSMManager : SingleItem<FSMManager>, ILoopItem
     /// </summary>
     /// <param name="displayOwner">显示对象</param>
     /// <returns>状态机控制器</returns>
-    public SoldierFSMControl CreateFSM([NotNull]DisplayOwner displayOwner)
+    public FSMControl CreateFSMControl([NotNull]DisplayOwner displayOwner)
     {
-        SoldierFSMControl result = null;
+        FSMControl result = null;
         if (!fsmDic.ContainsKey(displayOwner.Id))
         {
-            result = new SoldierFSMControl();
+            result = new FSMControl();
             result.StartFSM(displayOwner);
             fsmDic.Add(displayOwner.Id, result);
         }
@@ -69,7 +69,7 @@ public class FSMManager : SingleItem<FSMManager>, ILoopItem
     /// <param name="displayOwner">单位DisplayOwner</param>
     public void BeginRunFSM([NotNull] DisplayOwner displayOwner)
     {
-        var fsm = CreateFSM(displayOwner);
+        var fsm = CreateFSMControl(displayOwner);
         if (runingFsmDic.ContainsKey(displayOwner.Id))
         {
             UnityEngine.Debug.LogError("该状态机正在运行:" + displayOwner.Id);
@@ -84,9 +84,9 @@ public class FSMManager : SingleItem<FSMManager>, ILoopItem
     /// </summary>
     /// <param name="id">FSM Id</param>
     /// <returns>FSM</returns>
-    public SoldierFSMControl GetFSM(int id)
+    public FSMControl GetFSM(int id)
     {
-        SoldierFSMControl result = null;
+        FSMControl result = null;
 
         if (fsmDic.ContainsKey(id))
         {
@@ -139,6 +139,6 @@ public class FSMManager : SingleItem<FSMManager>, ILoopItem
     /// </summary>
     public void OnDestroy()
     {
-        Stop();
+        //Stop();
     }
 }

@@ -19,17 +19,17 @@ public abstract class FSMState
     /// <summary>
     /// 进入改状态
     /// </summary>
-    public Action<SoldierFSMSystem> DoBeforeEnterintAction;
+    public Action<FSMSystem> DoBeforeEnterintAction;
 
     /// <summary>
     /// 执行Action
     /// </summary>
-    public Action<SoldierFSMSystem> DoAction;
+    public Action<FSMSystem> DoAction;
 
     /// <summary>
     /// 离开改状态Action
     /// </summary>
-    public Action<SoldierFSMSystem> DoBeforeLeavingAction;
+    public Action<FSMSystem> DoBeforeLeavingAction;
 
     /// <summary>
     /// 状态ID
@@ -55,9 +55,9 @@ public abstract class FSMState
     /// </summary>
     /// <param name="triggerId">被映射TriggerId</param>
     /// <param name="triggerFunc">trigger具体行为</param>
-    public void AddMappingTrigger(FSMTriggerID triggerId, Func<SoldierFSMSystem, bool> triggerFunc)
+    public void AddMappingTrigger(FSMTriggerID triggerId, Func<FSMSystem, bool> triggerFunc)
     {
-        var triggerType = SoldierFSMFactory.GetTriggerTypeByTriggerId(triggerId);
+        var triggerType = FSMFactory.GetTriggerTypeByTriggerId(triggerId);
         var triggerInvoke = (FSMTrigger)triggerType.InvokeMember("", BindingFlags.Public | BindingFlags.CreateInstance,
                null, null, null);
         triggerInvoke.CheckTriggerFunc = triggerFunc;
@@ -67,14 +67,14 @@ public abstract class FSMState
     /// <summary>
     /// 状态的改变发生在这里 
     /// </summary>
-    public void CheckTrigger(SoldierFSMSystem fsm)
+    public void CheckTrigger(FSMSystem fsm)
     {
         for (int i = 0; i < _fsmTrriggerList.Count; i++)
         {
             //if (_fsmTrriggerList[i].CheckTrigger(fsm))
             if (_fsmTrriggerList[i].CheckTriggerFunc(fsm))
             {
-                var state = SoldierFSMFactory.GetStateIdByTrigger(_fsmTrriggerList[i].triggerId);
+                var state = FSMFactory.GetStateIdByTrigger(_fsmTrriggerList[i].triggerId);
                 fsm.ChangeState(state);
                 //Debug.Log("切换状态:" + state);
                 break;
@@ -85,7 +85,7 @@ public abstract class FSMState
     /// <summary>
     /// 模型切换动作 往往配合状态切换
     /// </summary>
-    public void SwitchAnim(SoldierFSMSystem fsm, string aniName, WrapMode mode)
+    public void SwitchAnim(FSMSystem fsm, string aniName, WrapMode mode)
     {
         Debug.Log("切换动画:" + aniName);
         //var myself = fsm.Display.RanderControl;

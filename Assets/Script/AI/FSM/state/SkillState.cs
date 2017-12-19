@@ -97,59 +97,59 @@ public class SkillState : FSMState
     //}
 
 
-    /// <summary>
-    /// 释放技能
-    /// </summary>
-    /// <param name="fsm"></param>
-    private void ReleaseSkill(SoldierFSMSystem fsm)
-    {
+    ///// <summary>
+    ///// 释放技能
+    ///// </summary>
+    ///// <param name="fsm"></param>
+    //private void ReleaseSkill(FSMSystem fsm)
+    //{
 
-        // 技能状态
-        // 开始执行技能
-        // 
-        // 技能动作
+    //    // 技能状态
+    //    // 开始执行技能
+    //    // 
+    //    // 技能动作
 
-        // fsm 中带技能
-        if (fsm.IsCanInJinenggongji && fsm.EnemyTarget.ClusterData != null && fsm.EnemyTarget.ClusterData.MapCellObj != null)
-        {
-            SkillManager.Single.DoSkillInfo(fsm.Skill, param, true);
+    //    // fsm 中带技能
+    //    if (fsm.IsCanInJinenggongji && fsm.EnemyTarget.ClusterData != null && fsm.EnemyTarget.ClusterData.MapCellObj != null)
+    //    {
+    //        SkillManager.Single.DoSkillInfo(fsm.Skill, param, true);
 
-            // 检测是否释放完毕
-            if (skillIsDone)
-            {
-                Exist(fsm);
-            }
-            else
-            {
-                counter++;
-                if (counter >= fsm.Skill.ReleaseTime)
-                {
-                    // 退出
-                    skillIsDone = true;
-                }
-            }
-        }
-        else
-        {
-            // 技能不可被释放, 跳出释放技能状态
-            Exist(fsm);
+    //        // 检测是否释放完毕
+    //        if (skillIsDone)
+    //        {
+    //            Exist(fsm);
+    //        }
+    //        else
+    //        {
+    //            counter++;
+    //            if (counter >= fsm.Skill.ReleaseTime)
+    //            {
+    //                // 退出
+    //                skillIsDone = true;
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        // 技能不可被释放, 跳出释放技能状态
+    //        Exist(fsm);
 
-        }
-        // 技能结束标记
-        // TODO 结束条件
-        // 时间, 距离, 死亡, 被位移, 切状态
-    }
+    //    }
+    //    // 技能结束标记
+    //    // TODO 结束条件
+    //    // 时间, 距离, 死亡, 被位移, 切状态
+    //}
 
-    /// <summary>
-    /// 退出技能状态
-    /// </summary>
-    /// <param name="fsm"></param>
-    private void Exist(SoldierFSMSystem fsm)
-    {
-        fsm.IsCanInJinenggongji = false;
-        fsm.Skill = null;
-        // 切换状态到行进状态
-        fsm.TargetIsLoseEfficacy = true;
-        fsm.EnemyTarget = null;
-    }
+    ///// <summary>
+    ///// 退出技能状态
+    ///// </summary>
+    ///// <param name="fsm"></param>
+    //private void Exist(FSMSystem fsm)
+    //{
+    //    fsm.IsCanInJinenggongji = false;
+    //    fsm.Skill = null;
+    //    // 切换状态到行进状态
+    //    fsm.TargetIsLoseEfficacy = true;
+    //    fsm.EnemyTarget = null;
+    //}
 }

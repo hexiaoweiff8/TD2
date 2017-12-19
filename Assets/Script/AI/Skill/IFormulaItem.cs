@@ -225,8 +225,8 @@ public abstract class AbstractFormulaItem : IFormulaItem
                 break;
             case 2:
                 {
-                    posX = scope.GetFloat(Utils.TargetPointSelectorXKey) ?? 0f;
-                    posY = scope.GetFloat(Utils.TargetPointSelectorYKey) ?? 0f;
+                    posX = scope.HasData<float>(Utils.TargetPointSelectorXKey) ? scope.GetData<float>(Utils.TargetPointSelectorXKey) : 0f;
+                    posY = scope.HasData<float>(Utils.TargetPointSelectorYKey) ? scope.GetData<float>(Utils.TargetPointSelectorYKey) : 0f;
                 }
                 break;
         }

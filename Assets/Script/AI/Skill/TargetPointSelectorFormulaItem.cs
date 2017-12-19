@@ -211,8 +211,8 @@ public class TargetPointSelectorFormulaItem : AbstractFormulaItem
             }
 
             // 保存位置点
-            scope.SetFloat(Utils.TargetPointSelectorXKey, posX);
-            scope.SetFloat(Utils.TargetPointSelectorYKey, posY);
+            scope.SetData(Utils.TargetPointSelectorXKey, posX);
+            scope.SetData(Utils.TargetPointSelectorYKey, posY);
             callback();
         },
         myFormulaType);

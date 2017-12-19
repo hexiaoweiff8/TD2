@@ -86,11 +86,11 @@ public class ResistDemageFormulaItem : AbstractFormulaItem
         myFormulaType);
 
         Debug.Log("构造伤害吸收行为");
-        if (mySkill.DataScope.GetFloat("ResistDemage") == null)
+        if (!mySkill.DataScope.HasData<float>("ResistDemage"))
         {
             // 缓存数据
-            mySkill.DataScope.SetFloat("ResistDemage", myResistDemage);
-            mySkill.DataScope.SetFloat("AllResistDemage", myResistDemage);
+            mySkill.DataScope.SetData("ResistDemage", myResistDemage);
+            mySkill.DataScope.SetData("AllResistDemage", myResistDemage);
         }
         Debug.Log("当前生命值变动量:" + myTrigger.HealthChangeValue);
 
@@ -99,7 +99,7 @@ public class ResistDemageFormulaItem : AbstractFormulaItem
         {
             return result;
         }
-        var nowCouldResistDemage = mySkill.DataScope.GetFloat("ResistDemage");
+        var nowCouldResistDemage = mySkill.DataScope.GetData<float>("ResistDemage");
         // 伤害吸收结束
         if (nowCouldResistDemage <= 0)
         {
@@ -117,10 +117,10 @@ public class ResistDemageFormulaItem : AbstractFormulaItem
                 }
                 else
                 {
-                    myTrigger.HealthChangeValue -= nowCouldResistDemage.Value;
+                    myTrigger.HealthChangeValue -= nowCouldResistDemage;
                 }
                 // 清空伤害吸收
-                mySkill.DataScope.SetFloat("ResistDemage", 0);
+                mySkill.DataScope.SetData("ResistDemage", 0);
             }
             else
             {
@@ -130,7 +130,7 @@ public class ResistDemageFormulaItem : AbstractFormulaItem
 
                 Debug.Log("剩余伤害:" + myTrigger.HealthChangeValue);
                 // 设置剩余伤害量
-                mySkill.DataScope.SetFloat("ResistDemage", nowCouldResistDemage.Value);
+                mySkill.DataScope.SetData("ResistDemage", nowCouldResistDemage);
             }
 
             // 判断是否到达伤害吸收上限

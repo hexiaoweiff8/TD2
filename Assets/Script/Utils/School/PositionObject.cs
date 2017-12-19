@@ -357,7 +357,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// </summary>
     public void Clear()
     {
-        
+        UnitFictory.Single.DestoryMapCell(MapCell);
     }
 
     ///// <summary>

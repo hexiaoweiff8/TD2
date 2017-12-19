@@ -17,13 +17,13 @@ public class StateFuncFunction
     /// <param name="stateId">状态ID</param>
     /// <param name="behaviorType">行为类型</param>
     /// <returns></returns>
-    public static Action<SoldierFSMSystem> GetStateBeforeEnterFuncByBehaviorType(FSMStateID stateId, int behaviorType)
+    public static Action<FSMSystem> GetStateBeforeEnterFuncByBehaviorType(FSMStateID stateId, int behaviorType)
     {
-        Action<SoldierFSMSystem> result = null;
+        Action<FSMSystem> result = null;
 
         switch (behaviorType)
         {
-            case SoldierFSMFactory.TowerType:
+            case FSMFactory.TowerType:
                 {
                     // --------------------------------防御塔类型------------------------------------
                     switch (stateId)
@@ -104,14 +104,14 @@ public class StateFuncFunction
     /// <param name="stateId">状态ID</param>
     /// <param name="behaviorType">行为类型</param>
     /// <returns></returns>
-    public static Action<SoldierFSMSystem> GetStateDoActionFuncByBehaviorType(FSMStateID stateId, int behaviorType)
+    public static Action<FSMSystem> GetStateDoActionFuncByBehaviorType(FSMStateID stateId, int behaviorType)
     {
-        Action<SoldierFSMSystem> result = null;
+        Action<FSMSystem> result = null;
 
         
         switch (behaviorType)
         {
-            case SoldierFSMFactory.TowerType:
+            case FSMFactory.TowerType:
                 {
                     // --------------------------------防御塔类型------------------------------------
                     switch (stateId)
@@ -164,13 +164,13 @@ public class StateFuncFunction
     /// <param name="stateId">状态ID</param>
     /// <param name="behaviorType">行为类型</param>
     /// <returns></returns>
-    public static Action<SoldierFSMSystem> GetStateBeforeLeaveFuncByBehaviorType(FSMStateID stateId, int behaviorType)
+    public static Action<FSMSystem> GetStateBeforeLeaveFuncByBehaviorType(FSMStateID stateId, int behaviorType)
     {
-        Action<SoldierFSMSystem> result = null;
+        Action<FSMSystem> result = null;
         
         switch (behaviorType)
         {
-            case SoldierFSMFactory.TowerType:
+            case FSMFactory.TowerType:
                 {
                     // --------------------------------防御塔类型------------------------------------
                     switch (stateId)

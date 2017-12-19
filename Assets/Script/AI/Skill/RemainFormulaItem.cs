@@ -129,8 +129,8 @@ public class RemainFormulaItem : AbstractFormulaItem
             {
                 if (!isGetPos)
                 {
-                    posX = remain.DataScope.GetFloat(Utils.TargetPointSelectorXKey) ?? 0f;
-                    posY = remain.DataScope.GetFloat(Utils.TargetPointSelectorYKey) ?? 0f;
+                    posX = remain.DataScope.HasData<float>(Utils.TargetPointSelectorXKey) ? remain.DataScope.GetData<float>(Utils.TargetPointSelectorXKey) : 0f;
+                    posY = remain.DataScope.HasData<float>(Utils.TargetPointSelectorYKey) ? remain.DataScope.GetData<float>(Utils.TargetPointSelectorYKey) : 0f;
                 }
 
                 remain.FixPostion = new Vector2(posX, posY);

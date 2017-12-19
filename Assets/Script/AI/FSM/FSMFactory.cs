@@ -3,12 +3,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SoldierFSMFactory
+public class FSMFactory
 {
     /// <summary>
     /// 士兵类型
     /// </summary>
-    public const int SoldierType = 1;
+    public const int MemberType = 1;
 
     /// <summary>
     /// 防御塔类型
@@ -36,56 +36,56 @@ public class SoldierFSMFactory
         Dictionary<FSMStateID, List<FSMStateID>> result = null;
         switch (behaviorType)
         {
-            //case SoldierType:
-            //{
-            //    // 常规士兵行为
-            //    result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
-            //    {
-            //        {SoldierStateID.RuChang, new List<SoldierStateID>()
-            //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.Xingjin
-            //        }},
-            //        {SoldierStateID.Xingjin, new List<SoldierStateID>()
-            //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.Zhunbeizhandou,
-            //            SoldierStateID.ZhuiJi,
-            //            SoldierStateID.DaiJi,
-            //        }},
-            //        {SoldierStateID.Zhunbeizhandou, new List<SoldierStateID>()
-            //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.JinengGongji,
-            //            SoldierStateID.PutongGongji,
-            //        }},
-            //        {SoldierStateID.SiWang, new List<SoldierStateID>()},
-            //        {SoldierStateID.PutongGongji, new List<SoldierStateID>()
-            //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.DaiJi,
-            //            SoldierStateID.Zhunbeizhandou
-            //        }},
-            //        {SoldierStateID.JinengGongji, new List<SoldierStateID>()
-            //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.DaiJi,
-            //        }},
-            //        {SoldierStateID.ZhuiJi, new List<SoldierStateID>()
-            //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.Zhunbeizhandou,
-            //            SoldierStateID.DaiJi,
-            //        }},
-            //        {SoldierStateID.DaiJi, new List<SoldierStateID>()
-            //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.Zhunbeizhandou,
-            //            SoldierStateID.Xingjin,
-            //        }},
-            //    };
-            //}
-            //    break;
+            case MemberType:
+                {
+                    // 常规士兵行为
+                    result = new Dictionary<FSMStateID, List<FSMStateID>>()
+                {
+                    {FSMStateID.Wait, new List<FSMStateID>()
+                    {
+                        FSMStateID.Dead,
+                        FSMStateID.Move
+                    }},
+                    {FSMStateID.Move, new List<FSMStateID>()
+                    {
+                        FSMStateID.Dead,
+                        FSMStateID.PreFight,
+                        FSMStateID.PreFight,
+                        FSMStateID.Wait,
+                    }},
+                    {FSMStateID.PreFight, new List<FSMStateID>()
+                    {
+                        FSMStateID.Dead,
+                        FSMStateID.Skill,
+                        FSMStateID.Attack,
+                    }},
+                    {FSMStateID.Dead, new List<FSMStateID>()},
+                    {FSMStateID.Attack, new List<FSMStateID>()
+                    {
+                        FSMStateID.Dead,
+                        FSMStateID.Wait,
+                        FSMStateID.PreFight
+                    }},
+                    {FSMStateID.Skill, new List<FSMStateID>()
+                    {
+                        FSMStateID.Dead,
+                        FSMStateID.Wait,
+                    }},
+                    {FSMStateID.PreFight, new List<FSMStateID>()
+                    {
+                        FSMStateID.Dead,
+                        FSMStateID.PreFight,
+                        FSMStateID.Wait,
+                    }},
+                    {FSMStateID.Wait, new List<FSMStateID>()
+                    {
+                        FSMStateID.Dead,
+                        FSMStateID.PreFight,
+                        FSMStateID.Move,
+                    }},
+                };
+                }
+                break;
             case TowerType:
             {
                 // 防御塔行为
@@ -120,42 +120,42 @@ public class SoldierFSMFactory
             //case BaseType:
             //{
             //    // 基地行为
-            //    result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
+            //    result = new Dictionary<FSMStateID, List<FSMStateID>>()
             //    {
-            //        {SoldierStateID.RuChang, new List<SoldierStateID>()
+            //        {FSMStateID.RuChang, new List<FSMStateID>()
             //        {
-            //            SoldierStateID.DaiJi,
-            //            SoldierStateID.SiWang,
+            //            FSMStateID.DaiJi,
+            //            FSMStateID.SiWang,
             //        }},
-            //        {SoldierStateID.DaiJi, new List<SoldierStateID>()
+            //        {FSMStateID.DaiJi, new List<FSMStateID>()
             //        {
-            //            SoldierStateID.SiWang,
+            //            FSMStateID.SiWang,
             //        }},
-            //        {SoldierStateID.SiWang, new List<SoldierStateID>()},
+            //        {FSMStateID.SiWang, new List<FSMStateID>()},
             //    };
             //}
             //    break;
             //case MineType:
             //{
             //    // 地雷行为
-            //    result = new Dictionary<SoldierStateID, List<SoldierStateID>>()
+            //    result = new Dictionary<FSMStateID, List<FSMStateID>>()
             //    {
-            //        {SoldierStateID.RuChang, new List<SoldierStateID>()
+            //        {FSMStateID.RuChang, new List<FSMStateID>()
             //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.Zhunbeizhandou,
+            //            FSMStateID.SiWang,
+            //            FSMStateID.Zhunbeizhandou,
             //        }},
-            //        {SoldierStateID.Zhunbeizhandou, new List<SoldierStateID>()
+            //        {FSMStateID.Zhunbeizhandou, new List<FSMStateID>()
             //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.JinengGongji
+            //            FSMStateID.SiWang,
+            //            FSMStateID.JinengGongji
             //        }},
-            //        {SoldierStateID.JinengGongji, new List<SoldierStateID>()
+            //        {FSMStateID.JinengGongji, new List<FSMStateID>()
             //        {
-            //            SoldierStateID.SiWang,
-            //            SoldierStateID.Zhunbeizhandou,
+            //            FSMStateID.SiWang,
+            //            FSMStateID.Zhunbeizhandou,
             //        }},
-            //        {SoldierStateID.SiWang, new List<SoldierStateID>()},
+            //        {FSMStateID.SiWang, new List<FSMStateID>()},
             //    };
             //}
             //    break;
@@ -170,10 +170,10 @@ public class SoldierFSMFactory
     /// </summary>
     /// <param name="behaviorType">行为编号</param>
     /// <returns></returns>
-    public static Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>> GetTriggerFuncDicById(int behaviorType)
+    public static Dictionary<FSMTriggerID, Func<FSMSystem, bool>> GetTriggerFuncDicById(int behaviorType)
     {
 
-        Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>> result = new Dictionary<FSMTriggerID, Func<SoldierFSMSystem, bool>>();
+        Dictionary<FSMTriggerID, Func<FSMSystem, bool>> result = new Dictionary<FSMTriggerID, Func<FSMSystem, bool>>();
 
         // 获取当前行为类型的行为列表
         var behaviorDic = GetBehaviorMappingDicById(behaviorType);
@@ -192,8 +192,8 @@ public class SoldierFSMFactory
     /// <summary>
     /// triggerId转stateId
     /// </summary>
-    /// <param name="id">SoldierTriggerID</param>
-    /// <returns>SoldierStateID</returns>
+    /// <param name="id">FSMTriggerID</param>
+    /// <returns>FSMStateID</returns>
     public static FSMStateID GetStateIdByTrigger(FSMTriggerID id)
     {
         switch (id)
@@ -221,8 +221,8 @@ public class SoldierFSMFactory
     /// <summary>
     /// stateId转triggerId
     /// </summary>
-    /// <param name="id">SoldierStateID</param>
-    /// <returns>SoldierTriggerID</returns>
+    /// <param name="id">FSMStateID</param>
+    /// <returns>FSMTriggerID</returns>
     public static FSMTriggerID GetTriggerByStateId(FSMStateID id)
     {
         switch (id)
@@ -250,7 +250,7 @@ public class SoldierFSMFactory
     /// <summary>
     /// stateId转FSMState类type
     /// </summary>
-    /// <param name="id">SoldierStateID</param>
+    /// <param name="id">FSMStateID</param>
     /// <returns>FSMState类Type</returns>
     public static Type GetStateTypeByStateId(FSMStateID id)
     {
@@ -258,8 +258,8 @@ public class SoldierFSMFactory
         {
             case FSMStateID.Enter:
                 return typeof(EnterState);
-            //case FSMStateID.Move:
-            //    return typeof(MoveState);
+            case FSMStateID.Move:
+                return typeof(MoveState);
             case FSMStateID.PreFight:
                 return typeof(PreFightState);
             case FSMStateID.Attack:
@@ -268,8 +268,8 @@ public class SoldierFSMFactory
                 return typeof(SkillState);
             case FSMStateID.Dead:
                 return typeof(DeadState);
-            //case FSMStateID.Pursue:
-            //    return typeof(PursueState);
+            case FSMStateID.Pursue:
+                return typeof(PursueState);
             case FSMStateID.Wait:
                 return typeof(WaitState);
         }
@@ -279,7 +279,7 @@ public class SoldierFSMFactory
     /// <summary>
     /// stateId转FSMState类type
     /// </summary>
-    /// <param name="id">SoldierTriggerID</param>
+    /// <param name="id">FSMTriggerID</param>
     /// <returns>FSMState类Type</returns>
     public static Type GetTriggerTypeByTriggerId(FSMTriggerID id)
     {

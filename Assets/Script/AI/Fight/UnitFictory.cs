@@ -88,6 +88,7 @@ public class UnitFictory : SingleItem<UnitFictory>
 
                 result = new Obstacle(go, dataId, MapManager.MapObstacleLayer);
                 go.name = result.MapCellId.ToString();
+                go.SetActive(true);
             }
                 break;
 
@@ -100,6 +101,7 @@ public class UnitFictory : SingleItem<UnitFictory>
 
                 result = new FightUnit(go, dataId, MapManager.MapPlayerLayer);
                 go.name = result.MapCellId.ToString();
+                go.SetActive(true);
             }
                 break;
 
@@ -129,6 +131,7 @@ public class UnitFictory : SingleItem<UnitFictory>
                         break;
                 }
                 go.name = result.MapCellId.ToString();
+                go.SetActive(true);
             }
                 break;
 
@@ -141,6 +144,7 @@ public class UnitFictory : SingleItem<UnitFictory>
                 result = new Tower(go, dataId, MapManager.MapPlayerLayer);
                 // 设置数据
                 go.name = result.MapCellId.ToString();
+                go.SetActive(true);
             }
                 break;
 
@@ -153,6 +157,7 @@ public class UnitFictory : SingleItem<UnitFictory>
                 result = new TheFiveCellBase(go, dataId, MapManager.MapPlayerLayer);
                 // 设置数据
                 go.name = result.MapCellId.ToString();
+                go.SetActive(true);
             }
                 break;
         }
@@ -300,7 +305,10 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// <param name="mapCell">地图单元</param>
     public void DestoryMapCell(MapCellBase mapCell)
     {
-        GameObject.Destroy(mapCell.GameObj);
+        if (mapCell != null)
+        {
+            GameObject.Destroy(mapCell.GameObj);
+        }
     }
 
     /// <summary>

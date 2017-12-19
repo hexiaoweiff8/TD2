@@ -354,6 +354,13 @@ namespace Util
         public void OnDestroy()
         {
             // 清空列表
+            foreach (var kv in activityTimerList)
+            {
+                foreach (var timer in kv.Value)
+                {
+                    timer.Kill();
+                }
+            }
         }
 
     }

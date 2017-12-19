@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using UnityEngine;
+using Util;
 
 /// <summary>
 /// 战斗管理器
@@ -33,22 +34,18 @@ public class FightManager : SingleItem<FightManager>
     /// <param name="drawType">绘制类型</param>
     public void StartChapter(int chapterId, Vector3 centerPos, ICollisionGraphics drawGraphics, int unitWidth, int drawType)
     {
-
-        DataPacker.Single.Clear();
+        // 清除数据
+        Clear();
         // 加载数据
         DataPacker.Single.Load();
-        MapManager.Single.Clear();
-
         // 加载地图
         MapBase = MapManager.Single.GetMapBase(chapterId, centerPos, unitWidth, drawType);
 
         // 初始化地图绘制
         MapDrawer.Single.Init(MapBase, centerPos, drawGraphics, drawType);
-
+        // 启动绘制器
         MapDrawer.Single.Begin();
-
-
-        FSMManager.Single.Stop();
+        // 启动状态机
         FSMManager.Single.Start();
 
         // 获得地图宽高
@@ -75,47 +72,47 @@ public class FightManager : SingleItem<FightManager>
         //LoadPlayer(MapBase);
 
 
-        //var outPointList = MapBase.GetMapCellList(MapManager.MapNpcLayer, MapManager.OutMosterPointId);
+        var outPointList = MapBase.GetMapCellList(MapManager.MapNpcLayer, MapManager.OutMosterPointId);
 
-        //if (outPointList != null)
-        //{
-        //    var outMonsterPoint = (outPointList[0] as OutMonsterPoint);
-        //    outMonsterPoint.AddData(new List<MonsterData>()
-        //    {
-        //        new MonsterData()
-        //        {
-        //            MonsterId = 1001,
-        //            Count = 1,
-        //            Interval = 1
-        //        },
-        //        new MonsterData()
-        //        {
-        //            MonsterId = 1001,
-        //            Count = 1,
-        //            Interval = 1
-        //        },
-        //        new MonsterData()
-        //        {
-        //            MonsterId = 1001,
-        //            Count = 1,
-        //            Interval = 1
-        //        },
-        //        new MonsterData()
-        //        {
-        //            MonsterId = 1001,
-        //            Count = 1,
-        //            Interval = 1
-        //        },
-        //        new MonsterData()
-        //        {
-        //            MonsterId = 1001,
-        //            Count = 1,
-        //            Interval = 1
-        //        },
+        if (outPointList != null)
+        {
+            var outMonsterPoint = (outPointList[0] as OutMonsterPoint);
+            outMonsterPoint.AddData(new List<MonsterData>()
+            {
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
+                new MonsterData()
+                {
+                    MonsterId = 1001,
+                    Count = 1,
+                    Interval = 1
+                },
 
-        //    });
-        //    outMonsterPoint.Start();
-        //}
+            });
+            outMonsterPoint.Start();
+        }
 
 
         // TODO 创建塔mapCell
@@ -132,27 +129,8 @@ public class FightManager : SingleItem<FightManager>
                     dataItem.SetInt(FightUnitManager.FightItemStartX, item.X);
                     dataItem.SetInt(FightUnitManager.FightItemStartY, item.Y);
                     // 创建Tower类
-                    //var tower = UnitFictory.Single.CreateUnit(UnitType.Tower, 1001) as Tower;
-                    //if (tower != null)
-                    //{
-                    //    tower.X = item.X;
-                    //    tower.Y = item.Y;
-                    //    tower.SetTowerData(new int[,]
-                    //    {
-                    //        { 90001, 10001, 10005, 90002 },
-                    //        { 90001, 10004, 10004, 90002 },
-                    //        { 90001, 10002, 10003, 90002 },
-                    //        { 90001, 10002, 10003, 90002 },
-                    //    });
-                    //    MapBase.AddMapCell(tower, MapManager.MapPlayerLayer);
-                    //    //// 创建DisplayOwner
-                    //    //var displayOwner = new DisplayOwner(tower, fixed);
-                    //    //// 启动FSM
-                    //    //FSMManager.Single.BeginRunFSM(displayOwner);
-                    //}
                     var tower = FightUnitManager.Single.LoadMember(UnitType.Tower, 1001, dataItem);
                     MapBase.AddMapCell(tower.MapCell, MapManager.MapPlayerLayer);
-                    FSMManager.Single.BeginRunFSM(tower);
 
                     dataItem.Clear();
                 }
@@ -229,6 +207,20 @@ public class FightManager : SingleItem<FightManager>
 
             }
         }
+    }
+
+    /// <summary>
+    /// 清空数据
+    /// </summary>
+    public void Clear()
+    {
+
+        ClusterManager.Single.ClearAll();
+        DataPacker.Single.Clear();
+        MapManager.Single.Clear();
+        UnitFictory.Single.Clear();
+        TimerManager.Single.OnDestroy();
+        FSMManager.Single.Stop();
     }
 
 

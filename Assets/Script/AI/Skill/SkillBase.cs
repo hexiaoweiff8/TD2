@@ -800,204 +800,286 @@ public class SkillBase : AbilityBase
 }
 
 
+///// <summary>
+///// 数据域
+///// </summary>
+//public class DataScope
+//{
+
+//    /// <summary>
+//    /// 数据域-float
+//    /// </summary>
+//    private Dictionary<string, float> dataScopeFloat = new Dictionary<string, float>();
+
+//    /// <summary>
+//    /// 数据域-int
+//    /// </summary>
+//    private Dictionary<string, int> dataScopeInt = new Dictionary<string, int>();
+
+//    /// <summary>
+//    /// 数据域-long
+//    /// </summary>
+//    private Dictionary<string, long> dataScopeLong = new Dictionary<string, long>();
+
+//    /// <summary>
+//    /// 数据域-bool
+//    /// </summary>
+//    private Dictionary<string, bool> dataScopeBool = new Dictionary<string, bool>();
+
+//    /// <summary>
+//    /// 数据域-string
+//    /// </summary>
+//    private Dictionary<string, string> dataScopeString = new Dictionary<string, string>();
+
+
+
+//    public float? GetFloat(string key)
+//    {
+//        if (dataScopeFloat.ContainsKey(key))
+//        {
+//            return dataScopeFloat[key];
+//        }
+//        else
+//        {
+//            return null;
+//        }
+//    }
+
+
+//    public int? GetInt(string key)
+//    {
+//        if (dataScopeInt.ContainsKey(key))
+//        {
+//            return dataScopeInt[key];
+//        }
+//        else
+//        {
+//            return null;
+//        }
+//    }
+
+
+//    public long? GetLong(string key)
+//    {
+//        if (dataScopeLong.ContainsKey(key))
+//        {
+//            return dataScopeLong[key];
+//        }
+//        else
+//        {
+//            return null;
+//        }
+//    }
+
+
+//    public bool? GetBool(string key)
+//    {
+//        if (dataScopeBool.ContainsKey(key))
+//        {
+//            return dataScopeBool[key];
+//        }
+//        else
+//        {
+//            return null;
+//        }
+//    }
+
+
+//    public string GetString(string key)
+//    {
+//        return dataScopeString[key];
+//    }
+
+
+//    public void SetFloat(string key, float value)
+//    {
+//        if (dataScopeFloat.ContainsKey(key))
+//        {
+//            dataScopeFloat[key] = value;
+//        }
+//        else
+//        {
+//            dataScopeFloat.Add(key, value);
+//        }
+//    }
+//    public void SetInt(string key, int value)
+//    {
+//        if (dataScopeInt.ContainsKey(key))
+//        {
+//            dataScopeInt[key] = value;
+//        }
+//        else
+//        {
+//            dataScopeInt.Add(key, value);
+//        }
+//    }
+//    public void SetLong(string key, long value)
+//    {
+//        if (dataScopeLong.ContainsKey(key))
+//        {
+//            dataScopeLong[key] = value;
+//        }
+//        else
+//        {
+//            dataScopeLong.Add(key, value);
+//        }
+//    }
+//    public void SetBool(string key, bool value)
+//    {
+//        if (dataScopeBool.ContainsKey(key))
+//        {
+//            dataScopeBool[key] = value;
+//        }
+//        else
+//        {
+//            dataScopeBool.Add(key, value);
+//        }
+//    }
+//    public void SetString(string key, string value)
+//    {
+//        if (dataScopeString.ContainsKey(key))
+//        {
+//            dataScopeString[key] = value;
+//        }
+//        else
+//        {
+//            dataScopeString.Add(key, value);
+//        }
+//    }
+
+//    //public T Get<T>(string key)
+//    //{
+//    //    T result = default (T);
+//    //    var type = typeof (T);
+//    //    if (type == typeof(float))
+//    //    {
+//    //        result = (T)Convert.ChangeType(dataScopeFloat[key], type);
+//    //    }
+//    //    else if (type == typeof(int))
+//    //    {
+//    //        result = (T)Convert.ChangeType(dataScopeInt[key], type);
+//    //    }
+//    //    else if (type == typeof(long))
+//    //    {
+//    //        result = (T)Convert.ChangeType(dataScopeLong[key], type);
+//    //    }
+//    //    else if (type == typeof(bool))
+//    //    {
+//    //        result = (T)Convert.ChangeType(dataScopeBool[key], type);
+//    //    }
+//    //    else if (type == typeof(string))
+//    //    {
+//    //        result = (T)Convert.ChangeType(dataScopeString[key], type);
+//    //    }
+//    //    return result;
+//    //}
+
+
+//    //public void Set<T>(string key, T value)
+//    //{
+//    //    if (typeof (T) == typeof (float))
+//    //    {
+//    //        dataScopeFloat.Add(key, (float)value);
+//    //    }
+//    //    else if (typeof(T) == typeof(int))
+//    //    {
+
+//    //    }
+//    //    else if (typeof(T) == typeof(long))
+//    //    {
+
+//    //    }
+//    //    else if (typeof(T) == typeof(bool))
+//    //    {
+
+//    //    }
+//    //    else if (typeof(T) == typeof(string))
+//    //    {
+
+//    //    }
+//    //}
+//}
+
 /// <summary>
-/// 数据域
+/// 泛型数据域
 /// </summary>
 public class DataScope
 {
+    /// <summary>
+    /// 数据列表
+    /// </summary>
+    private Dictionary<Type, Dictionary<string, object>> dataDic = new Dictionary<Type, Dictionary<string, object>>();
 
     /// <summary>
-    /// 数据域-float
+    /// 设置数据
     /// </summary>
-    private Dictionary<string, float> dataScopeFloat = new Dictionary<string, float>();
+    /// <typeparam name="T">数据类型</typeparam>
+    /// <param name="key">数据key</param>
+    /// <param name="data">数据</param>
+    public void SetData<T>([NotNull]string key, [NotNull]T data)
+    {
+        var type = typeof (T);
+        if (!dataDic.ContainsKey(type))
+        {
+            dataDic.Add(type, new Dictionary<string, object>());
+        }
+        if (dataDic[type].ContainsKey(key))
+        {
+            dataDic[type].Add(key, data);
+        }
+    }
 
     /// <summary>
-    /// 数据域-int
+    /// 获取数据
     /// </summary>
-    private Dictionary<string, int> dataScopeInt = new Dictionary<string, int>();
+    /// <typeparam name="T">被获取数据类型</typeparam>
+    /// <param name="key">被获取数据key</param>
+    /// <returns></returns>
+    public T GetData<T>([NotNull]string key)
+    {
+        T result = default (T);
+
+        var type = typeof (T);
+        if (dataDic.ContainsKey(type))
+        {
+            if (dataDic[type].ContainsKey(key))
+            {
+                result = (T) dataDic[type][key];
+            }
+            else
+            {
+                throw new Exception("数据不存在:" + key);
+            }
+        }
+        else
+        {
+            throw new Exception("数据不存在:" + key);
+        }
+
+        return result;
+    }
 
     /// <summary>
-    /// 数据域-long
+    /// 是否包含数据
     /// </summary>
-    private Dictionary<string, long> dataScopeLong = new Dictionary<string, long>();
-
-    /// <summary>
-    /// 数据域-bool
-    /// </summary>
-    private Dictionary<string, bool> dataScopeBool = new Dictionary<string, bool>();
-
-    /// <summary>
-    /// 数据域-string
-    /// </summary>
-    private Dictionary<string, string> dataScopeString = new Dictionary<string, string>();
-
-
-
-    public float? GetFloat(string key)
+    /// <typeparam name="T">数据类型</typeparam>
+    /// <param name="key">数据key</param>
+    /// <returns></returns>
+    public bool HasData<T>([NotNull] string key)
     {
-        if (dataScopeFloat.ContainsKey(key))
+        var result = false;
+
+        var type = typeof(T);
+        if (dataDic.ContainsKey(type))
         {
-            return dataScopeFloat[key];
+            if (dataDic[type].ContainsKey(key))
+            {
+                result = true;
+            }
         }
-        else
-        {
-            return null;
-        }
+
+        return result;
     }
-
-
-    public int? GetInt(string key)
-    {
-        if (dataScopeInt.ContainsKey(key))
-        {
-            return dataScopeInt[key];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-
-    public long? GetLong(string key)
-    {
-        if (dataScopeLong.ContainsKey(key))
-        {
-            return dataScopeLong[key];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-
-    public bool? GetBool(string key)
-    {
-        if (dataScopeBool.ContainsKey(key))
-        {
-            return dataScopeBool[key];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-
-    public string GetString(string key)
-    {
-        return dataScopeString[key];
-    }
-
-
-    public void SetFloat(string key, float value)
-    {
-        if (dataScopeFloat.ContainsKey(key))
-        {
-            dataScopeFloat[key] = value;
-        }
-        else
-        {
-            dataScopeFloat.Add(key, value);
-        }
-    }
-    public void SetInt(string key, int value)
-    {
-        if (dataScopeInt.ContainsKey(key))
-        {
-            dataScopeInt[key] = value;
-        }
-        else
-        {
-            dataScopeInt.Add(key, value);
-        }
-    }
-    public void SetLong(string key, long value)
-    {
-        if (dataScopeLong.ContainsKey(key))
-        {
-            dataScopeLong[key] = value;
-        }
-        else
-        {
-            dataScopeLong.Add(key, value);
-        }
-    }
-    public void SetBool(string key, bool value)
-    {
-        if (dataScopeBool.ContainsKey(key))
-        {
-            dataScopeBool[key] = value;
-        }
-        else
-        {
-            dataScopeBool.Add(key, value);
-        }
-    }
-    public void SetString(string key, string value)
-    {
-        if (dataScopeString.ContainsKey(key))
-        {
-            dataScopeString[key] = value;
-        }
-        else
-        {
-            dataScopeString.Add(key, value);
-        }
-    }
-
-    //public T Get<T>(string key)
-    //{
-    //    T result = default (T);
-    //    var type = typeof (T);
-    //    if (type == typeof(float))
-    //    {
-    //        result = (T)Convert.ChangeType(dataScopeFloat[key], type);
-    //    }
-    //    else if (type == typeof(int))
-    //    {
-    //        result = (T)Convert.ChangeType(dataScopeInt[key], type);
-    //    }
-    //    else if (type == typeof(long))
-    //    {
-    //        result = (T)Convert.ChangeType(dataScopeLong[key], type);
-    //    }
-    //    else if (type == typeof(bool))
-    //    {
-    //        result = (T)Convert.ChangeType(dataScopeBool[key], type);
-    //    }
-    //    else if (type == typeof(string))
-    //    {
-    //        result = (T)Convert.ChangeType(dataScopeString[key], type);
-    //    }
-    //    return result;
-    //}
-
-
-    //public void Set<T>(string key, T value)
-    //{
-    //    if (typeof (T) == typeof (float))
-    //    {
-    //        dataScopeFloat.Add(key, (float)value);
-    //    }
-    //    else if (typeof(T) == typeof(int))
-    //    {
-
-    //    }
-    //    else if (typeof(T) == typeof(long))
-    //    {
-
-    //    }
-    //    else if (typeof(T) == typeof(bool))
-    //    {
-
-    //    }
-    //    else if (typeof(T) == typeof(string))
-    //    {
-
-    //    }
-    //}
 }
 
 /// <summary>

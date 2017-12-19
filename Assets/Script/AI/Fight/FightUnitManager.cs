@@ -68,7 +68,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                         GeneralType = 1,
                         Camp = 1,
                         Attack1 = 10,
-                        BehaviorType = SoldierFSMFactory.SoldierType,
+                        BehaviorType = FSMFactory.MemberType,
                     },
                     UnitWidth = MapDrawer.Single.UnitWidth
                 }, mapCell);
@@ -124,6 +124,10 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                 result = new DisplayOwner(school.MapCell, school);
                 // 缓存数据
                 displayOwners.Add(result.Id, result);
+
+                // 启动状态机
+                FSMManager.Single.BeginRunFSM(result);
+                // 加入状态机
             }
                 break;
             case UnitType.MapCell:
@@ -181,13 +185,16 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                         TotalHp = 100,
                         CurrentHP = 100,
                         AttackRate1 = 1,
-                        BehaviorType = SoldierFSMFactory.TowerType
+                        BehaviorType = FSMFactory.TowerType
                     }
                 }, tower);
                 fix.X = tower.GameObj.transform.position.x;
                 fix.Y = tower.GameObj.transform.position.y;
                 fix.StopMove();
                 result = new DisplayOwner(tower, fix);
+
+                // 启动状态机
+                FSMManager.Single.BeginRunFSM(result);
             }
                 break;
             case UnitType.TowerCell:

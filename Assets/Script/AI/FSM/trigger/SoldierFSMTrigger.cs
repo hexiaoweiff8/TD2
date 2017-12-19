@@ -20,5 +20,5 @@ public abstract class FSMTrigger {
     /// <summary>
     /// 检测方法
     /// </summary>
-    public Func<SoldierFSMSystem, bool> CheckTriggerFunc;
+    public Func<FSMSystem, bool> CheckTriggerFunc;
 }
