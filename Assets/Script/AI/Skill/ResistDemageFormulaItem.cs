@@ -58,7 +58,7 @@ public class ResistDemageFormulaItem : AbstractFormulaItem
         IsResistOverflowDemage = GetDataOrReplace<bool>("IsResistOverflowDemage", array, 3);
     }
 
-    
+
 
     /// <summary>
     /// 生成行为节点
@@ -83,7 +83,7 @@ public class ResistDemageFormulaItem : AbstractFormulaItem
         {
             callback();
         },
-        myFormulaType);
+            myFormulaType);
 
         Debug.Log("构造伤害吸收行为");
         if (!mySkill.DataScope.HasData<float>("ResistDemage"))
@@ -105,51 +105,49 @@ public class ResistDemageFormulaItem : AbstractFormulaItem
         {
             return result;
         }
-        var needResistDemage = myTrigger.HealthChangeValue * myResistPercentage;
+        var needResistDemage = myTrigger.HealthChangeValue*myResistPercentage;
         var absNeedRessitDemage = Math.Abs(needResistDemage);
-        if (nowCouldResistDemage != null)
+        if (absNeedRessitDemage > nowCouldResistDemage)
         {
-            if (absNeedRessitDemage > nowCouldResistDemage)
+            if (myIsResistOverflowDemage)
             {
-                if (myIsResistOverflowDemage)
-                {
-                    myTrigger.HealthChangeValue = 0;
-                }
-                else
-                {
-                    myTrigger.HealthChangeValue -= nowCouldResistDemage;
-                }
-                // 清空伤害吸收
-                mySkill.DataScope.SetData("ResistDemage", 0);
+                myTrigger.HealthChangeValue = 0;
             }
             else
             {
-                Debug.Log("吸收伤害");
-                myTrigger.HealthChangeValue -= needResistDemage;
-                nowCouldResistDemage -= absNeedRessitDemage;
-
-                Debug.Log("剩余伤害:" + myTrigger.HealthChangeValue);
-                // 设置剩余伤害量
-                mySkill.DataScope.SetData("ResistDemage", nowCouldResistDemage);
+                myTrigger.HealthChangeValue -= nowCouldResistDemage;
             }
-
-            // 判断是否到达伤害吸收上限
-            if (nowCouldResistDemage == 0)
-            {
-                // 执行子级技能
-                if (SubFormulaItem != null)
-                {
-                    var packer = new FormulaParamsPacker();
-                    FormulaParamsPackerFactroy.Single.CopyPackerData(paramsPacker, packer);
-                    var subSkill = new SkillInfo(packer.SkillNum);
-                    subSkill.DataList = packer.DataList;
-                    subSkill.AddActionFormulaItem(SubFormulaItem);
-                    SkillManager.Single.DoSkillInfo(subSkill, packer, true);
-                }
-            }
-            // 伤害被吸收
-            myTrigger.IsAbsorption = true;
+            // 清空伤害吸收
+            mySkill.DataScope.SetData("ResistDemage", 0);
         }
+        else
+        {
+            Debug.Log("吸收伤害");
+            myTrigger.HealthChangeValue -= needResistDemage;
+            nowCouldResistDemage -= absNeedRessitDemage;
+
+            Debug.Log("剩余伤害:" + myTrigger.HealthChangeValue);
+            // 设置剩余伤害量
+            mySkill.DataScope.SetData("ResistDemage", nowCouldResistDemage);
+        }
+
+        // 判断是否到达伤害吸收上限
+        if (nowCouldResistDemage == 0)
+        {
+            // 执行子级技能
+            if (SubFormulaItem != null)
+            {
+                var packer = new FormulaParamsPacker();
+                FormulaParamsPackerFactroy.Single.CopyPackerData(paramsPacker, packer);
+                var subSkill = new SkillInfo(packer.SkillNum);
+                subSkill.DataList = packer.DataList;
+                subSkill.AddActionFormulaItem(SubFormulaItem);
+                SkillManager.Single.DoSkillInfo(subSkill, packer, true);
+            }
+        }
+        // 伤害被吸收
+        myTrigger.IsAbsorption = true;
+
 
         return result;
     }
