@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// 塔基类
 /// </summary>
-public class Tower : MapCellBase
+public class Tower : MemberCellBase
 {
 
 
@@ -136,13 +136,15 @@ public class Tower : MapCellBase
         towerCellDataArray = towerData;
         towerCellArray = new TheFiveCellBase[height, wight];
         transDirArray = new MultiLinkNode<TheFiveCellBase>[height, wight];
-        // 加载地图Cell数据
         // 如果该位置为null则只绘制底板
 
         // 初始化链接
+        // TODO 横向链接
+        // 从起点连到终点
 
         // 刷新列表
-        RefreshCells();
+        // 加载地图Cell数据
+        CreateCells();
     }
 
     /// <summary>
@@ -190,9 +192,9 @@ public class Tower : MapCellBase
     }
 
     /// <summary>
-    /// 重新绘制单位
+    /// 创建单位
     /// </summary>
-    public void RefreshCells()
+    public void CreateCells()
     {
         // 遍历塔单元数据, 如果TheFiveCell与数据不同, 则更新该位置的cell
         if (towerCellDataArray != null)
@@ -298,6 +300,45 @@ public class Tower : MapCellBase
     }
 
 
+    public override List<DisplayOwner> CheckAttack()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override List<DisplayOwner> CheckSkill()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Attack(List<DisplayOwner> targetList)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void StopAttack()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Skill(List<DisplayOwner> targetList)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void StopSkill()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Move(List<Vector3> targetList)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void StopMove()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 

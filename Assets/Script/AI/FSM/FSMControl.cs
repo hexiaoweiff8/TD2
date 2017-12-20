@@ -119,11 +119,11 @@ public class FSMControl{
             }
 
             // 获取状态的EnterAction
-            keyStateInvoke.DoBeforeEnterintAction = StateFuncFunction.GetStateBeforeEnterFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
+            keyStateInvoke.DoBeforeEnterintAction = StateFuncFactory.GetStateBeforeEnterFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
             // 获取状态的DoAction
-            keyStateInvoke.DoAction = StateFuncFunction.GetStateDoActionFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
+            keyStateInvoke.DoAction = StateFuncFactory.GetStateDoActionFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
             // 获取状态的LeaveAction
-            keyStateInvoke.DoBeforeLeavingAction = StateFuncFunction.GetStateBeforeLeaveFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
+            keyStateInvoke.DoBeforeLeavingAction = StateFuncFactory.GetStateBeforeLeaveFuncByBehaviorType(keyStateInvoke.StateID, behaviorId);
 
             // 添加状态
             fsm.AddState(keyStateInvoke);
