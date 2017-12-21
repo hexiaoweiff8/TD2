@@ -121,7 +121,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                 school.AllData.MemberData.TotalHp = 100;
 
                 ClusterManager.Single.Add(school);
-                result = new DisplayOwner(school.MapCell, school);
+                result = new DisplayOwner(school);
                 // 缓存数据
                 displayOwners.Add(result.Id, result);
 
@@ -191,7 +191,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                 fix.X = tower.GameObj.transform.position.x;
                 fix.Y = tower.GameObj.transform.position.y;
                 fix.StopMove();
-                result = new DisplayOwner(tower, fix);
+                result = new DisplayOwner(fix);
 
                 // 启动状态机
                 FSMManager.Single.BeginRunFSM(result);

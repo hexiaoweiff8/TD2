@@ -76,7 +76,7 @@ using System.Text;
             var target = paramsPacker.ReceiverMenber;
             var myFormulaType = FormulaType;
 
-            if (member == null || member.MapCell == null || member.ClusterData == null)
+            if (member == null || member.ClusterData.MapCell == null || member.ClusterData == null)
             {
                 return null;
             }

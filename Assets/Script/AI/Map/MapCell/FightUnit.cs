@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// FightUnit
 /// </summary>
-public class FightUnit : MemberCellBase
+public class FightUnit : MapCellBase, IMember
 {
     /// <summary>
     /// 初始化战斗单位
@@ -31,76 +31,66 @@ public class FightUnit : MemberCellBase
         //base.Draw(leftdown, unitWidth);
     }
 
-    public override List<DisplayOwner> CheckAttack()
+    public List<DisplayOwner> CheckAttack()
     {
         throw new NotImplementedException();
     }
 
-    public override List<DisplayOwner> CheckSkill()
+    public List<DisplayOwner> CheckSkill()
     {
         throw new NotImplementedException();
     }
 
-    public override void Attack(List<DisplayOwner> targetList)
+    public void Attack(List<DisplayOwner> targetList)
     {
         throw new NotImplementedException();
     }
 
-    public override void StopAttack()
+    public void StopAttack()
     {
         throw new NotImplementedException();
     }
 
-    public override void Skill(List<DisplayOwner> targetList)
+    public void Skill(List<DisplayOwner> targetList)
     {
         throw new NotImplementedException();
     }
 
-    public override void StopSkill()
+    public void StopSkill()
     {
         throw new NotImplementedException();
     }
 
-    public override void Move(List<Vector3> targetList)
+    public void Move(List<Vector3> targetList)
     {
         throw new NotImplementedException();
     }
 
-    public override void StopMove()
+    public void StopMove()
     {
         throw new NotImplementedException();
     }
 }
 
 /// <summary>
-/// 成员cell
+/// 成员接口
 /// </summary>
-public abstract class MemberCellBase : MapCellBase
+public interface IMember 
 {
 
-    /// <summary>
-    /// 初始化
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="dataId"></param>
-    /// <param name="drawLayer"></param>
-    protected MemberCellBase(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
-    {
-
-    }
 
 
     /// <summary>
     /// 检测攻击
     /// </summary>
     /// <returns></returns>
-    public abstract List<DisplayOwner> CheckAttack();
+    List<DisplayOwner> CheckAttack();
 
     /// <summary>
     /// 检测技能释放
     /// </summary>
     /// <returns></returns>
-    public abstract List<DisplayOwner> CheckSkill();
+    List<DisplayOwner> CheckSkill();
 
 
 
@@ -108,36 +98,36 @@ public abstract class MemberCellBase : MapCellBase
     /// 攻击目标
     /// </summary>
     /// <param name="targetList">目标列表</param>
-    public abstract void Attack(List<DisplayOwner> targetList);
+    void Attack(List<DisplayOwner> targetList);
 
     /// <summary>
     /// 停止攻击
     /// </summary>
-    public abstract void StopAttack();
+    void StopAttack();
 
 
     /// <summary>
     /// 释放技能
     /// </summary>
     /// <param name="targetList">目标列表</param>
-    public abstract void Skill(List<DisplayOwner> targetList);
+    void Skill(List<DisplayOwner> targetList);
 
     /// <summary>
     /// 停止释放技能
     /// </summary>
-    public abstract void StopSkill();
+    void StopSkill();
 
 
     /// <summary>
     /// 开始移动
     /// </summary>
     /// <param name="targetList">目标列表</param>
-    public abstract void Move(List<Vector3> targetList);
+    void Move(List<Vector3> targetList);
 
     /// <summary>
     /// 停止移动
     /// </summary>
-    public abstract void StopMove();
+    void StopMove();
 
 
 }

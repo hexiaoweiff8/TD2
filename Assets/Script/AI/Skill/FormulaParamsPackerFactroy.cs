@@ -75,8 +75,8 @@ public class FormulaParamsPackerFactroy
             TargetMaxCount = targetMaxCount,
             IsNotLethal = isNotLethal,
             Skill = skill,
-            StartPos = startObj != null ? startObj.MapCell.GameObj.transform.position : Vector3.zero,
-            TargetPos = targetObj != null ? targetObj.MapCell.GameObj.transform.position : Vector3.zero,
+            StartPos = startObj != null ? startObj.ClusterData.MapCell.GameObj.transform.position : Vector3.zero,
+            TargetPos = targetObj != null ? targetObj.ClusterData.MapCell.GameObj.transform.position : Vector3.zero,
             SkillLevel = skill == null ? 1 : skill.Level
         };
 
@@ -129,8 +129,8 @@ public class FormulaParamsPackerFactroy
             SkillNum = skill.Num,
             ReceiverMenber = targetObj,
             ReleaseMember = startObj,
-            StartPos = startObj.MapCell.GameObj.transform.position,
-            TargetPos = targetObj.MapCell.GameObj.transform.position,
+            StartPos = startObj.ClusterData.MapCell.GameObj.transform.position,
+            TargetPos = targetObj.ClusterData.MapCell.GameObj.transform.position,
             IsNotLethal = isNotLethal,
             Skill = skill,
         };
@@ -331,7 +331,7 @@ public class FormulaParamsPackerFactroy
         to.TargetMaxCount = from.TargetMaxCount;
         to.TriggerData = from.TriggerData;
         if (to.ReleaseMember.ClusterData != null)
-            to.StartPos = to.ReleaseMember.MapCell.GameObj.transform.position;
+            to.StartPos = to.ReleaseMember.ClusterData.MapCell.GameObj.transform.position;
         return to;
     }
 

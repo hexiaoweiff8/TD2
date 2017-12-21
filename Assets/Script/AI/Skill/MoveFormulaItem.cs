@@ -133,7 +133,7 @@ public class MoveFormulaItem : AbstractFormulaItem
         var myFormulaType = FormulaType;
         // 最大移动次数(防溢出)
         var moveTime = 300;
-        if (member == null || member.MapCell == null || member.ClusterData == null)
+        if (member == null || member.ClusterData.MapCell == null || member.ClusterData == null)
         {
             return null;
         }
@@ -152,7 +152,7 @@ public class MoveFormulaItem : AbstractFormulaItem
                     member.ClusterData.X = targetPos.x;
                     member.ClusterData.Y = targetPos.y;
                     // 显示层面移动
-                    member.MapCell.GameObj.transform.position = targetPos;
+                    member.ClusterData.MapCell.GameObj.transform.position = targetPos;
                 }
                 else
                 {
@@ -162,7 +162,7 @@ public class MoveFormulaItem : AbstractFormulaItem
                     Action completeCallback = () =>
                     {
                         // 计算夹角
-                        var diffDir = member.MapCell.GameObj.transform.position - targetPos;
+                        var diffDir = member.ClusterData.MapCell.GameObj.transform.position - targetPos;
                         // 判断达到目标, 停止
                         if (diffDir.magnitude < mySpeed || moveTime <= 0)
                         {
@@ -174,7 +174,7 @@ public class MoveFormulaItem : AbstractFormulaItem
                         // 位置移动
                         var xMove = (float)Math.Sin(angle * dir) * mySpeed;
                         var yMove = (float)Math.Cos(angle * dir) * mySpeed;
-                        member.MapCell.GameObj.transform.position += new Vector3(xMove, 0, yMove);
+                        member.ClusterData.MapCell.GameObj.transform.position += new Vector3(xMove, 0, yMove);
                         moveTime--;
                     };
                     timer.OnCompleteCallback(completeCallback).Start();

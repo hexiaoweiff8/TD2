@@ -130,7 +130,7 @@ public class FightManager : SingleItem<FightManager>
                     dataItem.SetInt(FightUnitManager.FightItemStartY, item.Y);
                     // 创建Tower类
                     var tower = FightUnitManager.Single.LoadMember(UnitType.Tower, 1001, dataItem);
-                    MapBase.AddMapCell(tower.MapCell, MapManager.MapPlayerLayer);
+                    MapBase.AddMapCell(tower.ClusterData.MapCell, MapManager.MapPlayerLayer);
 
                     dataItem.Clear();
                 }

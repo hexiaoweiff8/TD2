@@ -13,10 +13,10 @@ public class DisplayOwner
     /// </summary>
     public int Id { get { return ClusterData.AllData.MemberData.ObjID.ID; } }
 
-    /// <summary>
-    /// 显示对象Obj引用
-    /// </summary>
-    public MapCellBase MapCell { get; set; }
+    ///// <summary>
+    ///// 显示对象Obj引用
+    ///// </summary>
+    //public MapCellBase MapCell { get; set; }
 
     /// <summary>
     /// 集群数据引用
@@ -42,11 +42,10 @@ public class DisplayOwner
     /// <summary>
     /// 初始化
     /// </summary>
-    /// <param name="mapCell">对象obj</param>
     /// <param name="clusterData"></param>
-    public DisplayOwner([NotNull] MapCellBase mapCell, [NotNull] PositionObject clusterData)
+    public DisplayOwner( [NotNull] PositionObject clusterData)
     {
-        MapCell = mapCell;
+        //MapCell = mapCell;
         ClusterData = clusterData;
     }
 
@@ -56,7 +55,7 @@ public class DisplayOwner
     /// </summary>
     public void Destroy()
     {
-        GameObject.Destroy(MapCell.GameObj);
+        GameObject.Destroy(ClusterData.MapCell.GameObj);
         CleanData();
     }
 

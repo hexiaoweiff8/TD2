@@ -205,7 +205,7 @@ public class OutMonsterPoint : MapCellBase
                         };
                     }
 
-                    displayOwner.MapCell.GameObj.transform.position = GameObj.transform.position;
+                    displayOwner.ClusterData.MapCell.GameObj.transform.position = GameObj.transform.position;
                     dataItem.Clear();
                 }
             }
