@@ -10,6 +10,11 @@ using System.Text;
 public class StateFuncFactory
 {
 
+    /// <summary>
+    /// 目标列表Key
+    /// </summary>
+    public const string TargetListKey = "targetList";
+
 
     /// <summary>
     /// 获取进入状态Action
@@ -53,11 +58,11 @@ public class StateFuncFactory
                             // -----------------------普通攻击------------------------------
                             result = (fsm) =>
                             {
+                                var attacker = fsm.Display;
+                                var targetList = fsm.DataScope.GetData<List<DisplayOwner>>(TargetListKey);
                                 // 开始攻击
-
-                                // TODO 启动计时器
-                                //_fireTimer = new Timer(fsm.Display.ClusterData.AllData.MemberData.AttackRate1, true);
-                                //_fireTimer.OnCompleteCallback(() => { fsm.Display.ClusterData.MapCell.StepAction(fsm.Display.ClusterData.MapCell); }).Start();
+                                var attackMaker = AttackManager.Single.CreateAttackMaker(attacker, targetList);
+                                attackMaker.Begin();
                             };
                             break;
                         case FSMStateID.Skill:

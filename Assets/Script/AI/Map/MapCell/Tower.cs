@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using UnityEngine;
-using Util;
 
 
 /// <summary>
 /// 塔基类
 /// </summary>
-public class Tower : MapCellBase, IMember
+public class Tower : MapCellBase
 {
 
 
@@ -137,15 +136,13 @@ public class Tower : MapCellBase, IMember
         towerCellDataArray = towerData;
         towerCellArray = new TheFiveCellBase[height, wight];
         transDirArray = new MultiLinkNode<TheFiveCellBase>[height, wight];
+        // 加载地图Cell数据
         // 如果该位置为null则只绘制底板
 
         // 初始化链接
-        // TODO 横向链接
-        // 从起点连到终点
 
         // 刷新列表
-        // 加载地图Cell数据
-        CreateCells();
+        RefreshCells();
     }
 
     /// <summary>
@@ -193,9 +190,9 @@ public class Tower : MapCellBase, IMember
     }
 
     /// <summary>
-    /// 创建单位
+    /// 重新绘制单位
     /// </summary>
-    public void CreateCells()
+    public void RefreshCells()
     {
         // 遍历塔单元数据, 如果TheFiveCell与数据不同, 则更新该位置的cell
         if (towerCellDataArray != null)
@@ -301,86 +298,6 @@ public class Tower : MapCellBase, IMember
     }
 
 
-    /// <summary>
-    /// 检测攻击
-    /// </summary>
-    /// <returns></returns>
-    public List<DisplayOwner> CheckAttack()
-    {
-        List<DisplayOwner> result = null;
-
-
-        return result;
-    }
-
-    /// <summary>
-    /// 检测技能
-    /// </summary>
-    /// <returns></returns>
-    public List<DisplayOwner> CheckSkill()
-    {
-        List<DisplayOwner> result = null;
-
-
-
-        return result;
-    }
-
-    /// <summary>
-    /// 攻击目标
-    /// </summary>
-    /// <param name="targetList"></param>
-    public void Attack(List<DisplayOwner> targetList)
-    {
-        // 启动计时器
-        Debug.Log(this.GameObj.name + "开始攻击");
-        // 从FightUnitManager中获取DisplayOwner
-        //FightUnitManager.Single.GetElementById()
-        //_fireTimer = new Timer(this.Display.ClusterData.AllData.MemberData.AttackRate1, true);
-        //_fireTimer.OnCompleteCallback(() => { fsm.Display.ClusterData.MapCell.StepAction(fsm.Display.ClusterData.MapCell); }).Start();
-    }
-
-    /// <summary>
-    /// 释放技能
-    /// </summary>
-    /// <param name="targetList"></param>
-    public void Skill(List<DisplayOwner> targetList)
-    {
-        Debug.Log(this.GameObj.name + "释放技能");
-    }
-
-    /// <summary>
-    /// 停止攻击
-    /// </summary>
-    public void StopAttack()
-    {
-        Debug.Log(this.GameObj.name + "停止攻击");
-    }
-
-    /// <summary>
-    /// 停止技能
-    /// </summary>
-    public void StopSkill()
-    {
-        Debug.Log(this.GameObj.name + "停止技能");
-    }
-
-    /// <summary>
-    /// 开始移动
-    /// </summary>
-    /// <param name="targetList">目标点列表</param>
-    public void Move(List<Vector3> targetList)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// 停止移动
-    /// </summary>
-    public void StopMove()
-    {
-        throw new NotImplementedException();
-    }
 }
 
 

@@ -54,13 +54,13 @@ public class MemberData
     /// 弹容量
     /// </summary>
     [SkillAddition]
-    public short Clipsize1;
+    public short Clipsize;
 
     /// <summary>
     /// 攻击速度
     /// </summary>
     [SkillAddition]
-    public float AttackRate1;
+    public float AttackRate;
   
     /// <summary>
     /// 装填时间

@@ -184,7 +184,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                         Attack1 = 10,
                         TotalHp = 100,
                         CurrentHP = 100,
-                        AttackRate1 = 1,
+                        AttackRate = 1,
                         BehaviorType = FSMFactory.TowerType
                     }
                 }, tower);
