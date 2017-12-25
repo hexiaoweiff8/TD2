@@ -207,6 +207,8 @@ public class AttackMaker
         switch (myMemberData.AttackType)
         {
             case Utils.BulletTypeNormal:
+                // TODO 攻击带属性
+                // TODO 
                 normalGeneralAttack = GeneralAttackManager.Single
                     .GetNormalGeneralAttack(myClusterData,
                         enemyClusterData,
@@ -217,10 +219,7 @@ public class AttackMaker
                         TrajectoryAlgorithmType.Line,
                         (obj) =>
                         {
-                            
                             Debug.Log("普通攻击");
-                            // 播受击特效
-
                         });
                 break;
             //case Utils.BulletTypeScope:
