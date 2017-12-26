@@ -17,7 +17,7 @@ public class FixtureData : PositionObject
     /// </summary>
     /// <param name="allData">数据类</param>
     /// <param name="mapCell">地图单元</param>
-    public FixtureData(AllData allData, MapCellBase mapCell)
+    public FixtureData(AllData allData, FightUnitBase mapCell)
         : base(allData, mapCell)
     {
         if (AllData.MemberData == null)

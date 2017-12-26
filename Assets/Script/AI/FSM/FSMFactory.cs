@@ -41,7 +41,7 @@ public class FSMFactory
                     // 常规士兵行为
                     result = new Dictionary<FSMStateID, List<FSMStateID>>()
                 {
-                    {FSMStateID.Wait, new List<FSMStateID>()
+                    {FSMStateID.Enter, new List<FSMStateID>()
                     {
                         FSMStateID.Dead,
                         FSMStateID.Move
@@ -49,7 +49,6 @@ public class FSMFactory
                     {FSMStateID.Move, new List<FSMStateID>()
                     {
                         FSMStateID.Dead,
-                        FSMStateID.PreFight,
                         FSMStateID.PreFight,
                         FSMStateID.Wait,
                     }},
@@ -71,7 +70,7 @@ public class FSMFactory
                         FSMStateID.Dead,
                         FSMStateID.Wait,
                     }},
-                    {FSMStateID.PreFight, new List<FSMStateID>()
+                    {FSMStateID.Pursue, new List<FSMStateID>()
                     {
                         FSMStateID.Dead,
                         FSMStateID.PreFight,

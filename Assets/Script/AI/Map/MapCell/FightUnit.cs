@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// FightUnit
 /// </summary>
-public class FightUnit : MapCellBase
+public class FightUnit : FightUnitBase
 {
     /// <summary>
     /// 初始化战斗单位
@@ -29,4 +29,43 @@ public class FightUnit : MapCellBase
         CheckScale(unitWidth);
         //base.Draw(leftdown, unitWidth);
     }
+
+    /// <summary>
+    /// 获取五行属性
+    /// </summary>
+    /// <returns></returns>
+    public override TheFiveProperties GetTheFiveProperties()
+    {
+        throw new NotImplementedException();
+    }
+}
+
+
+/// <summary>
+/// 战斗单位抽象类
+/// </summary>
+public abstract class FightUnitBase : MapCellBase, ITheFiveProperties
+{
+    protected FightUnitBase(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
+    {
+
+    }
+
+    /// <summary>
+    /// 获取五行属性
+    /// </summary>
+    /// <returns></returns>
+    public abstract TheFiveProperties GetTheFiveProperties();
+}
+
+/// <summary>
+/// 五行属性接口
+/// </summary>
+public interface ITheFiveProperties
+{
+    /// <summary>
+    /// 获取五行属性
+    /// </summary>
+    /// <returns></returns>
+    TheFiveProperties GetTheFiveProperties();
 }

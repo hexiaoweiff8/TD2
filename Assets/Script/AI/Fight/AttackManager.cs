@@ -58,6 +58,18 @@ public class AttackManager : SingleItem<AttackManager>
     }
 
     /// <summary>
+    /// 删除攻击类
+    /// </summary>
+    /// <param name="id"></param>
+    public void Remove(int id)
+    {
+        if (attackMakerDic.ContainsKey(id))
+        {
+            attackMakerDic.Remove(id);
+        }
+    }
+
+    /// <summary>
     /// 清理
     /// </summary>
     public void Clear()
@@ -145,6 +157,7 @@ public class AttackMaker
         Stop();
         attacker = null;
         targetList = null;
+        AttackManager.Single.
     }
 
     /// <summary>
@@ -208,6 +221,7 @@ public class AttackMaker
         {
             case Utils.BulletTypeNormal:
                 // TODO 攻击带属性
+                var theFiveProperties = attackerParam.ClusterData.MapCell.GetTheFiveProperties();
                 // TODO 
                 normalGeneralAttack = GeneralAttackManager.Single
                     .GetNormalGeneralAttack(myClusterData,

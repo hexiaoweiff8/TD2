@@ -67,7 +67,7 @@ public class UnitFictory : SingleItem<UnitFictory>
     /// <param name="unitType">单位类型</param>
     /// <param name="dataId">数据ID</param>
     /// <returns>地图单元类</returns>
-    public MapCellBase CreateUnit(UnitType unitType, int dataId)
+    public T CreateUnit<T>(UnitType unitType, int dataId) where T : MapCellBase
     {
         // 地图单元与障碍物使用相同单元替换Image的方式进行服用, 来解决创建单位过多问题
         MapCellBase result = null;
@@ -164,7 +164,7 @@ public class UnitFictory : SingleItem<UnitFictory>
 
 
 
-        return result;
+        return (T)result;
     }
 
 

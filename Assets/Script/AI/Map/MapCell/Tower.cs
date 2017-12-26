@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// 塔基类
 /// </summary>
-public class Tower : MapCellBase
+public class Tower : FightUnitBase
 {
 
 
@@ -88,7 +88,6 @@ public class Tower : MapCellBase
     public Tower(GameObject obj, int dataId, int drawLayer) : base(obj, dataId, drawLayer)
     {
         MapCellType = UnitType.Tower;
-
         // 触发事件
         Action = @base =>
         {
@@ -210,7 +209,7 @@ public class Tower : MapCellBase
                     if (towerCellItem == null || towerCellItem.DataId != val)
                     {
                         // 重新创建单元
-                        var newCell = UnitFictory.Single.CreateUnit(UnitType.TowerCell, val) as TheFiveCellBase;
+                        var newCell = UnitFictory.Single.CreateUnit<TheFiveCellBase>(UnitType.TowerCell, val) as TheFiveCellBase;
                         if (newCell != null)
                         {
                             newCell.X = j;
@@ -297,7 +296,14 @@ public class Tower : MapCellBase
         }
     }
 
-
+    /// <summary>
+    /// 获取五行属性
+    /// </summary>
+    /// <returns></returns>
+    public override TheFiveProperties GetTheFiveProperties()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 

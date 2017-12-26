@@ -199,9 +199,8 @@ public class FightManager : SingleItem<FightManager>
                         {
                             SpaceSet = diameter
                         },
-                        UnitWidth = MapDrawer.Single.UnitWidth,
                         GraphicType = GraphicType.Rect
-                    }, cell);
+                    }, (FightUnitBase)cell);
                     ClusterManager.Single.Add(ob);
                 }
 

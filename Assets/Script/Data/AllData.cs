@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 /// <summary>
 /// 数据持有类 隶属于ClusterData, 所有数据放入该类
@@ -40,13 +36,9 @@ public class AllData : ISelectWeightDataHolder
     public IList<RemainInfo> RemainInfoList = new List<RemainInfo>();
 
     /// <summary>
-    /// TODO 地图单位宽度
-    /// </summary>
-    public int UnitWidth { get; set; }
-
-    /// <summary>
     /// 图形类型
     /// </summary>
     public GraphicType GraphicType { get; set; }
+
 
 }

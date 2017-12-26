@@ -38,20 +38,27 @@ public class TriggerFuncFactory
                             // -----------------------行进------------------------------
                             result = (fsm) =>
                             {
+                                // 单位死亡
                                 if (fsm.Display.ClusterData.AllData.MemberData.CurrentHP <= 0)
                                 {
                                     return false;
                                 }
+
                                 switch (fsm.CurrentStateID)
                                 {
                                     case FSMStateID.Enter:
+                                        // 入场就开始移动
+                                        return true;
                                     case FSMStateID.Wait:
+                                        // 判断是否可移动
+
                                         return false;
                                     //case FSMStateID.Attack:
                                     //case FSMStateID.Skill:
-                                    //    return fsm.TargetIsLoseEfficacy;
-                                    //case FSMStateID.Pursue:
-                                    //    return !fsm.IsPursue;
+                                    //    return false;
+                                    case FSMStateID.Pursue:
+                                        // 判断是否攻击/技能没有可攻击目标
+                                        return false;
                                 }
                                 return false;
                             };

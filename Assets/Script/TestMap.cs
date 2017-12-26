@@ -34,6 +34,7 @@ public class TestMap : MonoBehaviour
 
 
 
+
 	void Update () {
 	    
         // 控制
@@ -62,6 +63,7 @@ public class TestMap : MonoBehaviour
     /// </summary>
     private void Control()
     {
+
         if (!Input.anyKey)
         {
             return;

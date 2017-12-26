@@ -69,9 +69,7 @@ public class StateFuncFactory
                             // -----------------------普通攻击------------------------------
                             result = (fsm) =>
                             {
-                                // TODO 启动计时器
-                                //_fireTimer = new Timer(fsm.Display.ClusterData.AllData.MemberData.AttackRate1, true);
-                                //_fireTimer.OnCompleteCallback(() => { fsm.Display.ClusterData.MapCell.StepAction(fsm.Display.ClusterData.MapCell); }).Start();
+                               // TODO 创建技能Maker
                             };
                             break;
                         case FSMStateID.Dead:
@@ -94,6 +92,7 @@ public class StateFuncFactory
                         case FSMStateID.Wait:
                             result = (fsm) =>
                             {
+
                             };
                             break;
                     }
@@ -192,25 +191,35 @@ public class StateFuncFactory
                             // -----------------------入场------------------------------
                             result = (fsm) =>
                             {
+
                             };
                             break;
                         case FSMStateID.PreFight:
                             // -----------------------准备战斗------------------------------
                             result = (fsm) =>
                             {
+
                             };
                             break;
                         case FSMStateID.Attack:
                             // -----------------------普通攻击------------------------------
                             result = (fsm) =>
                             {
-                                // TODO 检查范围内是否还有目标
+                                // 检查范围内是否还有目标
+                                var targetList = fsm.DataScope.GetData<List<DisplayOwner>>(TargetListKey);
+                                if (targetList == null || targetList.Count == 0)
+                                {
+                                    // 停止攻击
+                                    var attackMaker = AttackManager.Single.GetAttackMaker(fsm.Display.Id);
+                                    attackMaker.Destory();
+                                }
                             };
                             break;
                         case FSMStateID.Dead:
                             // -----------------------死亡------------------------------
                             result = (fsm) =>
                             {
+
                             };
                             break;
                         case FSMStateID.Wait:

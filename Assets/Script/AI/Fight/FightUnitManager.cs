@@ -57,7 +57,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                 // 获取怪数据
                 // 创建怪模型
                 var objId = new ObjectID(ObjectID.ObjectType.EnemySoldier);
-                var mapCell = UnitFictory.Single.CreateUnit(type, id);
+                var mapCell = UnitFictory.Single.CreateUnit<FightUnit>(type, id);
                 var school = new ClusterData(new AllData()
                 {
                     MemberData = new MemberData()
@@ -69,8 +69,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
                         Camp = 1,
                         Attack1 = 10,
                         BehaviorType = FSMFactory.MemberType,
-                    },
-                    UnitWidth = MapDrawer.Single.UnitWidth
+                    }
                 }, mapCell);
 
                 var mapBase = FightManager.Single.MapBase;
@@ -159,7 +158,7 @@ public class FightUnitManager : SingleItem<FightUnitManager>
             {
                 var objId = new ObjectID(ObjectID.ObjectType.MyTower);
                 // 加载tower
-                var tower = UnitFictory.Single.CreateUnit(UnitType.Tower, 1001) as Tower;
+                var tower = UnitFictory.Single.CreateUnit<Tower>(UnitType.Tower, 1001) as Tower;
 
                 tower.X = dataItem.GetInt(FightItemStartX);
                 tower.Y = dataItem.GetInt(FightItemStartY);

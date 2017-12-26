@@ -245,7 +245,7 @@ public class MapManager : SingleItem<MapManager>
                 if (mapData[i][j] > 0)
                 {
                     // 加载模型
-                    var mapCell = UnitFictory.Single.CreateUnit(layer, mapData[i][j]);
+                    var mapCell = UnitFictory.Single.CreateUnit<MapCellBase>(layer, mapData[i][j]);
                     mapCell.X = j;
                     mapCell.Y = i;
                     if (mapBase != null)

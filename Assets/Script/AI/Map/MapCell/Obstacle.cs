@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// 障碍物
 /// </summary>
-public class Obstacle : MapCellBase
+public class Obstacle : FightUnitBase
 {
     /// <summary>
     /// 初始化障碍物
@@ -20,6 +20,11 @@ public class Obstacle : MapCellBase
         : base(obj, dataId, drawLayer)
     {
         MapCellType = UnitType.Obstacle;
+    }
+
+    public override TheFiveProperties GetTheFiveProperties()
+    {
+        throw new NotImplementedException();
     }
 }
 

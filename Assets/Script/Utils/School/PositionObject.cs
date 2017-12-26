@@ -14,7 +14,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     /// <summary>
     /// 单位数据
     /// </summary>
-    public MapCellBase MapCell { get; set; }
+    public FightUnitBase MapCell { get; set; }
 
     /// <summary>
     /// 所有数据持有
@@ -46,8 +46,8 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
                         collisionGraphics =
                     new RectGraphics(
                         new Vector2(MapCell.GameObj.transform.position.x, MapCell.GameObj.transform.position.y),
-                        allData.MemberData.SpaceSet * allData.UnitWidth,
-                        allData.MemberData.SpaceSet * allData.UnitWidth,
+                        allData.MemberData.SpaceSet * MapDrawer.Single.UnitWidth,
+                        allData.MemberData.SpaceSet * MapDrawer.Single.UnitWidth,
                         0);
                         break;
 
@@ -56,7 +56,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
                         collisionGraphics =
                     new CircleGraphics(
                         new Vector2(MapCell.GameObj.transform.position.x, MapCell.GameObj.transform.position.y),
-                        allData.MemberData.SpaceSet * 0.5f * allData.UnitWidth);
+                        allData.MemberData.SpaceSet * 0.5f * MapDrawer.Single.UnitWidth);
                         break;
                 }
                 
@@ -99,7 +99,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
         {
             AllData.MemberData.SpaceSet = value < 0 ? 1 : value;
             // 更新图形空间值
-            CollisionGraphics.SetGraphicsSpaceSet(MyCollisionGraphics, value * 0.5f, allData.UnitWidth);
+            CollisionGraphics.SetGraphicsSpaceSet(MyCollisionGraphics, value * 0.5f, MapDrawer.Single.UnitWidth);
         }
     }
 
@@ -319,7 +319,7 @@ public abstract class PositionObject : IBaseMember, IGraphicsHolder//, IGraphica
     // ---------------------------公共方法------------------------------
 
 
-    public PositionObject([NotNull]AllData allData, [NotNull]MapCellBase mapCell)
+    public PositionObject([NotNull]AllData allData, [NotNull]FightUnitBase mapCell)
     {
         // 设置MemberData
         this.allData = allData;

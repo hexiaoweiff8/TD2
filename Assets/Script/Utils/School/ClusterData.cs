@@ -114,7 +114,7 @@ public class ClusterData: PositionObject
     /// </summary>
     /// <param name="allData">初始化数据</param>
     /// <param name="mapCell">地图单元</param>
-    public ClusterData([NotNull]AllData allData, MapCellBase mapCell)
+    public ClusterData([NotNull]AllData allData, FightUnitBase mapCell)
         : base(allData, mapCell)
     {
         AllData = allData;
