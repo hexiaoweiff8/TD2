@@ -49,7 +49,14 @@ namespace Assets.Script.AI.Neural
             // 输出层
             OutLayer = new NeuronLayer(outLayerNodeCount);
 
+            InLayer.ConnectLayer(HideLayer[0]);
 
+            for (var i = 0; i < hiddenLayerNodeCount.Length - 1; i++)
+            {
+                HideLayer[i].ConnectLayer(HideLayer[i + 1]);
+            }
+
+            HideLayer[HideLayer.Length - 1].ConnectLayer(OutLayer);
         }
 
         /// <summary>
@@ -57,7 +64,7 @@ namespace Assets.Script.AI.Neural
         /// </summary>
         /// <param name="inData">输入数据</param>
         /// <param name="outData">输出数据(期望数据)</param>
-        public void Train([NotNull]int[] inData, [NotNull]int[] outData)
+        public void Train([NotNull]float[] inData, [NotNull]float[] outData)
         {
             if (InLayer.NodeList.Count != inData.Length || OutLayer.NodeList.Count != outData.Length)
             {

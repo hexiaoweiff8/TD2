@@ -134,9 +134,15 @@ namespace Assets.Script.AI.Neural
         private float CalculateError()
         {
             // 输入层
-            if (TargetList.Count == 0)
+            if (FromList.Count == 0)
             {
                 return 0;
+            }
+
+            // 输出层
+            if (TargetList.Count == 0)
+            {
+                return (DesireValue - Value) * (Value * (1 - Value));
             }
 
             // 非输入层

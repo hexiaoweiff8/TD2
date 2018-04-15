@@ -27,6 +27,16 @@ namespace Assets.Script.AI.Neural
         public GameObject Ball;
 
         /// <summary>
+        /// 球刚体
+        /// </summary>
+        public Rigidbody BallRigidbody;
+
+        /// <summary>
+        /// 神经网络Obj
+        /// </summary>
+        public NeuralMono NeuralMono;
+
+        /// <summary>
         /// 地图宽
         /// </summary>
         public int Width = 10;
@@ -55,17 +65,49 @@ namespace Assets.Script.AI.Neural
         /// <summary>
         /// 最后球所在位置
         /// </summary>
-        private int lastPos = -1;
+        private int lastPos = PlaneHalfUnit / 2;
 
         /// <summary>
         /// 是否在平台上
         /// </summary>
         private bool onTheTable = false;
 
+        /// <summary>
+        /// 球原始位置
+        /// </summary>
+        private Vector3 ballSourcePosition;
+
+        /// <summary>
+        /// 平台原始旋转值
+        /// </summary>
+        private Quaternion planeRotate;
+
+
+        /// <summary>
+        /// 输入数据
+        /// </summary>
+        private float[] inData;
+
+        /// <summary>
+        /// 输出数据
+        /// </summary>
+        private float[] outData;
+
 
         void Awake()
         {
             positionMappingArray = new int[Width];
+            // 记录球原始位置
+            ballSourcePosition = Ball.transform.position;
+            // 记录板子原始角度
+            planeRotate = MainPlane.transform.rotation;
+        }
+
+        public void OnGUI()
+        {
+            GUI.color = Color.red;
+            // TODO 绘制神经网络的结构
+            GUI.Label(new Rect(100, 100, 500, 800), GetNeuronNetStructureStr());
         }
 
 
@@ -90,7 +132,7 @@ namespace Assets.Script.AI.Neural
                 //// 发射射线
                 //ray.direction = new Vector3();
                 //ray.origin = new Vector3();
-                if (j - PlaneHalfUnit < positon.x && j - PlaneHalfUnit + 1 > positon.x)
+                if (j - PlaneHalfUnit < positon.x && j - PlaneHalfUnit + 1 >= positon.x)
                 {
                     positionMappingArray[j] = 1;
                     lastPos = j;
@@ -103,22 +145,120 @@ namespace Assets.Script.AI.Neural
             }
             //}
 
+            // 转换数据
+            inData = new float[2];
+            for (var i = 0; i < positionMappingArray.Length; i++)
+            {
+                if (positionMappingArray[i] == 1)
+                {
+                    inData[0] = i;
+                    inData[1] = positionMappingArray.Length - i;
+                }
+            }
+
             // 如果球没有在范围内则判断球掉下去了, 从上次掉下去位置判断从哪里掉下去的, 训练网络
             if (!onTheTable)
             {
                 // 重置场景, 训练网络
-
+                // 球回归原位
+                Ball.transform.position = ballSourcePosition;
+                // 清除惯性
+                BallRigidbody.velocity = Vector3.zero;
+                // 板子回归原位
+                MainPlane.transform.rotation = planeRotate;
+                // 训练网络
+                inData[lastPos] = 1;
+                var trainTarget = new[] {(lastPos > 5 ? 0f : 1f)};
+                for (var i = 0; i < TrainTime; i++)
+                {
+                    NeuralMono.Train(inData, trainTarget);
+                }
             }
             else
             {
                 // 输入数据
-
+                outData = NeuralMono.Calculate(inData);
 
                 // 判断输出
+                if (outData[0] < 0.2)
+                {
+                    // 平台Z轴顺时针旋转
+                    MainPlane.transform.Rotate(Vector3.forward, (outData[0] / 1) * 0.2f * 100 * Time.deltaTime);
+                }
+                else if (outData[0] > 0.8)
+                {
+                    // 平台Z轴逆时针旋转
+                    MainPlane.transform.Rotate(Vector3.forward, (outData[0] / 1) * 0.2f * -100 * Time.deltaTime);
+                }
 
 
-                // 调整平台
             }
+
+            //Debug.Log(lastPos + "," + positon.x);
+        }
+
+
+        /// <summary>
+        /// 获取神经网络结构字符串
+        /// </summary>
+        /// <returns></returns>
+        private string GetNeuronNetStructureStr()
+        {
+            if (inData == null || outData == null)
+            {
+                return string.Empty;
+            }
+            StringBuilder result = new StringBuilder();
+
+            result.Append("In:" + inData[0]
+                + ":" + inData[1]);
+            result.Append("-----------------------\n");
+            // 遍历input节点
+            foreach (var inItem in NeuralMono.NeuralNet.InLayer.NodeList)
+            {
+
+                foreach (var axon in inItem.TargetList)
+                {
+                    result.Append(inItem.Value);
+                    result.Append(":");
+                    result.Append(axon.weight);
+                    result.Append(" -- ");
+                }
+                result.Append("\n");
+            }
+
+            // 遍历hide节点
+            foreach (var hiddenLayer in NeuralMono.NeuralNet.HideLayer)
+            {
+                foreach (var hiddenItem in hiddenLayer.NodeList)
+                {
+                    foreach (var axon in hiddenItem.TargetList)
+                    {
+                        result.Append(hiddenItem.Value);
+                        result.Append(":");
+                        result.Append(axon.weight);
+                        result.Append(" -- ");
+                    }
+                    result.Append("\n");
+                }
+            }
+
+            // 遍历out节点
+            foreach (var outItem in NeuralMono.NeuralNet.OutLayer.NodeList)
+            {
+                foreach (var axon in outItem.TargetList)
+                {
+                    result.Append(outItem.Value);
+                    result.Append(":");
+                    result.Append(axon.weight);
+                    result.Append(" -- ");
+                }
+                result.Append("\n");
+            }
+
+            result.Append("-----------------------");
+            result.Append("out:" + outData[0]);
+            return result.ToString();
         }
     }
 }

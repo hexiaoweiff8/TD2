@@ -157,7 +157,7 @@ public class AttackMaker
         Stop();
         attacker = null;
         targetList = null;
-        //AttackManager.Single.
+        AttackManager.Single.Clear();
     }
 
     /// <summary>
