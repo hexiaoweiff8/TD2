@@ -63,7 +63,7 @@ namespace Assets.Script.AI.Neural
         {
             var weight = (float)(random.NextDouble() - random.NextDouble());
             TargetList.Add(new NeuronConnection() { NeuronNode = node, weight = weight });
-            node.FromList.Add(new NeuronConnection() { NeuronNode = node, weight = weight });
+            node.FromList.Add(new NeuronConnection() { NeuronNode = this, weight = weight });
         }
 
 
@@ -90,7 +90,7 @@ namespace Assets.Script.AI.Neural
         {
             for (var i = 0; i < FromList.Count; i++)
             {
-                FromList[i].weight = FromList[i].NeuronNode.Value * Error * StudyRate;
+                FromList[i].weight += FromList[i].NeuronNode.Value * Error * StudyRate;
             }
         }
 
@@ -108,12 +108,6 @@ namespace Assets.Script.AI.Neural
                 return InputValue;
             }
 
-            // 输出层
-
-            if (FromList.Count == 0)
-            {
-                return (DesireValue - Value) * (Value / (1 - Value));
-            }
 
             // 隐层
             var result = 0f;
@@ -124,7 +118,8 @@ namespace Assets.Script.AI.Neural
                 result += FromList[i].weight * FromList[i].NeuronNode.Value;
             }
             // signod
-            return (float)(1f / (1f +Math.Pow(Math.E, -result)));
+
+            return (float)(1f / (1f + Math.Pow(Math.E, -result)));
         }
 
 

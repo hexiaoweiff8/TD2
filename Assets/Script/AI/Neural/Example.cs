@@ -86,7 +86,7 @@ namespace Assets.Script.AI.Neural
         /// <summary>
         /// 输入数据
         /// </summary>
-        private float[] inData;
+        private float[] inData = new float[2];
 
         /// <summary>
         /// 输出数据
@@ -143,18 +143,28 @@ namespace Assets.Script.AI.Neural
                     positionMappingArray[j] = 0;
                 }
             }
+
+            // 判断掉到下面
+            if (positon.x < -PlaneHalfUnit)
+            {
+                onTheTable = false;
+                if (lastPos > 5)
+                {
+                    lastPos = positionMappingArray.Length - 1;
+                }
+                else
+                {
+                    lastPos = 0;
+                }
+            }
+
             //}
 
             // 转换数据
-            inData = new float[2];
-            for (var i = 0; i < positionMappingArray.Length; i++)
-            {
-                if (positionMappingArray[i] == 1)
-                {
-                    inData[0] = i;
-                    inData[1] = positionMappingArray.Length - i;
-                }
-            }
+
+
+            inData[0] = (float)lastPos / positionMappingArray.Length;
+            inData[1] = (float)(positionMappingArray.Length - lastPos) / positionMappingArray.Length;
 
             // 如果球没有在范围内则判断球掉下去了, 从上次掉下去位置判断从哪里掉下去的, 训练网络
             if (!onTheTable)
@@ -166,8 +176,8 @@ namespace Assets.Script.AI.Neural
                 BallRigidbody.velocity = Vector3.zero;
                 // 板子回归原位
                 MainPlane.transform.rotation = planeRotate;
-                // 训练网络
-                inData[lastPos] = 1;
+
+
                 var trainTarget = new[] {(lastPos > 5 ? 0f : 1f)};
                 for (var i = 0; i < TrainTime; i++)
                 {
@@ -178,17 +188,18 @@ namespace Assets.Script.AI.Neural
             {
                 // 输入数据
                 outData = NeuralMono.Calculate(inData);
+                //Debug.logger.Log(outData[0] + "," + (outData[0] / 1) * 0.2f * -100 * Time.deltaTime + "," + (outData[0] / 1) * 0.2f * 100 * Time.deltaTime);
 
                 // 判断输出
-                if (outData[0] < 0.2)
+                if (outData[0] < 0.4)
                 {
                     // 平台Z轴顺时针旋转
                     MainPlane.transform.Rotate(Vector3.forward, (outData[0] / 1) * 0.2f * 100 * Time.deltaTime);
                 }
-                else if (outData[0] > 0.8)
+                else if (outData[0] > 0.6)
                 {
                     // 平台Z轴逆时针旋转
-                    MainPlane.transform.Rotate(Vector3.forward, (outData[0] / 1) * 0.2f * -100 * Time.deltaTime);
+                    MainPlane.transform.Rotate(Vector3.forward, ((outData[0] / 1) * 0.2f + 0.8f) * -100 * Time.deltaTime);
                 }
 
 
@@ -217,42 +228,47 @@ namespace Assets.Script.AI.Neural
             foreach (var inItem in NeuralMono.NeuralNet.InLayer.NodeList)
             {
 
-                foreach (var axon in inItem.TargetList)
-                {
-                    result.Append(inItem.Value);
-                    result.Append(":");
-                    result.Append(axon.weight);
-                    result.Append(" -- ");
-                }
+                //foreach (var axon in inItem.TargetList)
+                //{
+                //    result.Append(inItem.Value);
+                //    result.Append(":");
+                //    result.Append(axon.weight);
+                //    result.Append(" -in- ");
+                //}
+                result.Append(inItem.Value);
                 result.Append("\n");
             }
+            result.Append("\n");
 
             // 遍历hide节点
             foreach (var hiddenLayer in NeuralMono.NeuralNet.HideLayer)
             {
                 foreach (var hiddenItem in hiddenLayer.NodeList)
                 {
-                    foreach (var axon in hiddenItem.TargetList)
-                    {
-                        result.Append(hiddenItem.Value);
-                        result.Append(":");
-                        result.Append(axon.weight);
-                        result.Append(" -- ");
-                    }
+                    //foreach (var axon in hiddenItem.TargetList)
+                    //{
+                    //    result.Append(hiddenItem.Value);
+                    //    result.Append(":");
+                    //    result.Append(axon.weight);
+                    //    result.Append(" -hide- ");
+                    //}
+                    result.Append(hiddenItem.Value);
                     result.Append("\n");
                 }
             }
+            result.Append("\n");
 
             // 遍历out节点
             foreach (var outItem in NeuralMono.NeuralNet.OutLayer.NodeList)
             {
-                foreach (var axon in outItem.TargetList)
-                {
-                    result.Append(outItem.Value);
-                    result.Append(":");
-                    result.Append(axon.weight);
-                    result.Append(" -- ");
-                }
+                //foreach (var axon in outItem.TargetList)
+                //{
+                //    result.Append(outItem.Value);
+                //    result.Append(":");
+                //    result.Append(axon.weight);
+                //    result.Append(" -out- ");
+                //}
+                result.Append(outItem.Value);
                 result.Append("\n");
             }
 
