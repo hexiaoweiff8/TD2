@@ -92,7 +92,7 @@ namespace Assets.Script.AI.Neural
 
             // 计算误差(反向传播, 误差回传)
             OutLayer.CalculateError();
-            for (var i = 0; i < HideLayer.Length; i++)
+            for (var i = HideLayer.Length - 1; i > 0; i--)
             {
                 HideLayer[i].CalculateError();
             }
@@ -101,7 +101,7 @@ namespace Assets.Script.AI.Neural
 
             // 计算权重(梯度计算)
             OutLayer.CalculateWeight();
-            for (var i = 0; i < HideLayer.Length; i++)
+            for (var i = HideLayer.Length - 1; i > 0; i--)
             {
                 HideLayer[i].CalculateWeight();
             }

@@ -145,7 +145,7 @@ namespace Assets.Script.AI.Neural
             }
 
             // 判断掉到下面
-            if (positon.x < -PlaneHalfUnit)
+            if (positon.y < -5)
             {
                 onTheTable = false;
                 if (lastPos > 5)
@@ -162,7 +162,10 @@ namespace Assets.Script.AI.Neural
 
             // 转换数据
 
-
+            if (lastPos == 0)
+            {
+                lastPos = 1;
+            }
             inData[0] = (float)lastPos / positionMappingArray.Length;
             inData[1] = (float)(positionMappingArray.Length - lastPos) / positionMappingArray.Length;
 
@@ -178,7 +181,7 @@ namespace Assets.Script.AI.Neural
                 MainPlane.transform.rotation = planeRotate;
 
 
-                var trainTarget = new[] {(lastPos > 5 ? 0f : 1f)};
+                var trainTarget = new[] {(lastPos > 5 ? 0 : 1f)};
                 for (var i = 0; i < TrainTime; i++)
                 {
                     NeuralMono.Train(inData, trainTarget);
@@ -191,15 +194,24 @@ namespace Assets.Script.AI.Neural
                 //Debug.logger.Log(outData[0] + "," + (outData[0] / 1) * 0.2f * -100 * Time.deltaTime + "," + (outData[0] / 1) * 0.2f * 100 * Time.deltaTime);
 
                 // 判断输出
-                if (outData[0] < 0.4)
+                if (outData[0] < 0.45)
                 {
                     // 平台Z轴顺时针旋转
-                    MainPlane.transform.Rotate(Vector3.forward, (outData[0] / 1) * 0.2f * 100 * Time.deltaTime);
+                    MainPlane.transform.Rotate(Vector3.forward, ((outData[0] / 1) * 0.2f + + 0.2f) * 50 * Time.deltaTime);
                 }
-                else if (outData[0] > 0.6)
+                else if (outData[0] > 0.55)
                 {
                     // 平台Z轴逆时针旋转
-                    MainPlane.transform.Rotate(Vector3.forward, ((outData[0] / 1) * 0.2f + 0.8f) * -100 * Time.deltaTime);
+                    MainPlane.transform.Rotate(Vector3.forward, ((outData[0] / 1) * 0.2f) * -50 * Time.deltaTime);
+                }
+
+                if (Math.Acos(MainPlane.transform.rotation.w) > 90)
+                {
+                    MainPlane.transform.rotation = new Quaternion(0, 0, 1, 0);
+                }
+                if (Math.Acos(MainPlane.transform.rotation.w) < -90)
+                {
+                    MainPlane.transform.rotation = new Quaternion(0, 0, 1, 0);
                 }
 
 

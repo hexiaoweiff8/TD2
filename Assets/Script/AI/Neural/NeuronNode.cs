@@ -14,7 +14,7 @@ namespace Assets.Script.AI.Neural
         /// <summary>
         /// 学习率
         /// </summary>
-        public static float StudyRate = 0.2f;
+        public static float StudyRate = 0.5f;
 
         /// <summary>
         /// 目标神经连接列表
@@ -91,6 +91,10 @@ namespace Assets.Script.AI.Neural
             for (var i = 0; i < FromList.Count; i++)
             {
                 FromList[i].weight += FromList[i].NeuronNode.Value * Error * StudyRate;
+                if (float.IsNaN(FromList[i].weight) || float.IsPositiveInfinity(FromList[i].weight))
+                {
+                    int j = 0;
+                }
             }
         }
 
@@ -118,8 +122,14 @@ namespace Assets.Script.AI.Neural
                 result += FromList[i].weight * FromList[i].NeuronNode.Value;
             }
             // signod
+            var val = (float) (1f/(1f + Math.Pow(Math.E, -result)));
 
-            return (float)(1f / (1f + Math.Pow(Math.E, -result)));
+            if (float.IsNaN(val) || float.IsPositiveInfinity(val))
+            {
+                int i = 0;
+            }
+
+            return val;
         }
 
 
@@ -148,7 +158,13 @@ namespace Assets.Script.AI.Neural
                 result += TargetList[i].weight * TargetList[i].NeuronNode.Error;
             }
 
-            return result * (Value / (1 - Value));
+            var val = result * (Value / (1.01f - Value));
+
+            if (float.IsNaN(val) || float.IsPositiveInfinity(val))
+            {
+                int i = 0;
+            }
+            return val;
         }
 
 
